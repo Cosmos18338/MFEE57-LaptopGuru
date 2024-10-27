@@ -1,0 +1,53 @@
+body{
+    padding: 0px;
+    background: linear-gradient(
+          333deg,
+          #6835a6 9.79%,
+          #150928 27.32%,
+          #000 49.97%,
+          #1b1956 72.85%,
+          #402bb0 86.53%,
+          #d0bcff 98.34%
+        );
+}
+.product_banner{
+    position: relative;
+    max-height: 443px;
+    img{
+        
+        width: 100vw;
+    }
+}
+.product_container{
+    height: 2664px;
+    
+      
+}
+.product_text_container{
+    position: absolute;
+    height: 315px;
+    left: 270px;
+    top: 100px;
+    width: 1440px;
+    
+}
+.product_banner_title{
+    font-size: 75px;
+    letter-spacing: 41px;
+    color: white;
+}
+.product_banner_content{
+    font-size: 32px;
+    letter-spacing: 20px;
+    color: white;
+    margin-top: 100px;
+}
+.product_breadcrumb{
+    padding: 70px 200px 70px ;
+    font-size: 14px;
+    
+}
+.breadcrumb-item{
+    color: white;
+    text-decoration: none;
+}
