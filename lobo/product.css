@@ -11,43 +11,92 @@ body{
         );
 }
 .product_banner{
+    background-image: url('img/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100%;
+    padding-top: 23.9%; 
     position: relative;
-    max-height: 443px;
-    img{
-        
-        width: 100vw;
-    }
+    
 }
 .product_container{
-    height: 2664px;
+    min-height: 2664px;
     
       
 }
 .product_text_container{
     position: absolute;
-    height: 315px;
-    left: 270px;
-    top: 100px;
-    width: 1440px;
+    height: 16.406vw;
+    left: 14.0625vw;
+    top: 5.208vw;
+    width: 75vw;
     
 }
 .product_banner_title{
-    font-size: 75px;
-    letter-spacing: 41px;
+    font-size: 3.90625vw;
+    letter-spacing: 2.135vw;
     color: white;
 }
 .product_banner_content{
-    font-size: 32px;
-    letter-spacing: 20px;
+    font-size: 1.667vw;
+    letter-spacing: 1.042vw;
     color: white;
-    margin-top: 100px;
+    margin-top: 5.208vw;
 }
 .product_breadcrumb{
-    padding: 70px 200px 70px ;
+    padding: 3.646vw 10.417vw 3.646vw ;
     font-size: 14px;
-    
+    color:white;
+    a{
+        color: white;
+        
+    }
 }
-.breadcrumb-item{
+.product_aside{
+        background-color: transparent;
+        border: 1px solid;
+        border-color: white;
+        border-radius: 20px;
+        height: auto;
+        overflow: hidden;
+        width: 330px;
+        margin: 0px 0px 0px 200px;
+}
+.product_aside_content{
+    display: flex;
+    padding:40px;
+
+}
+.product_search{
+    
+    background-color: transparent;
+    border: none;               
+    border-bottom: 2px solid white;
     color: white;
-    text-decoration: none;
+    outline: none;
+    margin-top:40px ;
+    width: 100%;
+    letter-spacing: 5px;
+}
+.product_search_icon{
+    margin-top:40px ;
+    margin-left: -20px;
+    color: white;
+}
+@media (max-width:768px){
+    .product_banner{
+        background-image: url('img/mobile-banner.jpg');
+        width: 100%;
+        padding-top: 32.5%; 
+    }
+    .product_banner_title{
+        font-size: 32px;
+        letter-spacing: 1.042vw ;
+    }
+    .product_banner_content{
+        font-size: 16px;
+        letter-spacing: 1.042vw;
+        margin-top: 5.208vw;
+    }
+    
 }
