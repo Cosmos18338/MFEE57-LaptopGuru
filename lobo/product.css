@@ -83,6 +83,74 @@ body{
     margin-left: -20px;
     color: white;
 }
+
+
+/* slider */
+
+
+.product_slider_title
+{
+    color:white;
+    font-size: 16px;
+    margin: 0 15px 0 -80px;
+}
+.product_slider-container {
+    position: relative;
+    margin: 0 50px 0 120px;
+    width: 150px;
+    height: 50px;
+}
+
+/* 隱藏原生滑桿 */
+.product_slider {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    width: 100%;
+    background: transparent; /* 隱藏背景 */
+    pointer-events: none;    /* 讓兩個滑桿重疊可以互動 */
+}
+
+/* 滑桿線條 */
+.product_slider-container::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #ddd;
+    z-index: 1;
+}
+
+/* 滑塊樣式 */
+.product_slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid #805AF5;
+    position: relative;
+    top: 10px;
+    pointer-events: auto; /* 啟用互動 */
+    z-index: 2;
+}
+
+.product_slider::-moz-range-thumb {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 20px solid #805AF5;
+    position: relative;
+    top: 10px;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+
 @media (max-width:768px){
     .product_banner{
         background-image: url('img/mobile-banner.jpg');
