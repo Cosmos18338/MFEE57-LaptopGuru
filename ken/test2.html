@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自定義 Checkbox</title>
+  <style>
+    /* 隱藏預設的 checkbox */
+    .custom-checkbox input[type="checkbox"] {
+      display: none;
+    }
+
+    /* 自定義未選中狀態的樣式 */
+    .custom-checkbox label {
+      position: relative;
+      cursor: pointer;
+      padding-left: 25px; /* 調整文字和 checkbox 之間的距離 */
+    }
+
+    .custom-checkbox label::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      border: 2px solid #a404ee; /* 邊框顏色 */
+      border-radius: 4px; /* 變成菱形（四角圓潤） */
+      background-color: transparent;
+      transition: all 0.3s ease;
+    }
+
+    /* 自定義勾選後的樣式 */
+    .custom-checkbox input[type="checkbox"]:checked + label::before {
+      background-color: #13fa32; /* 填充背景色 */
+      border-color: #147dec;
+    }
+
+    /* 勾勾樣式 */
+    .custom-checkbox input[type="checkbox"]:checked + label::after {
+      content: '\2713'; /* 勾勾符號 */
+      position: absolute;
+      left: 3px;
+      top: -1px;
+      font-size: 18px;
+      color: rgb(223, 61, 61); /* 勾勾顏色 */
+    }
+  </style>
+</head>
+<body>
+  <div class="custom-checkbox">
+    <input type="checkbox" id="customCheck">
+    <label for="customCheck">自定義 Checkbox</label>
+  </div>
+</body>
+</html>
