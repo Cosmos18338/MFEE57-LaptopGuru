@@ -24,6 +24,19 @@ $card-height: 100%;
 .me-7 {
   margin-right: 7rem;
 }
+
+.bg-main {
+  background: linear-gradient(
+    333deg,
+    #6835a6 9.79%,
+    #150928 27.32%,
+    #000 49.97%,
+    #1b1956 72.85%,
+    #402bb0 86.53%,
+    #d0bcff 98.34%
+  );
+  backdrop-filter: blur(10px) brightness(100%);
+}
 // bs5內建圖示字體
 // 如果有使用其它圖示字體可以註解不使用
 @import '~bootstrap-icons/font/bootstrap-icons';
