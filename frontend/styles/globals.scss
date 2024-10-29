@@ -21,7 +21,9 @@ $card-height: 100%;
 // 參考: https://getbootstrap.com/docs/5.3/customize/sass/#importing
 @import '~bootstrap/scss/bootstrap';
 // ↓↓↓  其它客製樣式要寫在這行的"下面" ↓↓↓
-
+.me-7 {
+  margin-right: 7rem;
+}
 // bs5內建圖示字體
 // 如果有使用其它圖示字體可以註解不使用
 @import '~bootstrap-icons/font/bootstrap-icons';
