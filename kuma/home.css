@@ -435,82 +435,104 @@ title {
     align-items: flex-start;
     padding: 68px 240px;
     /* gap: 64px; */
-  }
-  
-  .article {
+}
+
+.article {
     display: flex;
     height: 400px;
     align-self: stretch;
-  }
-  
-  .article-body {
+}
+
+.article-body {
     display: flex;
     width: 100%;
     align-items: center;
-  }
-  
-  .article-img {
+}
+
+.article-img {
     width: 50%;
     height: 100%;
     background-color: #fff;
-  }
-  
-  .article-content {
+}
+
+.article-content {
     width: 50%;
     height: 100%;
     padding: 86px 77px 86px 78px;
     background-color: #000;
     display: flex;
+    flex-direction: column;
     justify-content: center;
+    /* 上下置中 */
+}
+
+.article-title2 {
+    font-size: var(--h7-font-size);
+    color: #FFF;
+    letter-spacing: 4.8px;
+    margin-bottom: 10px;
+    display: flex;
+    /* 保持橫向排列 */
     align-items: center;
-  }
-  
-  .article-text {
-    color: #fff;
-    font-size: 16px;
+    /* 置中對齊內部文字 */
+}
+
+
+.article-text {
+    color: #FFF;
+    font-size: var(--h9-font-size);
     line-height: 1.5;
-  }
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
+    letter-spacing: 3.2px;
+}
 
 
-
-
-  .activity-section {
-    padding: 40px 0;
+.section6 {
+    display: flex;
+    padding: 68px 240px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    align-self: stretch;
     background-color: #000;
-    color: #fff;
-  }
-  
-  .activity-container {
+    justify-content: center;
+}
+
+.activity-container {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     grid-gap: 20px;
-    margin-bottom: 40px;
-  }
-  
-  .activity-item {
+    padding: 40px 0px;
+
+}
+
+/* .activity-item {
     display: flex;
     flex-direction: column;
     align-items: center;
-  }
-  
-  .activity-item img {
+}
+
+.activity-item img {
     width: 100%;
     height: 200px;
     object-fit: cover;
-    border-radius: 8px;
-  }
-  
-  .activity-description {
+    border-radius: 10px;
+}
+
+.activity-description {
     margin-top: 16px;
     text-align: center;
-  }
-  
-  .activity-footer {
+}
+
+.activity-footer {
     display: flex;
     justify-content: center;
-  }
-  
-  .go-btn {
+}
+
+.go-btn {
     background-color: #8B00FF;
     color: #fff;
     border: none;
@@ -518,4 +540,82 @@ title {
     padding: 12px 32px;
     font-size: 16px;
     cursor: pointer;
+} */
+
+/* 外部容器設定 */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    background-color: #333; /* 背景色 */
   }
+  
+  /* 卡片設定 */
+  .card {
+    background-color: #888;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    color: #FFF;
+  }
+  
+  .card-title {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+  }
+  
+  .card-content {
+    font-size: 0.9em;
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  
+  .card-button {
+    align-self: flex-end;
+    font-size: 1.5em;
+    color: #FFF;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .card-button:hover {
+    transform: scale(1.2);
+  }
+  
+  /* 特殊的查看更多卡片樣式 */
+  .more-card {
+    border: 2px solid #888;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+  }
+  
+  .more-title {
+    font-size: 1.2em;
+    color: #FFF;
+  }
+  
+  .more-button {
+    margin-top: 10px;
+    font-size: 1em;
+    padding: 8px 16px;
+    color: #FFF;
+    background-color: #888;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .more-button:hover {
+    background-color: #BBB;
+  }
+  
