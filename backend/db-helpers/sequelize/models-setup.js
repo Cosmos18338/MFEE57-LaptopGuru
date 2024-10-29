@@ -13,8 +13,8 @@ export default async function applyModels(sequelize) {
   const modelsPath = path.join(appRootPath.path, 'models')
   const filenames = await fs.promises.readdir(modelsPath)
 
-  for (const filename of filenames) {
-    const item = await import(pathToFileURL(path.join(modelsPath, filename)))
-    item.default(sequelize)
-  }
+  // for (const filename of filenames) {
+  //   const item = await import(pathToFileURL(path.join(modelsPath, filename)))
+  //   item.default(sequelize)
+  // }
 }

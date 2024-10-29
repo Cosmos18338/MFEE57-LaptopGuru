@@ -1,10 +1,10 @@
 // 檔案位置: styles/global.scss
 // 變數覆蓋用 (Variable overrides)
 // 全站配色 colors
-$primary: #023047;
-$secondary: rgba(41, 41, 40, 0.5);
-$success: #7eb4e6;
-$danger: #ff4136;
+$primary: #cb36ec;
+$secondary: #29292880;
+$success: #4399eb;
+$danger: #ffeb36;
 
 // 按鈕圓角邊 button radius
 $border-radius: 0.2em;
@@ -21,7 +21,22 @@ $card-height: 100%;
 // 參考: https://getbootstrap.com/docs/5.3/customize/sass/#importing
 @import '~bootstrap/scss/bootstrap';
 // ↓↓↓  其它客製樣式要寫在這行的"下面" ↓↓↓
+.me-7 {
+  margin-right: 7rem;
+}
 
+.bg-main {
+  background: linear-gradient(
+    333deg,
+    #6835a6 9.79%,
+    #150928 27.32%,
+    #000 49.97%,
+    #1b1956 72.85%,
+    #402bb0 86.53%,
+    #d0bcff 98.34%
+  );
+  backdrop-filter: blur(10px) brightness(100%);
+}
 // bs5內建圖示字體
 // 如果有使用其它圖示字體可以註解不使用
 @import '~bootstrap-icons/font/bootstrap-icons';
