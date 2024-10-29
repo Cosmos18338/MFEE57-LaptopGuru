@@ -16,7 +16,7 @@ export default function DefaultLayout({ title = 'Next-BS5', children }) {
         <meta name="viewport" content="width=device-width" />
       </Head>
       <Header />
-      <main className="flex-shrink-0 my-5">
+      <main className="flex-shrink-0 py-5">
         <div className="container">
           <NextBreadCrumb isHomeIcon isChevron bgClass="" />
           {children}

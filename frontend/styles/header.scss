@@ -1,14 +1,10 @@
 header {
   background: linear-gradient(
-    333deg,
-    #6835a6 9.79%,
-    #150928 27.32%,
-    #000 49.97%,
-    #1b1956 72.85%,
-    #402bb0 86.53%,
-    #d0bcff 98.34%
+    180deg,
+    rgb(58.82, 48.81, 110.57) 0%,
+    rgb(24.33, 20.27, 68.98) 50%,
+    rgb(3, 3, 22) 100%
   );
-  backdrop-filter: blur(10px) brightness(100%);
 }
 
 .nav-list a {
