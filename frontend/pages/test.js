@@ -1,5 +1,3 @@
-'use client'
-
 import Coupon from '@/components/coupon'
 import React, { useState, useEffect } from 'react'
 
