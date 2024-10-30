@@ -6,6 +6,72 @@ $secondary: #29292880;
 $success: #4399eb;
 $danger: #ffeb36;
 
+$main-color: #805AF5;
+
+// 漸層
+$linear_1: linear-gradient(180deg, #9474F7 0%, #573DA7 100%);
+$linear_2: linear-gradientlinear-gradient(180deg, #8770FD 0%, #5848B3 100%);
+$linear_3: linear-gradient(180deg, #A793E9 0%, #423DB0 50%, #2E256A 100%);
+$linear_4: linear-gradient(180deg, #A660D7 0%, #5B35AA 50%, #281C72 100%);
+$linear_5: linear-gradient(180deg, #6552C6 0%, #1D1A64 50%, #00013A 100%);
+$linear_6: linear-gradient(270deg, #8678C9 0%, #00013A 49%, #00013A 100%);
+$linear_7: linear-gradient(270deg, #A793E9 0%, #5346B6 35%, #34246D 70%, #271948 100%);
+$linear_8: linear-gradient(316deg, #05050A 54.58%, #150928 61.63%, #1B1956 74.08%, #402BB0 90.06%, #765BD6 101.57%);
+$linear_9: linear-gradient(270deg, #CF8FFC 0%, #5B35AA 50%, #281C72 100%);
+$linear-10: linear-gradient(180deg, #CF8FFC -14.1%, #5B35AA 115.38%);
+
+// 字體大小
+$font_style_1: (
+    font-size: 100px,
+    font-weight: 400,
+    letter-spacing: 20px
+);
+$font_style_2: (
+    font-size: 96px,
+    font-weight: 400,
+    letter-spacing: 20px
+);
+$font_style_3: (
+  font-size: 64px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_4: (
+  font-size: 48px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_5: (
+    font-size: 36px,
+    font-weight: 400,
+    letter-spacing: 20px
+);
+$font_style_6: (
+  font-size: 30px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_7: (
+  font-size: 24px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_8: (
+  font-size: 20px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_9: (
+  font-size: 16px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+$font_style_10: (
+  font-size: 14px,
+  font-weight: 400,
+  letter-spacing: 20px
+);
+
 // 按鈕圓角邊 button radius
 $border-radius: 0.2em;
 $border-radius-sm: 0.2em;
