@@ -20,7 +20,7 @@
   left: 1.5rem;
 }
 .BlogImgUploadDiv {
-  width: 62.5rem;
+  width: 50vw;
   height: 31.25rem;
   background-color: #fff;
   border: 1px solid black;
@@ -69,4 +69,13 @@
 .BlogSmallTitleAlign {
   width: 50%;
   height: 100%;
+}
+@media screen and (max-width: 430px) {
+  .BlogImgUploadDiv {
+    width: 50vw;
+    height: 31.25rem;
+    background-color: #fff;
+    border: 1px solid black;
+    cursor: pointer;
+  }
 }

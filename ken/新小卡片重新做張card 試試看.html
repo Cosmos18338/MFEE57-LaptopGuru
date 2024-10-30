@@ -4,7 +4,10 @@
     <title>Title</title>
     <!-- Required meta tags -->
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
     <!-- Bootstrap CSS v5.2.1 -->
     <link
@@ -12,6 +15,10 @@
       rel="stylesheet"
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
     />
     <style>
       .ArticleSmallerCardTitle {
@@ -42,19 +49,62 @@
         letter-spacing: 0.2rem;
         text-wrap: nowrap;
       }
+      .ArticleSmallerCardBodyContent {
+        color: #fff;
+        font-size: 1rem;
+      }
+
+      .ArticleSmallerCardHeadHover {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50%;
+        height: 20%;
+        background-color: #805af5;
+        /* transition: all 1s ease; */
+      }
+      .ArticleSmallerCardHeadHoverP {
+        font-size: 1.5rem;
+        color: #fff;
+        margin: 0.3rem 0 0 2rem;
+        font-weight: 400;
+      }
+      .ArticleSmallerCard:hover .ArticleSmallerCardHeadHover {
+        background: linear-gradient(
+          90deg,
+          #a793e9 0%,
+          #5346b6 35%,
+          #34246d 70%,
+          #271948 100%
+        );
+      }
+      .ArticleSmallerCard:hover .ArticleSmallerCardHeadHoverP {
+        font-size: 1.5rem;
+        color: #fff;
+        margin: 0.3rem 0 0 16rem;
+        font-weight: 400;
+      }
     </style>
   </head>
 
   <body>
-    <div class="container">
+    <!----------------------- 兩張小卡 ------------------------>
+    <div class="container mt-5">
       <div class="row">
         <div class="col-md-12 col-lg-6 mb-3">
-          <div class="card d-flex flex-row bg-dark" style="height: 15rem;">
+          <div
+            class="card d-flex flex-row bg-dark position-relative ArticleSmallerCard"
+            style="height: 15rem; border-radius: 1rem 0 1rem 0"
+          >
             <img
               src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
               class="card-img-top w-50 h-100"
+              style="border-radius: 1rem 0 1rem 0"
               alt="..."
             />
+            <div class="ArticleSmallerCardHeadHover">
+              <p class="ArticleSmallerCardHeadHoverP">Acer</p>
+            </div>
             <div class="card-body w-50 h-100">
               <div class="ArticleSmallerCardBodyContent">
                 <div class="d-flex row">
@@ -77,13 +127,21 @@
             </div>
           </div>
         </div>
+
         <div class="col-md-12 col-lg-6 mb-3">
-          <div class="card d-flex flex-row bg-dark" style="height: 15rem;">
+          <div
+            class="card d-flex flex-row bg-dark position-relative ArticleSmallerCard"
+            style="height: 15rem; border-radius: 1rem 0 1rem 0"
+          >
             <img
               src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
               class="card-img-top w-50 h-100"
+              style="border-radius: 1rem 0 1rem 0"
               alt="..."
             />
+            <div class="ArticleSmallerCardHeadHover">
+              <p class="ArticleSmallerCardHeadHoverP">Acer</p>
+            </div>
             <div class="card-body w-50 h-100">
               <div class="ArticleSmallerCardBodyContent">
                 <div class="d-flex row">
@@ -108,7 +166,7 @@
         </div>
       </div>
     </div>
-
+    <!----------------------- 兩張小卡 ------------------------>
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-qQ1W2kRaJ51mFVHR+t64f8GpOgBIpD4GbPH+v6EGGTj0dS+K7bzFUVCQxbGw7g2x"
