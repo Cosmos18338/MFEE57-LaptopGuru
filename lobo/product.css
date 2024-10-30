@@ -20,9 +20,7 @@ body{
     
 }
 .product_container{
-    min-height: 2664px;
-    
-      
+    min-height: 2664px;     
 }
 .product_text_container{
     position: absolute;
@@ -52,6 +50,8 @@ body{
         
     }
 }
+
+
 .product_aside{
     
         background-color: transparent;
@@ -60,7 +60,7 @@ body{
         border-radius: 20px;
         height: auto;
         overflow: hidden;
-        width: 330px;
+        min-width: 320px;
         margin: 0px 0px 0px 10.417vw;
 }
 .product_aside_content{
@@ -213,7 +213,7 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper .menu-icon {
 /* 當 checkbox 被選取時顯示選單 */
 input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
     max-height: 400px; /* 設定展開的最大高度 */
-    padding-left: 40px; /* 展開後的內邊距 */
+    
 }
 
 .menu-content a {
@@ -233,8 +233,8 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
     border-radius: 25px 0px; /* 圓角邊框 */
     overflow: hidden; /* 隱藏溢出部分 */
     transition: transform 0.3s, box-shadow 0.3s; /* 鼠標懸停時的轉換效果 */
-    width: 330px; /* 設定最大寬度 */
-    height: 409px;
+    width: 300px; 
+    height: 400px;
     margin: 0 0 42px 42px; /* 產品卡片間距 */
 }
 
@@ -247,17 +247,90 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
     padding: 15px; /* 內邊距 */
     background: linear-gradient(0deg, #432ABA 0%, #1F1E2E 100%);
     /* 圖片背景顏色 */
+    position: relative;
 }
 
 .product_card_img img {
     max-width: 100%; /* 圖片最大寬度 */
 }
 
+/* 比較按鈕 */
+
+
+/* 隱藏原生 checkbox */
+.product_compare_checkbox {
+    display: none;
+  }
+
+  /* 自訂 checkbox 樣式 */
+  .product_compare_label {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ddd;
+    transform: rotate(45deg);
+    right:50px;
+    color:white;
+    cursor: pointer;
+  }
+
+  /* Check 樣式 */
+  .product_compare_checkbox:checked + .product_compare_label {
+    background-color: #805AF5;
+  }
+/* 文字樣式 */
+.product_compare_text {
+    position: absolute;
+    top: 10px;
+    right: 10px; 
+    color: white;
+    font-size: 16px;
+  }
+  
+
+
+
+/* 名稱、型號、收藏、加入購物車icon */
+
+.product_card_content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.product_icons {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+}
+.product_icons img {
+    top:0px;
+    margin-left: 8px; /* 圖片之間的間距 */
+}
 .product_card_content {
     margin-left: 30px;
     padding: 15px; /* 內容內邊距 */
     color: #ffffff; /* 文字顏色 */
 }
+.product_collection_checkbox {
+    display: none; /* 隱藏原生 checkbox */
+}
+
+.product_collection_icon {
+    cursor: pointer; /* 添加指標樣式 */
+    transition: color 0.3s ease; /* 添加過渡效果 */
+    stroke: white; /* 默認顏色 */
+}
+
+.product_collection_checkbox:checked + .product_collection_icon {
+    fill: #805AF5; /* 選中顏色 */
+}
+
+
+
+/* 價格按鈕 */
+
+
 .price-button {
     display: flex;
     align-items: center;
@@ -275,7 +348,9 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
 
 .price-button .price {
     flex-grow: 1;
-    text-align: center;
+
+    padding-left: 20px;
+    letter-spacing: 10px;
 }
 
 .price-button .arrow {
@@ -295,7 +370,43 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
 }
 
 
+.product_pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+    align-items: center;
+    padding: 10px;
+    border-radius: 8px;
+    list-style: none;
+}
 
+.product_page_item {
+    margin: 0 5px;
+    color: white;
+}
+
+.product_page_link {
+    color: #ffffff; /* 白色文字 */
+    background-color: transparent;
+    text-decoration: none;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    transition: color 0.3s;
+}
+
+.product_page_item.active .product_page_link {
+    font-weight: bold;
+}
+
+.product_page_item.disabled .product_page_link {
+    pointer-events: none; /* 禁用點擊 */
+}
+
+.product_page_link[aria-label="Previous"],
+.product_page_link[aria-label="Next"] {
+    color: #805AF5; /* 箭頭的紫色 */
+}
 
 @media (max-width:768px){
     .product_banner{
@@ -317,6 +428,6 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
 .product_list{
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    
     
 }
