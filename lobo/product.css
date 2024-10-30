@@ -53,6 +53,7 @@ body{
     }
 }
 .product_aside{
+    
         background-color: transparent;
         border: 1px solid;
         border-color: white;
@@ -225,6 +226,74 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
     margin-top: 40px; /* 每項之間的間距 */
 }
 
+/* 商品列表 */
+
+.product_card {
+    border: 1px solid #ddd; /* 邊框顏色 */
+    border-radius: 25px 0px; /* 圓角邊框 */
+    overflow: hidden; /* 隱藏溢出部分 */
+    transition: transform 0.3s, box-shadow 0.3s; /* 鼠標懸停時的轉換效果 */
+    width: 330px; /* 設定最大寬度 */
+    height: 409px;
+    margin: 0 0 42px 42px; /* 產品卡片間距 */
+}
+
+.product_card:hover {
+    transform: translateY(-5px); /* 鼠標懸停時輕微上移 */
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* 增強陰影效果 */
+}
+
+.product_card_img {
+    padding: 15px; /* 內邊距 */
+    background: linear-gradient(0deg, #432ABA 0%, #1F1E2E 100%);
+    /* 圖片背景顏色 */
+}
+
+.product_card_img img {
+    max-width: 100%; /* 圖片最大寬度 */
+}
+
+.product_card_content {
+    margin-left: 30px;
+    padding: 15px; /* 內容內邊距 */
+    color: #ffffff; /* 文字顏色 */
+}
+.price-button {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 250px;
+    border: 2px solid rgba(255, 255, 255, 0.4); /* 外邊框顏色 */
+    border-radius: 35px; /* 圓角 */
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    justify-content: space-between;
+}
+
+.price-button .price {
+    flex-grow: 1;
+    text-align: center;
+}
+
+.price-button .arrow {
+    background: #805AF5; /* 圓形箭頭背景顏色 */
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; /* 圓形 */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.arrow:hover{
+    background: linear-gradient(270deg, #7B65ED 0%, #2C2887 50%, #00013A 100%);
+}
+
 
 
 
@@ -243,5 +312,11 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
         letter-spacing: 1.042vw;
         margin-top: 5.208vw;
     }
+    
+}
+.product_list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     
 }
