@@ -1,27 +1,35 @@
 export default function MyFooter() {
   return (
-    <footer className="footer mt-auto py-3 bg-light">
-      <div className="container">
-        <div className="text-muted">
-          <i className="bi bi-geo-alt-fill"></i> 台灣 © 2023 NextJS Inc.
-          版權所有
+    <footer>
+      <div className="conatiner p-5">
+        <div className="row m-3 border-bottom border-light">
+          <div className="col-5">
+            <div className="logo">
+              <img src="/logo.svg" alt />
+            </div>
+          </div>
+          <div className="col">
+            <div className="text-light mb-2">關於我們</div>
+            <div className="text-light mb-2">加入我們</div>
+            <div className="text-light">最新優惠</div>
+          </div>
+          <div className="col">
+            <div className="text-light mb-2">產品列表</div>
+            <div className="text-light mb-2">租賃規則</div>
+            <div className="text-light">比看看!</div>
+          </div>
+          <div className="col">
+            <div className="text-light mb-2">最新文章</div>
+            <div className="text-light mb-2">來揪團</div>
+          </div>
+          <div className="mb-4" />
         </div>
-        <div className="text-muted">
-          <span className="pe-2">
-            本網站使用之圖片與媒體素材，均遵守相關授權使用規定。來源列表:
-          </span>
-          <a href="https://unsplash.com/" className="pe-2">
-            Unsplash
-          </a>
-          <a href="https://icons.getbootstrap.com/" className="pe-2">
-            Bootstrap Icons
-          </a>
-          <a href="https://commons.wikimedia.org/" className="pe-2">
-            Wikimedia Commons
-          </a>
-          <a href="https://fonts.google.com/icons" className="pe-2">
-            Material Icons
-          </a>
+        <div className="row p-3">
+          <div className="col">
+            <img src="/Icon-fb.svg" alt className="me-3" />
+            <img src="/Icon-ig.svg" alt />
+          </div>
+          <div className="col text-light text-end">© 2024 Hello, Inc.</div>
         </div>
       </div>
     </footer>

@@ -1,15 +1,8 @@
 /* --------------------------Body-------------------------- */
 body {
-  background: linear-gradient(
-    333deg,
-    #6835a6 9.79%,
-    #150928 27.32%,
-    #000 49.97%,
-    #1b1956 72.85%,
-    #402bb0 86.53%,
-    #d0bcff 98.34%
-  );
+  background: white;
 }
+
 /* --------------------------Body-------------------------- */
 
 /*  --------------------------ArticleSection -------------------------- */
@@ -34,23 +27,20 @@ body {
 .ArticleSectionIntroduction {
   letter-spacing: 2rem;
 }
+
 /*  --------------------------ArticleSection -------------------------- */
 
 /* --------------------------SearchBox-------------------------- */
 /* --------------------------SearchBox-------------------------- */
 /* --------------------------SearchBox-------------------------- */
-.SearchBox {
-  padding-top: 10rem;
-  padding-bottom: 10rem;
-  margin-left: -1rem;
-  margin-right: -1rem;
-  background: transparent;
+.BlogSearchBox {
+  padding-top: 5rem;
+  margin: auto;
+  background: white;
 }
 
-.ArticleMain {
+.BlogMain {
   margin-bottom: 14.75rem;
-  /* margin-left: -1rem;
-        margin-right: 10rem; */
 }
 
 .SearchInputStyle {
@@ -60,28 +50,42 @@ body {
   /* border-bottom: ; */
   border-radius: 0;
   width: 47rem;
+  border-bottom: 1px solid black;
   background-color: rgba(255, 255, 255, 0);
 }
+
 .SearchInputStyle::placeholder {
-  color: white;
+  color: black;
+  font-size: 2rem;
 }
+
+.SearchInputStyle:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: transparent;
+  border-bottom: 1px solid black;
+}
+
+.SearchInputStyle:focus::placeholder {
+  color: transparent;
+}
+
 /* --------------點擊 Search 變成漸層-------------- */
 .SearchBox:has(.SearchInputStyle:focus) {
-  background: linear-gradient(
-    0deg,
-    #a793e9 0%,
-    #5346b6 35%,
-    #34246d 70%,
-    #271948 100%
-  );
+  background: linear-gradient(0deg,
+      #a793e9 0%,
+      #5346b6 35%,
+      #34246d 70%,
+      #271948 100%);
 }
+
 /* --------------點擊 search 變成漸層-------------- */
 
 /* --------------ArticleBrandSearch-------------- */
 .ArticleBrandSearch {
   /* width: 90rem; */
-  padding-top: 8rem;
-  padding-bottom: 16rem;
+  padding-top: 6rem;
+  padding-bottom: 10rem;
 }
 
 .ArticleSmallTitle {
@@ -92,6 +96,14 @@ body {
   font-size: 2rem;
   color: #805af5;
 }
+.ProductPosts {
+  /* margin-left: 15rem;
+  margin-bottom: 15rem;
+  margin-top: 8.75rem; */
+  font-size: 2rem;
+  color: #805af5;
+}
+
 .fa-diamond {
   color: transparent;
   border: 0.3rem solid #805af5;
@@ -104,14 +116,16 @@ body {
 
 
 
-.fa-magnifying-glass {
-  color: white;
+.Blogfa-magnifying-glass {
+  color: black;
 }
+
 .CardBrand {
   color: #fff;
   font-size: 0.625rem;
   letter-spacing: 0.2rem;
 }
+
 .ArticleCreatedTime {
   color: #fff;
 }
@@ -126,7 +140,8 @@ body {
 .ArticleCheckbox label {
   position: relative;
   cursor: pointer;
-  padding-left: 25px; /* 調整文字和 checkbox 之間的距離 */
+  padding-left: 25px;
+  /* 調整文字和 checkbox 之間的距離 */
 }
 
 .ArticleCheckbox label::before {
@@ -137,7 +152,7 @@ body {
   width: 12px;
   height: 12px;
   /* checkbox 邊框顏色 */
-  border: 1.5px solid white;
+  border: 1.5px solid black;
   /* checkbox 邊框顏色 */
   /* background-color: transparent; */
   /* transition: all 0.3s ease; */
@@ -145,8 +160,9 @@ body {
 }
 
 /* checkbox 勾選後的樣式自定義 */
-.ArticleCheckbox input[type="checkbox"]:checked + label::before {
-  background-color: #805af5; /* 填充背景色 */
+.ArticleCheckbox input[type="checkbox"]:checked+label::before {
+  background-color: #805af5;
+  /* 填充背景色 */
   border-color: transparent;
 }
 
@@ -155,84 +171,173 @@ body {
   background-color: transparent;
   width: 11rem;
 }
+
 /* checkbox 字體顏色 */
 .ArticleCheckbox .ArticleCheckboxLabel {
-  color: white;
+  color: black;
 }
 
 /* ------------------------------------------ArticleCheckbox + 小菱形 checkbpx------------------------------------------ */
-/* ------------------------------------------------ArticleCard------------------------------------------------ */
-/* ArticleCard+Hover */
-.ArticleCardStyle {
-  background-color: #ffffff00;
-  position: relative;
-  border-radius: 20px 0px 20px 0px;
-  border: 0.5px solid #b4b4b4;
-  display: flex;
-  width: 21.25rem;
-  height: 37.5rem;
+
+.BlogTypeSearch {
+  /* width: 90rem; */
+  padding-top: 3rem;
+  padding-bottom: 5rem;
 }
-.ArticleCardType {
+
+/* ------------------------------------------BlogCheckbox + 小菱形 checkbpx------------------------------------------ */
+/* 隱藏預設的 checkbox 行為*/
+.BlogTypeCheckbox input[type="checkbox"] {
+  display: none;
+}
+
+/* 自定義 checkbox 未選中狀態的樣式 */
+.BlogTypeCheckbox label {
+  position: relative;
+  cursor: pointer;
+  padding-left: 25px;
+  /* 調整文字和 checkbox 之間的距離 */
+}
+
+.BlogTypeCheckbox label::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  top: 0.4rem;
+  width: 12px;
+  height: 12px;
+  /* checkbox 邊框顏色 */
+  border: 1.5px solid black;
+  /* checkbox 邊框顏色 */
+  /* background-color: transparent; */
+  /* transition: all 0.3s ease; */
+  transform: rotate(45deg);
+}
+
+/* checkbox 勾選後的樣式自定義 */
+.BlogTypeCheckbox input[type="checkbox"]:checked+label::before {
+  background-color: #805af5;
+  /* 填充背景色 */
+  border-color: transparent;
+}
+
+/* checkbox 整體樣式 */
+.BlogTypeCheckbox {
+  background-color: transparent;
+  width: 11rem;
+}
+
+/* checkbox 字體顏色 */
+.BlogTypeCheckbox .BlogTypeCheckboxLabel {
+  color: black;
+}
+
+/* ------------------------------------------BlogCheckbox + 小菱形 checkbpx------------------------------------------ */
+
+/* ------------------------------------------------BlogCard------------------------------------------------ */
+.BlogCard {
+  background-color: #805AF5;
+  
+}
+
+.BlogCardTitle {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  color: #fff;
+  letter-spacing: 0.2rem;
+  font-size: 1.25rem;
+  -webkit-line-clamp: 1;
+}
+
+.BlogCardContent {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  color: #fff;
+  font-size: 1rem;
+  letter-spacing: 0.2rem;
+}
+
+.BlogCardType {
   width: 8rem;
   color: #fff;
   letter-spacing: 0.2rem;
   text-wrap: nowrap;
 }
-.ArticleCardImg {
-  position: relative;
+
+.BlogCardBodyContent {
+  color: #fff;
+  font-size: 1rem;
+}
+
+.BlogCard:hover .card-body {
+  background: linear-gradient(270deg, #A793E9 0%, #5346B6 35%, #34246D 70%, #271948 100%);
+}
+
+/* ------------------------------------------------Blog 小卡------------------------------------------------ */
+
+/* BlogHomePageSmallerCard */
+
+.BlogSmallerCard {
+  width: 21rem;
+  height: 10rem;
+  border: none;
+}
+
+.BlogHomePageSmallerCardImg {
   border-radius: 20px 0px 0px 0px;
 }
-.ArticleCardImg:hover {
-  opacity: 0.3;
+
+.BlogHomePageSmallerCardBody {
+  background-color: #805AF5;
+  border-radius: 0px 0px 20px 0px;
 }
-.ArticleCardTitle {
+
+.BlogHomePageSmallerCardBodyTitle {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
-  color: #fff;
-  letter-spacing: 0.2rem;
-  font-size: 1rem;
+  letter-spacing: 0.4rem;
 }
-.ArticleCardContent {
+
+.BlogHomePageSmallerCardBodyContent {
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  width: 100%;
-  color: #fff;
-  letter-spacing: 0.2rem;
-  font-size: 1rem;
+  letter-spacing: 0.4rem;
+  
 }
-.CardBrandHover {
-  font-size: 2.5rem;
+
+.BlogHomePageSmallerCardBody:hover {
+  background: linear-gradient(270deg, #A793E9 0%, #5346B6 35%, #34246D 70%, #271948 100%);
+
 }
-.ArticleCardHead{
-  position:relative;
-  margin-left: -0.7rem;
-  margin-right: -0.7rem;
-}
-.HoverBrand {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(204, 168, 245, 0.836);
-  border-radius: 20px 0px 0px 0px;
-  opacity: 0;
+.BlogSmallerCardTwoGroup{
   display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: opacity 0.3s ease;
+  flex-direction: row;
+  gap: 0.5rem;
 }
-.ArticleCardStyle:hover .HoverBrand {
-  opacity: 0.7;
+.BlogSmallerCardFourGroup{
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
 }
-/* ------------------------------------------------ArticleCard------------------------------------------------ */
+.BlogSmallerCardEightGroup{
+  display: flex;
+  flex-direction: column;
+  gap: 18rem;
+}
+
 /* ------------------------------------------------RWD------------------------------------------------ */
 
 @media (max-width: 430px) {
@@ -251,14 +356,17 @@ body {
     margin-bottom: 3rem;
     /* padding-bottom:10rem; */
   }
+
   .ArticleSectionIntroduction {
     letter-spacing: 2rem;
     width: 100%;
   }
+
   .ArticleSectionContainer {
     background-color: rgb(0, 0, 0);
     height: 38rem;
   }
+
   .SearchInputStyle {
     /* border-top: 0;
     border-left: 0;
@@ -268,22 +376,37 @@ body {
     width: 20rem;
     background-color: Transparent;
   }
+
   .SearchBox {
     padding-top: 3rem;
     padding-bottom: 3rem;
     background: transparent;
   }
+
   .ArticleBrandSearch {
     /* width: 90rem; */
     padding-top: 5rem;
     padding-bottom: 0rem;
   }
+
   .ArticleSmallTitle {
     margin-left: 5rem;
     margin-bottom: 5rem;
     margin-top: 5rem;
     font-size: 2rem;
     color: #805af5;
+  }
+  .BlogSmallerCardTwoGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 18rem;
+    /* margin-left: -5rem; */
+  }
+  .BlogSmallerCardFourGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 18rem;
+    margin: -3rem !important;
   }
 }
 
@@ -302,14 +425,17 @@ body {
     margin-bottom: 5rem;
     /* padding-bottom: 5rem; */
   }
+
   .ArticleSectionIntroduction {
     letter-spacing: 2rem;
     width: 100%;
   }
+
   .ArticleSectionContainer {
     background-color: rgb(0, 0, 0);
     height: 38rem;
   }
+
   .SearchInputStyle {
     /* border-top: 0;
     border-left: 0;
@@ -319,16 +445,19 @@ body {
     width: 20rem;
     background-color: Transparent;
   }
+
   .SearchBox {
     padding-top: 3rem;
     padding-bottom: 3rem;
     background: transparent;
   }
+
   .ArticleBrandSearch {
     /* width: 90rem; */
     padding-top: 5rem;
     padding-bottom: 0rem;
   }
+
   .ArticleSmallTitle {
     margin-left: 5rem;
     margin-bottom: 5rem;
@@ -336,5 +465,18 @@ body {
     font-size: 2rem;
     color: #805af5;
   }
+  .BlogSmallerCardTwoGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 18rem;
+    margin-left: 5rem;
+  }
+  .BlogSmallerCardFourGroup{
+    display: flex;
+    flex-direction: column;
+    gap: 18rem;
+    margin-left: 0rem !important;
+  }
 }
+
 /* ------------------------------------------------RWD------------------------------------------------ */
