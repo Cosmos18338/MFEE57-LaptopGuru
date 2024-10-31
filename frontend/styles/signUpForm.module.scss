@@ -95,7 +95,7 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
   .blur {
     width: 45%;
     filter: blur(30px) brightness(1.2); /* 模糊和亮度調整 */
@@ -105,21 +105,9 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
       width: 10/12;
       position: relative;
   }
-  .left{
-    // position: absolute;
-  }
-}
-@media screen and (max-width: 768px) {
-  .right {
-    order: 2; /* 手機上放到下面 */
-    width: 100%; /* 確保寬度為100% */
-  }
 
-  .left {
-    order: 1; /* 手機上放到上面 */
-    width: 100%; /* 確保寬度為100% */
-  }
 }
+
 
 @media screen and (max-width: 414px){
   .right{
