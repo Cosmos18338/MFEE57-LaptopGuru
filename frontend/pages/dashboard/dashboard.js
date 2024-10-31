@@ -1,12 +1,15 @@
-import React from 'react'
+import React , { useState, useEffect } from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import styles from '@/styles/dashboard.module.scss' // 假設你有一個樣式檔案
 import FileManagementTable from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/pages/dashboard/membership-levels'
 import LeftAside from '@/components/dashboard/leftAside'
-import cardExample from '@/components/bootstrap/cards'
+import CardExample from '@/components/bootstrap/cards'
+
+
 
 export default function FillExample() {
+ 
   return (
     <div className="container">
       <div className="row d-flex justify-content-center">
@@ -24,12 +27,12 @@ export default function FillExample() {
           </Tab>
           <Tab eventKey="shopping-record" title="購買清單">
             <div>
-              <h4>購買清單</h4>
-              <cardExample/>
+              <h4>購買清單components\bootstrap\cards.js</h4>
+              <CardExample/>
             </div>
           </Tab>
           <Tab eventKey="lease-record" title="租賃清單">
-            <div>
+            <div className='col-6'>
               <h4>Link Tab Content</h4>
               <p>這裡是另一個連結對應的內容。</p>
             </div>
