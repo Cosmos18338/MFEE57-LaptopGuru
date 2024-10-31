@@ -79,15 +79,15 @@ body{
 
 /* ▼ 標誌的樣式 */
 .product_aside_toggle_logo {
-    font-size: 18px;
+    font-size: 16px;
     transition: transform 0.3s ease;
     color: white;
-    transform: rotate(0deg);
+    transform: rotate(90deg);
 }
 
 /* 當 checkbox 被勾選時，旋轉箭頭 */
 #product_aside_toggle:checked + .product_aside_toggle_wrapper .product_aside_toggle_logo {
-    transform: rotate(90deg);
+    transform: rotate(0deg);
 
 }
 
