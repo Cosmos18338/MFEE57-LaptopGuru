@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 // 導入jQuery，需要先安裝jquery套件()
 import $ from 'jquery'
 // 導入縣市資料
-import { taiwanData, groupCitiesByRegion } from '@/components/tw/data'
+import { taiwanData, groupCitiesByRegion } from '@/data/address/data.js'
 
 export default function AddressCompo(props) {
 
