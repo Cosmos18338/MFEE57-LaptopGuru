@@ -152,7 +152,7 @@ export default function AddressCompo(props) {
               國家:
             </label>
             <div className="col-sm-10">
-              <select id="country" className="form-select">
+              <select id="country" className="form-select" name="country">
                 <option value>請選擇國家</option>
                 <option value="台灣">台灣</option>
                 <option value="美國">美國</option>
@@ -169,7 +169,7 @@ export default function AddressCompo(props) {
               縣市:
             </label>
             <div className="col-sm-10">
-              <select id="city" className="form-select" disabled>
+              <select id="city" name="city" className="form-select" disabled>
                 <option value>請選擇縣市</option>
               </select>
             </div>
@@ -180,31 +180,32 @@ export default function AddressCompo(props) {
               鄉鎮市區:
             </label>
             <div className="col-sm-10">
-              <select id="district" className="form-select" disabled>
+              <select id="district" name="district" className="form-select" disabled>
                 <option value>請選擇鄉鎮市區</option>
               </select>
             </div>
           </div>
           {/* 街道選單 */}
           <div className="mb-3 row">
-            <label htmlFor="roadList" className="col-sm-2 col-form-label">
+            <label htmlFor="road_name" className="col-sm-2 col-form-label">
               路:
             </label>
             <div className="col-sm-10">
-              <select id="roadList" className="form-select" disabled>
+              <select id="roadList" name="road_name" className="form-select" disabled>
                 <option value>請選擇居住街道</option>
               </select>
             </div>
           </div>
           {/* 詳細地址輸入 */}
           <div className="mb-3 row">
-            <label htmlFor="address" className="col-sm-2 col-form-label">
+            <label htmlFor="detailed_address" className="col-sm-2 col-form-label">
               詳細地址:
             </label>
             <div className="col-sm-10">
               <input
                 type="text"
                 id="address"
+                name="detailed_address"
                 className="form-control"
                 placeholder="巷弄門牌"
                 required
@@ -222,7 +223,7 @@ export default function AddressCompo(props) {
             </label>
             <div className="col-sm-10">
               <textarea
-                id="remarks"
+                id="remarks" name="remarks"
                 className="form-control"
                 rows={3}
                 placeholder="輸入備註"

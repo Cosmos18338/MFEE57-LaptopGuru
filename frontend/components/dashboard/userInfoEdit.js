@@ -6,10 +6,10 @@ import AddressCompo from '@/components/dashboard/test-address';
 
 export default function UserProfile() {
   const [user, setUser] = useState({
-    name: '萊歐斯·托登',
+    name: '',
     password: '******',
     gender: '男',
-    birthday: '1862/11/26',
+    birthdate: '',
     phone: '0900000000',
     address: '100台北市中正區重慶南路一段122號',
     email: 'LaiosTouden@gmail.com',
@@ -122,9 +122,9 @@ export default function UserProfile() {
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="birthday" className="col-sm-3 col-form-label">生日</label>
+                      <label htmlFor="birthdate" className="col-sm-3 col-form-label">生日</label>
                       <div className="col-sm-9">
-                        <input type="date" className="form-control" id="birthday" name="birthday" value={user.birthdate} onChange={handleInputChange} />
+                        <input type="date" className="form-control" id="birthdate" name="birthdate" value={user.birthdate} onChange={handleInputChange} />
                       </div>
                     </div>
                     <div className="mb-3 row">
@@ -134,12 +134,6 @@ export default function UserProfile() {
                       </div>
                     </div>
                     {/* 地址選擇 */}
-                    {/* <div className="mb-3 row">
-                      <label htmlFor="address" className="col-sm-3 col-form-label">地址</label>
-                      <div className="col-sm-9">
-                        <input type="text" className="form-control" id="address" name="address" value={user.address} onChange={handleInputChange} />
-                      </div>
-                    </div> */}
                      <AddressCompo/>
                 {/* 新的地址onChange沒有handleinput change */}
                     {/* 電子郵件 */}
