@@ -1,5 +1,7 @@
 import React from 'react'
 import Image from 'next/image'
+import Card from 'react-bootstrap/Card';
+
 
 export default function Card() {
   return (
