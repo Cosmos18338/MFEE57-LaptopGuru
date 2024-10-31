@@ -1,10 +1,10 @@
 import React , { useState, useEffect } from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import styles from '@/styles/dashboard.module.scss' // 假設你有一個樣式檔案
-import FileManagementTable from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/pages/dashboard/membership-levels'
 import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
+import UserProfile from '@/components/dashboard/userInfoEdit'
 
 
 
@@ -22,7 +22,7 @@ export default function FillExample() {
         >
           <Tab className="align-items-center" eventKey="home" title="會員中心">
             <div>
-              <FileManagementTable />
+              <UserProfile />
             </div>
           </Tab>
           <Tab eventKey="shopping-record" title="購買清單">
