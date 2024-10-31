@@ -101,7 +101,13 @@ export default function Signin(props) {
   return (
     <>
       <div className={styles['gradient-bg']}>
-        <div className="container">
+      <Image 
+    src="/bgi/signup_bgi.png"
+    alt="background"
+    layout="fill"
+    objectFit="cover"
+    quality={100}
+  /> 
           {/* <div className={`${styles.blur} text-white`}>blur</div> */}
           <div className="row d-flex justify-content-center align-items-center gx-5">
             <div className={`${styles.left} col-4`}>
@@ -115,12 +121,12 @@ export default function Signin(props) {
 
               <div className={`${styles.tabs} d-flex justify-content-between`}>
               <h7 className={`${styles.white} ${styles.hover}`}>
-                <Link href="/member/login-2">Log in</Link>
+                <Link href="/member/login-2">登入Log in</Link>
               </h7>
               <h5 className={styles.white}>|</h5>
-              <h5 className={`${styles.white} ${styles.hover}`}>
-                
-              </h5>
+              <h7 className={`${styles.white} ${styles.hover}`}>
+              <Link href="/member/Sign up">註冊Sign Up</Link>
+              </h7>
             </div>
               <div className="justify-content-center align-items-center">
                 <form className="mt-3" onSubmit={handleSubmit}>
@@ -247,7 +253,6 @@ export default function Signin(props) {
             </div>
           </div>
         </div>
-      </div>
 
       <style jsx>
         {`
@@ -256,6 +261,9 @@ export default function Signin(props) {
             font-size: 16px;
             height: 16px;
             letter-spacing: 3.2px;
+          }
+          .right{
+          top: 10%vh;
           }
         `}
       </style>
