@@ -1,0 +1,19 @@
+.coupon-title {
+  top: 0;
+  left: 135px;
+}
+
+.coupon-content {
+  top: 50px;
+  left: 135px;
+  width: 200px;
+
+  & button {
+    width: 100%;
+  }
+}
+
+.coupon-end-time {
+  top: 150px;
+  left: 240px;
+}

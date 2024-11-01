@@ -1,0 +1,11 @@
+footer {
+  background-color: #000;
+}
+
+.footer-logo {
+  height: 80px;
+
+  & img {
+    height: 100%;
+  }
+}
