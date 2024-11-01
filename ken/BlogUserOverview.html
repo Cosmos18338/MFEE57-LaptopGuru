@@ -11,33 +11,262 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
-    <style></style>
+    <style>
+        .BlogCard {
+            background-color: #fff;
+            border: none;
+        }
+
+        .BlogCard:hover {
+            background: linear-gradient(270deg,
+                    #a793e9 0%,
+                    #5346b6 35%,
+                    #34246d 70%,
+                    #271948 100%);
+        }
+
+        .BlogCardBodyContent {
+            color: black;
+            font-size: 1rem;
+        }
+
+        .BlogCardTitle {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            color: black;
+            letter-spacing: 0.2rem;
+            font-size: 1.5rem;
+            font-weight: 600;
+            -webkit-line-clamp: 1;
+        }
+
+        .BlogCardContent {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            color: black;
+            font-size: 1rem;
+            letter-spacing: 0.2rem;
+        }
+
+        .BlogCardType {
+            width: 8rem;
+            color: black;
+            letter-spacing: 0.2rem;
+            text-wrap: nowrap;
+        }
+
+        /* ------------------------------------搜尋欄------------------------------------ */
+        .BlogMain {
+            margin-bottom: 14.75rem;
+        }
+
+        .BlogSearchBox {
+            padding-top: 10rem;
+            padding-bottom: 10rem;
+            margin-left: -1rem;
+            margin-right: -1rem;
+            background: transparent;
+        }
+
+        .BlogSearchBox:has(.BlogSearchInputStyle:focus) {
+            background: linear-gradient(0deg,
+                    #a793e9 0%,
+                    #5346b6 35%,
+                    #34246d 70%,
+                    #271948 100%);
+        }
+
+        .BlogSearchInputStyle {
+            border-top: 0;
+            border-left: 0;
+            border-right: 0;
+            /* border-bottom: ; */
+            border-radius: 0;
+            width: 47rem;
+            border-bottom: 1px solid black;
+            background-color: rgba(255, 255, 255, 0);
+        }
+
+        .BlogSearchInputStyle::placeholder {
+            color: black;
+            font-size: 2rem;
+        }
+
+        .BlogSearchInputStyle:focus {
+            outline: none;
+            box-shadow: none;
+            border-color: transparent;
+            border-bottom: 1px solid black;
+        }
+
+        .BlogSearchInputStyle:focus::placeholder {
+            color: transparent;
+        }
+
+        .fa-diamond {
+            color: transparent;
+            border: 0.1rem solid #805af5;
+            transform: rotate(45deg);
+            font-size: 1.4rem;
+        }
+
+        .BlogUserOverviewSearchResult {
+            font-size: 2rem;
+        }
+
+        @media (max-width: 430px) {
+            .BlogSearchBox {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+                background: transparent;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .BlogSearchBox {
+                padding-top: 3rem;
+                padding-bottom: 3rem;
+                background: transparent;
+            }
+        }
+
+        /* ------------------------------------搜尋欄------------------------------------ */
+    </style>
 </head>
 
 <body>
+    <div class="container-fluid BlogMain">
+        <div class="BlogSearchBox">
+            <form class="form-inline my-2 my-lg-0 d-flex justify-content-center">
+                <input class="form-control BlogSearchInputStyle" type="search" placeholder="Search"
+                    aria-label="Search" />
+                <button class="btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+    </div>
     <div class="container">
+        <div class="d-flex align-items-center justify-content-center">
+            <p class="BlogUserOverviewSearchResult">
+                <i class="fa-solid fa-diamond"></i>&nbsp;&nbsp;&nbsp;類別搜尋
+                ”活動”共搜尋到 5 個結果
+            </p>
+        </div>
+    </div>
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <div style="width: 100%; height: 20vh"></div>
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <!-- 小空格 -->
+    <div class="container d-flex flex-column gap-5">
+        <!-- 使用者卡片1 -->
         <div class="card d-flex flex-row BlogCard" style="height: 15rem; border-radius: 1rem 0 1rem 0">
             <img src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
                 class="card-img-top w-25 h-100 object-fit-cover" style="border-radius: 1rem 0 1rem 0" alt="..." />
             <div class="card-body w-75 h-100">
-                <div class="BlogCardBodyContent">
+                <div class="BlogCardBodyContent m-3">
                     <div class="d-flex row">
                         <p class="BlogCardTitle">
-                            文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題
+                            文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題
                         </p>
-                        <h7 class="card-text mb-4 BlogCardContent">文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容</h7>
+                        <h7 class="card-text mb-4 BlogCardContent">
+                            文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容
+                        </h7>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <p class="card-text BlogCardType">版主：Jack</p>
-                        <p><i class="fa-brands fa-readme"></i>&nbsp;123</p>
+                    <div style="width: 60%" class="d-flex justify-content-between pe-5">
+                        <p class="card-text BlogCardType">版主：Jack&nbsp;</p>
+                        <p class="text-nowrap">
+                            <i class="fa-regular fa-comment-dots"></i>&nbsp; 123&nbsp;
+                        </p>
+                        <p class="text-nowrap">
+                            <i class="fa-brands fa-readme"></i>&nbsp;&nbsp;123&nbsp;
+                        </p>
                     </div>
-                    <div class="d-flex justify-content-between">
-                        <p>type</p>
-                        <p>時間</p>
+                    <div class="d-flex justify-content-between pe-5">
+                        <p>開箱文</p>
+                        <p>2024-10-31</p>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- 使用者卡片1 -->
+        <!-- 使用者卡片1 -->
+        <div class="card d-flex flex-row BlogCard" style="height: 15rem; border-radius: 1rem 0 1rem 0">
+            <img src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
+                class="card-img-top w-25 h-100 object-fit-cover" style="border-radius: 1rem 0 1rem 0" alt="..." />
+            <div class="card-body w-75 h-100">
+                <div class="BlogCardBodyContent m-3">
+                    <div class="d-flex row">
+                        <p class="BlogCardTitle">
+                            文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題
+                        </p>
+                        <h7 class="card-text mb-4 BlogCardContent">
+                            文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容
+                        </h7>
+                    </div>
+                    <div style="width: 60%" class="d-flex justify-content-between pe-5">
+                        <p class="card-text BlogCardType">版主：Jack&nbsp;</p>
+                        <p class="text-nowrap">
+                            <i class="fa-regular fa-comment-dots"></i>&nbsp; 123&nbsp;
+                        </p>
+                        <p class="text-nowrap">
+                            <i class="fa-brands fa-readme"></i>&nbsp;&nbsp;123&nbsp;
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-between pe-5">
+                        <p>開箱文</p>
+                        <p>2024-10-31</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 使用者卡片1 -->
+        <!-- 使用者卡片1 -->
+        <div class="card d-flex flex-row BlogCard" style="height: 15rem; border-radius: 1rem 0 1rem 0">
+            <img src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
+                class="card-img-top w-25 h-100 object-fit-cover" style="border-radius: 1rem 0 1rem 0" alt="..." />
+            <div class="card-body w-75 h-100">
+                <div class="BlogCardBodyContent m-3">
+                    <div class="d-flex row">
+                        <p class="BlogCardTitle">
+                            文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題文章標題
+                        </p>
+                        <h7 class="card-text mb-4 BlogCardContent">
+                            文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容文章內容
+                        </h7>
+                    </div>
+                    <div style="width: 60%" class="d-flex justify-content-between pe-5">
+                        <p class="card-text BlogCardType">版主：Jack&nbsp;</p>
+                        <p class="text-nowrap">
+                            <i class="fa-regular fa-comment-dots"></i>&nbsp; 123&nbsp;
+                        </p>
+                        <p class="text-nowrap">
+                            <i class="fa-brands fa-readme"></i>&nbsp;&nbsp;123&nbsp;
+                        </p>
+                    </div>
+                    <div class="d-flex justify-content-between pe-5">
+                        <p>開箱文</p>
+                        <p>2024-10-31</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 使用者卡片1 -->
     </div>
 
     <!-- Bootstrap JavaScript Libraries -->
