@@ -8,7 +8,7 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 
 
 
-export default function FillExample() {
+export default function Dashboard() {
  
   return (
     <div className="container">

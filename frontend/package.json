@@ -26,6 +26,7 @@
     "react-icons": "^5.2.1",
     "react-infinite-scroll-hook": "^4.1.1",
     "react-paginate": "^8.2.0",
+    "react-router-dom": "^6.27.0",
     "react-top-loading-bar": "^2.3.1",
     "sweetalert2": "^11.11.0",
     "sweetalert2-react-content": "^5.0.7",
