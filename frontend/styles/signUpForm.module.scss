@@ -1,5 +1,6 @@
 .gradient-bg {
-  background-image: url(/signup_login/andras-vas-Bd7gNnWJBkU-unsplash.jpg);
+  position: relative;
+  background-image: url(../assets/signup_login/andras-vas-Bd7gNnWJBkU-unsplash.jpg);
   // background: linear-gradient(135deg, #3c007a, #000);
   background-repeat: repeat;
   background-size: cover;
@@ -53,7 +54,8 @@
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.988); /* 內陰影 */
   border-radius: 15px;
   min-width: 600px;
-  position: absolute;
+  position: relative; // 改用 relative 而不是 absolute
+
 }
 .tabs {
   margin-top: 50px;
@@ -95,7 +97,7 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
   }
 }
 
-@media screen and (min-width: 768px) {
+@media screen and (max-width: 768px) {
   .blur {
     width: 45%;
     filter: blur(30px) brightness(1.2); /* 模糊和亮度調整 */
@@ -105,21 +107,9 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
       width: 10/12;
       position: relative;
   }
-  .left{
-    // position: absolute;
-  }
-}
-@media screen and (max-width: 768px) {
-  .right {
-    order: 2; /* 手機上放到下面 */
-    width: 100%; /* 確保寬度為100% */
-  }
 
-  .left {
-    order: 1; /* 手機上放到上面 */
-    width: 100%; /* 確保寬度為100% */
-  }
 }
+
 
 @media screen and (max-width: 414px){
   .right{
