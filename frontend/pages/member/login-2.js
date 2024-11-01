@@ -5,7 +5,7 @@ import Link from 'next/link';
 export default function LogIn(props) {
   return (
     <div className={styles['gradient-bg']}>
-      <div className="container-fluid">
+   
         <div className="row d-flex justify-content-center align-items-center gx-5">
       <div className={`${styles.blur} ${styles.white}`}>blur</div>
           <div className={`${styles.left} col-sm-1 col-md-2`}>
@@ -39,6 +39,6 @@ export default function LogIn(props) {
           </div>
         </div>
       </div>
-    </div>
+ 
   );
 }

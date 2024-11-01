@@ -1,21 +1,53 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import LeftAside from '@/components/dashboard/leftAside'; // 假設 LeftAside 也是一部分
-import styles from '@/styles/dashboard.module.scss'; // 引入你自己的樣式
+import {taiwanData} from '@/components/dashboard/test-address'
+import AddressCompo from '@/components/dashboard/test-address';
+
 
 export default function UserProfile() {
   const [user, setUser] = useState({
-    username: '萊歐斯·托登',
-    password: '**********',
+    name: '',
+    password: '******',
     gender: '男',
-    birthday: '1862/11/26',
-    phone: '09000000000000000',
+    birthdate: '',
+    phone: '0900000000',
     address: '100台北市中正區重慶南路一段122號',
-    email: 'Laios Touden@gmail.com',
+    email: 'LaiosTouden@gmail.com',
   });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('<http://localhost:3005/dashboard>')
+        const result = await response.json() 
+        if (result.status === 'success') {
+          setData(result.users)
+        }
+      } catch (error) {
+        console.error('無法取得資料:', error)
+      }
+    }
+    fetchData()
+  }, []) 
 
   const [profilePic, setProfilePic] = useState('https://via.placeholder.com/220x220');
   const [uploadStatus, setUploadStatus] = useState('');
+  const [selectedCity, setSelectedCity] = useState('');
+  const [selectedArea, setSelectedArea] = useState('');
+  const [selectedRoad, setSelectedRoad] = useState('');
+  const [areaList, setAreaList] = useState([]);
+  const [roadList, setRoadList] = useState([]);
+
+  // useEffect(() => {
+  //   const city = taiwanData.find(city => city.CityName === selectedCity);
+  //   setAreaList(city ? city.AreaList : []);
+  //   setRoadList([]);
+  // }, [selectedCity]);
+
+  // useEffect(() => {
+  //   const area = areaList.find(area => area.AreaName === selectedArea);
+  //   setRoadList(area ? area.RoadList : []);
+  // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -40,6 +72,11 @@ export default function UserProfile() {
     console.log('Form submitted:', user);
   };
 
+  // const handleAddressUpdate = (e) => {
+  //   const { name, value } = e.target;
+  //   setUser((prevUser) => ({ ...prevUser, address: `${selectedCity} ${selectedArea} ${selectedRoad} ${value}` }));
+  // };
+
   const handleProfilePicSubmit = (e) => {
     e.preventDefault();
     // Handle profile picture upload here
@@ -50,7 +87,7 @@ export default function UserProfile() {
     <div className="container">
       <div className="row d-flex justify-content-center">
         {/* LeftAside 左邊側欄 */}
-        <div className="col-md-2">&nbsp</div>
+        <div className="col-md-2"></div>
 
         {/* Main Content (User Profile) */}
         <div className="col-md-9">
@@ -64,10 +101,12 @@ export default function UserProfile() {
                 {/* Form Section */}
                 <div className="col-md-8">
                   <form onSubmit={handleSubmit}>
+                      {/* 使用者資料 */}
+            
                     <div className="mb-3 row">
                       <label htmlFor="username" className="col-sm-3 col-form-label">使用者名稱</label>
                       <div className="col-sm-9">
-                        <input type="text" className="form-control" id="username" name="username" value={user.username} onChange={handleInputChange} />
+                        <input type="text" className="form-control" id="username" name="username" value={user.name} onChange={handleInputChange} />
                       </div>
                     </div>
                     <div className="mb-3 row">
@@ -83,9 +122,9 @@ export default function UserProfile() {
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="birthday" className="col-sm-3 col-form-label">生日</label>
+                      <label htmlFor="birthdate" className="col-sm-3 col-form-label">生日</label>
                       <div className="col-sm-9">
-                        <input type="text" className="form-control" id="birthday" name="birthday" value={user.birthday} onChange={handleInputChange} />
+                        <input type="date" className="form-control" id="birthdate" name="birthdate" value={user.birthdate} onChange={handleInputChange} />
                       </div>
                     </div>
                     <div className="mb-3 row">
@@ -94,12 +133,10 @@ export default function UserProfile() {
                         <input type="tel" className="form-control" id="phone" name="phone" value={user.phone} onChange={handleInputChange} />
                       </div>
                     </div>
-                    <div className="mb-3 row">
-                      <label htmlFor="address" className="col-sm-3 col-form-label">地址</label>
-                      <div className="col-sm-9">
-                        <input type="text" className="form-control" id="address" name="address" value={user.address} onChange={handleInputChange} />
-                      </div>
-                    </div>
+                    {/* 地址選擇 */}
+                     <AddressCompo/>
+                {/* 新的地址onChange沒有handleinput change */}
+                    {/* 電子郵件 */}
                     <div className="mb-3 row">
                       <label htmlFor="email" className="col-sm-3 col-form-label">電子郵件</label>
                       <div className="col-sm-9">
@@ -126,6 +163,7 @@ export default function UserProfile() {
                           type="file"
                           accept="image/*"
                           className="d-none"
+                          value={user.image_path}
                           onChange={handleProfilePicChange}
                         />
                       </div>
