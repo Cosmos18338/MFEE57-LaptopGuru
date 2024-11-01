@@ -37,7 +37,9 @@ export const initUserData = {
   line_uid: '',
   name: '',
   email: '',
+  address:'',
 }
+// 可以視為webtoken要押的資料
 
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
