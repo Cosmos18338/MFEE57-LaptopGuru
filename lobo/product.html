@@ -36,7 +36,14 @@
             <a href="index.html">首頁</a> / <a href="product.html">商品列表</a>
         </nav>
 
+        <input type="checkbox" id="product_aside_toggle">
+        <div class="product_aside_toggle_wrapper">
+            <label for="product_aside_toggle" class="product_aside_toggle_title">Menu</label>
+            <label for="product_aside_toggle" class="product_aside_toggle_logo">▼</label>
+        </div>
         <div class="d-flex align-items-start">
+
+            <!-- 側邊欄 -->
             <aside class="product_aside">
                 <div class="product_aside_content">
 
@@ -48,14 +55,16 @@
 
                 <div class="product_slider-container">
                     <span class="product_slider_title">價格範圍</span>
-                    <input type="range" min="5000" max="100000" value="5000" class="product_slider" id="slider-1">
-                    <input type="range" min="5000" max="100000" value="100000" class="product_slider" id="slider-2">
+                    <input type="range" min="5000" max="200000" value="5000" class="product_slider" id="slider-1">
+                    <div id="price_tip-1" class="price_tip">5000</div>
+                    <input type="range" min="5000" max="200000" value="200000" class="product_slider" id="slider-2">
+                    <div id="price_tip-2" class="price_tip">200000</div>
                 </div>
 
                 <!-- 選單 -->
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle1">
+                    <input type="checkbox" id="menu-toggle1" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle1" class="menu-title">品牌</label>
                         <label for="menu-toggle1" class="menu-icon">▼</label>
@@ -76,7 +85,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle2">
+                    <input type="checkbox" id="menu-toggle2" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle2" class="menu-title">用途</label>
                         <label for="menu-toggle2" class="menu-icon">▼</label>
@@ -92,7 +101,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle3">
+                    <input type="checkbox" id="menu-toggle3" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle3" class="menu-title">螢幕尺寸</label>
                         <label for="menu-toggle3" class="menu-icon">▼</label>
@@ -110,7 +119,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle4">
+                    <input type="checkbox" id="menu-toggle4" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle4" class="menu-title">顯卡</label>
                         <label for="menu-toggle4" class="menu-icon">▼</label>
@@ -129,7 +138,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle5">
+                    <input type="checkbox" id="menu-toggle5" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle5" class="menu-title">處理器</label>
                         <label for="menu-toggle5" class="menu-icon">▼</label>
@@ -146,7 +155,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle6">
+                    <input type="checkbox" id="menu-toggle6" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle6" class="menu-title">記憶體</label>
                         <label for="menu-toggle6" class="menu-icon">▼</label>
@@ -163,7 +172,7 @@
                 </div>
                 <div class="product_list_container">
                     <!-- 選單控制區 -->
-                    <input type="checkbox" id="menu-toggle7">
+                    <input type="checkbox" id="menu-toggle7" class="menu-toggle">
                     <div class="menu-toggle-wrapper">
                         <label for="menu-toggle7" class="menu-title">硬碟容量</label>
                         <label for="menu-toggle7" class="menu-icon">▼</label>
@@ -183,7 +192,7 @@
 
             <!-- 產品列表 -->
             <main class="product_list">
-                <div class="product_card flex-shrink-0">
+                <div class="product_card">
                     <div class="product_card_img">
                         <input type="checkbox" id="productCompareCheck" class="product_compare_checkbox">
                         <label for="productCompareCheck" class="product_compare_label"></label>
@@ -534,14 +543,14 @@
                         <span aria-hidden="true">&lt;</span>
                     </a>
                 </li>
-        
+
                 <!-- 頁碼 -->
                 <li class="product_page_item"><a class="page-link" href="#">1</a></li>
                 <li class="product_page_item"><a class="page-link" href="#">2</a></li>
                 <li class="product_page_item"><a class="page-link" href="#">...</a></li>
                 <li class="product_page_item"><a class="page-link" href="#">29</a></li>
                 <li class="product_page_item"><a class="page-link" href="#">30</a></li>
-        
+
                 <!-- 右箭頭 -->
                 <li class="product_page_item">
                     <a class="product_page_link" href="#" aria-label="Next">
@@ -550,7 +559,7 @@
                 </li>
             </ul>
         </div>
-        
+
         <div id="cartAlertContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 1050;">
         </div>
     </div>
@@ -563,6 +572,62 @@
         integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
         crossorigin="anonymous"></script>
     <script>
+        // 價格滑桿防呆機制
+        const priceMin = document.getElementById('slider-1');
+        const priceMax = document.getElementById('slider-2');
+
+        priceMin.addEventListener('input', function () {
+            if (parseInt(priceMin.value) + 2000 > parseInt(priceMax.value)) {
+                priceMin.value = parseInt(priceMax.value) - 2000;
+            }
+        });
+
+        priceMax.addEventListener('input', function () {
+            if (parseInt(priceMax.value) - 2000 < parseInt(priceMin.value)) {
+                priceMax.value = parseInt(priceMin.value) + 2000;
+            }
+        });
+
+        // 顯示滑桿數值在滑鼠下方
+        const priceTip1 = document.getElementById('price_tip-1');
+        const priceTip2 = document.getElementById('price_tip-2');
+
+        // 更新數值和位置的函數
+        function updateTooltip(slider, tooltip) {
+            const value = slider.value;
+            tooltip.textContent = value;
+            tooltip.style.display = 'block';
+
+            // 計算滑桿的相對位置
+            const rect = slider.getBoundingClientRect();
+            const percent = (value - slider.min) / (slider.max - slider.min);
+            const offsetX = percent * slider.offsetWidth;
+            tooltip.style.left = `${offsetX}px`;
+        }
+
+        // 顯示和更新 slider-1 的數值提示
+        priceMin.addEventListener('input', function () {
+            updateTooltip(priceMin, priceTip1);
+        });
+
+        // 顯示和更新 slider-2 的數值提示
+        priceMax.addEventListener('input', function () {
+            updateTooltip(priceMax, priceTip2);
+        });
+
+        // 隱藏提示框
+        priceMin.addEventListener('mouseleave', function () {
+            priceTip1.style.display = 'none';
+        });
+
+        priceMax.addEventListener('mouseleave', function () {
+            priceTip2.style.display = 'none';
+        });
+
+
+
+
+        // 顯示加入購物車成功的 alert
         function showCartAlert() {
             const alertContainer = document.getElementById('cartAlertContainer');
 
@@ -589,6 +654,20 @@
             const checkbox = document.getElementById('heartCheckbox');
             checkbox.checked = !checkbox.checked; // 切換 checkbox 狀態
         }
+
+
+
+        // 隱藏/顯示 product_aside
+        const productAsideToggle = document.getElementById('product_aside_toggle');
+        const productAside = document.querySelector('.product_aside');
+        productAsideToggle.addEventListener('change', function () {
+            if (this.checked) {
+                productAside.classList.add('show');
+            } else {
+                productAside.classList.remove('show');
+
+            }
+        });
     </script>
 
 </body>
