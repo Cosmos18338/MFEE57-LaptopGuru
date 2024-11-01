@@ -1,4 +1,5 @@
 body{
+    box-sizing: border-box;
     padding: 0px;
     background: linear-gradient(
           333deg,
@@ -51,6 +52,46 @@ body{
     }
 }
 
+
+/* 選單開關 */
+
+
+/* 隱藏 checkbox */
+#product_aside_toggle {
+    display: none;
+}
+
+/* toggle wrapper 基本樣式 */
+.product_aside_toggle_wrapper {
+    display:none;
+    align-items: center;
+    cursor: pointer;
+    
+}
+
+/* Menu 標題的樣式 */
+.product_aside_toggle_title {
+    font-size: 16px;
+    
+    color: white;
+    margin-right: 8px;
+}
+
+/* ▼ 標誌的樣式 */
+.product_aside_toggle_logo {
+    font-size: 16px;
+    transition: transform 0.3s ease;
+    color: white;
+    transform: rotate(90deg);
+}
+
+/* 當 checkbox 被勾選時，旋轉箭頭 */
+#product_aside_toggle:checked + .product_aside_toggle_wrapper .product_aside_toggle_logo {
+    transform: rotate(0deg);
+
+}
+
+/* 選單開始 */
 
 .product_aside{
     
@@ -152,10 +193,16 @@ body{
     z-index: 2;
 }
 
+
+
+
+
+
+
 /* 摺疊選單 */
 
 /* 隱藏 checkbox */
-input[type="checkbox"] {
+.menu-toggle {
     display: none;
 }
 
@@ -197,7 +244,7 @@ input[type="checkbox"] {
 }
 
 /* 當 checkbox 被選取時倒三角形轉向 */
-input[type="checkbox"]:checked + .menu-toggle-wrapper .menu-icon {
+.menu-toggle:checked + .menu-toggle-wrapper .menu-icon {
     transform: rotate(0deg); /* 旋轉回正 */
 }
 
@@ -211,7 +258,7 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper .menu-icon {
 }
 
 /* 當 checkbox 被選取時顯示選單 */
-input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
+.menu-toggle:checked + .menu-toggle-wrapper + .menu-content {
     max-height: 400px; /* 設定展開的最大高度 */
     
 }
@@ -408,7 +455,32 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
     color: #805AF5; /* 箭頭的紫色 */
 }
 
-@media (max-width:768px){
+
+
+
+@media (max-width:1140px){
+
+    .product_aside_toggle_wrapper {
+        display: flex;
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+    .product_aside{
+        margin-left: -400px;
+        transition: margin-left 0.3s;
+    }
+    .product_aside.show{
+        margin-left: 0px;
+        transition: margin-left 0.3s;
+    }
+    .product_breadcrumb{
+        padding-left: 20px;
+    }
+    .product_aside{
+        position: absolute;
+        background-color: black;
+        z-index: 1000;
+    }
     .product_banner{
         background-image: url('img/mobile-banner.jpg');
         width: 100%;
@@ -428,6 +500,4 @@ input[type="checkbox"]:checked + .menu-toggle-wrapper + .menu-content {
 .product_list{
     display: flex;
     flex-wrap: wrap;
-    
-    
 }
