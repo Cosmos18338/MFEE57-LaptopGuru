@@ -7,6 +7,8 @@ import '@/styles/loader.scss'
 import '@/styles/coupon.scss'
 import '@/styles/header.scss'
 import '@/styles/footer.scss'
+
+import '@/styles/ArticleDetail.scss'
 // 載入購物車context
 import { CartProvider } from '@/hooks/use-cart-state'
 // 載入認証用context
