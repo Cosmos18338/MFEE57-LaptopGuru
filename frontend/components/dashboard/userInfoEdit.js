@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import {taiwanData} from '@/components/dashboard/test-address'
-import AddressCompo from '@/components/dashboard/test-address';
-
+import React, { useState, useEffect } from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import { taiwanData } from '@/components/dashboard/test-address'
+import AddressCompo from '@/components/dashboard/test-address'
 
 export default function UserProfile() {
   const [user, setUser] = useState({
@@ -13,13 +12,13 @@ export default function UserProfile() {
     phone: '0900000000',
     address: '100台北市中正區重慶南路一段122號',
     email: 'LaiosTouden@gmail.com',
-  });
+  })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch('<http://localhost:3005/dashboard>')
-        const result = await response.json() 
+        const result = await response.json()
         if (result.status === 'success') {
           setData(result.users)
         }
@@ -28,15 +27,17 @@ export default function UserProfile() {
       }
     }
     fetchData()
-  }, []) 
+  }, [])
 
-  const [profilePic, setProfilePic] = useState('https://via.placeholder.com/220x220');
-  const [uploadStatus, setUploadStatus] = useState('');
-  const [selectedCity, setSelectedCity] = useState('');
-  const [selectedArea, setSelectedArea] = useState('');
-  const [selectedRoad, setSelectedRoad] = useState('');
-  const [areaList, setAreaList] = useState([]);
-  const [roadList, setRoadList] = useState([]);
+  const [profilePic, setProfilePic] = useState(
+    'https://via.placeholder.com/220x220'
+  )
+  const [uploadStatus, setUploadStatus] = useState('')
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedArea, setSelectedArea] = useState('')
+  const [selectedRoad, setSelectedRoad] = useState('')
+  const [areaList, setAreaList] = useState([])
+  const [roadList, setRoadList] = useState([])
 
   // useEffect(() => {
   //   const city = taiwanData.find(city => city.CityName === selectedCity);
@@ -50,27 +51,27 @@ export default function UserProfile() {
   // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
-  };
+    const { name, value } = e.target
+    setUser((prevUser) => ({ ...prevUser, [name]: value }))
+  }
 
   const handleProfilePicChange = (e) => {
     if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = (e) => {
         if (e.target && typeof e.target.result === 'string') {
-          setProfilePic(e.target.result);
+          setProfilePic(e.target.result)
         }
-      };
-      reader.readAsDataURL(e.target.files[0]);
+      }
+      reader.readAsDataURL(e.target.files[0])
     }
-  };
+  }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     // Handle form submission here
-    console.log('Form submitted:', user);
-  };
+    console.log('Form submitted:', user)
+  }
 
   // const handleAddressUpdate = (e) => {
   //   const { name, value } = e.target;
@@ -78,10 +79,10 @@ export default function UserProfile() {
   // };
 
   const handleProfilePicSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     // Handle profile picture upload here
-    setUploadStatus('頭像更新成功！');
-  };
+    setUploadStatus('頭像更新成功！')
+  }
 
   return (
     <div className="container">
@@ -92,8 +93,19 @@ export default function UserProfile() {
         {/* Main Content (User Profile) */}
         <div className="col-md-9">
           <div className="card">
-            <div className="card-header d-flex align-items-center" style={{ backgroundColor: '#805AF5', color: 'white' }}>
-              <div className="bg-white" style={{ width: '12px', height: '12px', transform: 'rotate(45deg)', marginRight: '8px' }}></div>
+            <div
+              className="card-header d-flex align-items-center"
+              style={{ backgroundColor: '#805AF5', color: 'white' }}
+            >
+              <div
+                className="bg-white"
+                style={{
+                  width: '12px',
+                  height: '12px',
+                  transform: 'rotate(45deg)',
+                  marginRight: '8px',
+                }}
+              ></div>
               <h5 className="mb-0">檔案管理</h5>
             </div>
             <div className="card-body">
@@ -101,50 +113,131 @@ export default function UserProfile() {
                 {/* Form Section */}
                 <div className="col-md-8">
                   <form onSubmit={handleSubmit}>
-                      {/* 使用者資料 */}
-            
+                    {/* 使用者資料 */}
+
                     <div className="mb-3 row">
-                      <label htmlFor="username" className="col-sm-3 col-form-label">使用者名稱</label>
+                      <label
+                        htmlFor="username"
+                        className="col-sm-3 col-form-label"
+                      >
+                        使用者名稱
+                      </label>
                       <div className="col-sm-9">
-                        <input type="text" className="form-control" id="username" name="username" value={user.name} onChange={handleInputChange} />
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="username"
+                          name="username"
+                          value={user.name}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="password" className="col-sm-3 col-form-label">密碼修改</label>
+                      <label
+                        htmlFor="password"
+                        className="col-sm-3 col-form-label"
+                      >
+                        密碼修改
+                      </label>
                       <div className="col-sm-9">
-                        <input type="password" className="form-control" id="password" name="password" value={user.password} onChange={handleInputChange} />
+                        <input
+                          type="password"
+                          className="form-control"
+                          id="password"
+                          name="password"
+                          value={user.password}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="gender" className="col-sm-3 col-form-label">性別</label>
+                      <label
+                        htmlFor="gender"
+                        className="col-sm-3 col-form-label"
+                      >
+                        性別
+                      </label>
                       <div className="col-sm-9">
-                        <input type="text" className="form-control" id="gender" name="gender" value={user.gender} onChange={handleInputChange} />
+                        <input
+                          type="text"
+                          className="form-control"
+                          id="gender"
+                          name="gender"
+                          value={user.gender}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="birthdate" className="col-sm-3 col-form-label">生日</label>
+                      <label
+                        htmlFor="birthdate"
+                        className="col-sm-3 col-form-label"
+                      >
+                        生日
+                      </label>
                       <div className="col-sm-9">
-                        <input type="date" className="form-control" id="birthdate" name="birthdate" value={user.birthdate} onChange={handleInputChange} />
+                        <input
+                          type="date"
+                          className="form-control"
+                          id="birthdate"
+                          name="birthdate"
+                          value={user.birthdate}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     <div className="mb-3 row">
-                      <label htmlFor="phone" className="col-sm-3 col-form-label">手機號碼</label>
+                      <label
+                        htmlFor="phone"
+                        className="col-sm-3 col-form-label"
+                      >
+                        手機號碼
+                      </label>
                       <div className="col-sm-9">
-                        <input type="tel" className="form-control" id="phone" name="phone" value={user.phone} onChange={handleInputChange} />
+                        <input
+                          type="tel"
+                          className="form-control"
+                          id="phone"
+                          name="phone"
+                          value={user.phone}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     {/* 地址選擇 */}
-                     <AddressCompo/>
-                {/* 新的地址onChange沒有handleinput change */}
+                    <AddressCompo />
+                    {/* 新的地址onChange沒有handleinput change */}
                     {/* 電子郵件 */}
                     <div className="mb-3 row">
-                      <label htmlFor="email" className="col-sm-3 col-form-label">電子郵件</label>
+                      <label
+                        htmlFor="email"
+                        className="col-sm-3 col-form-label"
+                      >
+                        電子郵件
+                      </label>
                       <div className="col-sm-9">
-                        <input type="email" className="form-control" id="email" name="email" value={user.email} onChange={handleInputChange} />
+                        <input
+                          type="email"
+                          className="form-control"
+                          id="email"
+                          name="email"
+                          value={user.email}
+                          onChange={handleInputChange}
+                        />
                       </div>
                     </div>
                     <div className="text-center">
-                      <button type="submit" className="btn btn-primary" style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}>儲存</button>
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        style={{
+                          backgroundColor: '#805AF5',
+                          borderColor: '#805AF5',
+                        }}
+                      >
+                        儲存
+                      </button>
                     </div>
                   </form>
                 </div>
@@ -153,9 +246,18 @@ export default function UserProfile() {
                 <div className="col-md-4">
                   <form onSubmit={handleProfilePicSubmit}>
                     <div className="text-center">
-                      <img src={profilePic} alt="Profile" className="rounded-circle img-fluid mb-3" style={{ width: '220px', height: '220px' }} />
+                      <img
+                        src={profilePic}
+                        alt="Profile"
+                        className="rounded-circle img-fluid mb-3"
+                        style={{ width: '220px', height: '220px' }}
+                      />
                       <div className="mb-3">
-                        <label htmlFor="profile-pic-upload" className="btn btn-outline-primary" style={{ color: '#805AF5', borderColor: '#805AF5' }}>
+                        <label
+                          htmlFor="profile-pic-upload"
+                          className="btn btn-outline-primary"
+                          style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                        >
                           大頭照
                         </label>
                         <input
@@ -167,10 +269,23 @@ export default function UserProfile() {
                           onChange={handleProfilePicChange}
                         />
                       </div>
-                      <button type="submit" className="btn btn-primary" style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}>更新大頭照</button>
+                      <button
+                        type="submit"
+                        className="btn btn-primary"
+                        style={{
+                          backgroundColor: '#805AF5',
+                          borderColor: '#805AF5',
+                        }}
+                      >
+                        更新大頭照
+                      </button>
 
                       {/* 顯示上傳狀態 */}
-                      {uploadStatus && <div className="alert alert-success mt-3">{uploadStatus}</div>}
+                      {uploadStatus && (
+                        <div className="alert alert-success mt-3">
+                          {uploadStatus}
+                        </div>
+                      )}
                     </div>
                   </form>
                 </div>
@@ -180,5 +295,5 @@ export default function UserProfile() {
         </div>
       </div>
     </div>
-  );
+  )
 }
