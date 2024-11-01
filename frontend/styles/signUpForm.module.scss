@@ -53,7 +53,7 @@
   border: white 1px solid;
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.988); /* 內陰影 */
   border-radius: 15px;
-  min-width: 600px;
+  // min-width: 380px;
   position: relative; // 改用 relative 而不是 absolute
 
 }
@@ -97,34 +97,34 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
   }
 }
 
-@media screen and (max-width: 768px) {
-  .blur {
-    width: 45%;
-    filter: blur(30px) brightness(1.2); /* 模糊和亮度調整 */
-  }
-  .right{
-      /* 希望768px以上他可以佔10/12，然後標題會跑到他的頭上 */
-      width: 10/12;
-      position: relative;
-  }
+// @media screen and (max-width: 768px) {
+//   .blur {
+//     width: 45%;
+//     filter: blur(30px) brightness(1.2); /* 模糊和亮度調整 */
+//   }
+//   .right{
+//       /* 希望768px以上他可以佔10/12，然後標題會跑到他的頭上 */
+//       width: 10/12;
+//       // position: relative;
+//   }
 
-}
+// }
 
 
-@media screen and (max-width: 414px){
-  .right{
-      position: relative;
-      transform: translateY(80px);
-      width: 400px;
-  }
-  .left{
-      position: absolute;
-      top: -100px;
-  }
-  .custom-input{
-      width: 350px;
-  }
-}
+// @media screen and (max-width: 414px){
+//   .right{
+//       position: relative;
+//       transform: translateY(80px);
+//       width: 400px;
+//   }
+//   .left{
+//       position: absolute;
+//       top: -100px;
+//   }
+//   .custom-input{
+//       width: 350px;
+//   }
+// }
 .button{
   background: -webkit-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246d8e 100%);
   background: -o-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
@@ -132,6 +132,9 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
   background: linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
   width: 100%;
   border-radius: 20px;
+  .hover{
+    
+  }
 }
 .welcome{
   letter-spacing: 9.6px;
