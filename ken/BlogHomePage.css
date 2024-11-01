@@ -99,9 +99,11 @@ body {
 .ProductPosts {
   font-size: 2rem;
   color: #805af5;
+  margin-top: 20rem;
+  margin-bottom: 15rem;
 }
 
-.fa-diamond {
+.TitleDiamond {
   color: transparent;
   border: 0.3rem solid #805af5;
   transform: rotate(45deg) translate(0.3rem, -1rem);
@@ -339,7 +341,24 @@ body {
   flex-direction: column;
   gap: 18rem;
 }
-
+/* ------------------------------------------------換頁小菱形------------------------------------------------ */
+.ChangePageDiamond {
+  color: transparent;
+  border: 0.1rem solid #805af5;
+  transform: rotate(45deg) translate(0.3rem, -1rem);
+  font-size: 0.8rem;
+  top: 0;
+  left: 1.5rem;
+  margin-right: 1rem;
+  display: inline-block;
+}
+/* ------------------------------------------------換頁小菱形------------------------------------------------ */
+/* ------------------------------------------------換頁小菱形位置控制------------------------------------------------ */
+.ChangePageDiamondDiv{
+  margin-top: 40vh;
+  margin-left: 45%;
+}
+/* ------------------------------------------------換頁小菱形位置控制------------------------------------------------ */
 /* ------------------------------------------------RWD------------------------------------------------ */
 
 @media (max-width: 430px) {
