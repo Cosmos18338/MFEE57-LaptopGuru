@@ -1,6 +1,5 @@
 import React , { useState, useEffect } from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
-import styles from '@/styles/dashboard.module.scss' // 假設你有一個樣式檔案
 import FileManagementTable from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/pages/dashboard/membership-levels'
 import LeftAside from '@/components/dashboard/leftAside'
@@ -15,8 +14,9 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      // 確保有 userId 才發送請求
-      if (!auth?.userData?.id) return
+      // 確保有 user_id 才發送請求
+      // ?.是一種可選鏈 (Optional Chaining) 運算符。它讓你在訪問一系列嵌套屬性時更安全、更簡潔。例如，auth?.userData?.user_id (最後一個是屬性)表示如果 auth 或 userData 是 null 或 undefined，則直接返回 undefined 而不會拋出錯誤。
+      if (!auth?.userData?.user_id) return
 
       try {
         const response = await fetch(

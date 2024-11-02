@@ -1,11 +1,15 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styles from '@/styles/signUpForm.module.scss'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
+import {useAuth} from '@/hooks/use-auth'
 export default function LogIn(props) {
   const router = useRouter()
-
+  const { auth, login} = useAuth()
+  const {userData} =auth
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -52,12 +56,12 @@ export default function LogIn(props) {
         </div>
         <div className={`${styles.right} col`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>
-            <h7 className={`${styles.white} ${styles.hover}`}>
-              <Link href="/signup-test/login">Log in</Link>
+            <h7 className={`${styles.white} ${styles.hover} link-opacity-50-hover underline-opacity-0 `}>
+              <Link href="/login">Log in</Link>
             </h7>
             <h7 className={styles.white}>|</h7>
             <h7 className={`text-white ${styles.hover}`}>
-              <Link href="/member/signup-2">Sign up</Link>
+              <Link href="signup">Sign up</Link>
             </h7>
           </div>
           <form 
@@ -70,19 +74,27 @@ export default function LogIn(props) {
               </label>
               <input
                 type="email"
+                value={email}
+                onChange={e=>{
+                  setEmail(e.target.value)
+                }}
                 className={`${styles['custom-input']} form-control`}
                 name="email"
                 required  // 添加必填
               />
               <label
-                htmlFor="inputPassword5"
+                htmlFor="password"
                 className={`form-label ${styles.white} ${styles['custom-label']} mt-5`}
               >
                 密碼
               </label>
               <input
                 type="password"
-                id="inputPassword5"
+                value={password}
+                onChange={e=>{
+                  setPassword(e.target.value)
+                }}
+                id="password"
                 name="password"  // 添加 name
                 className={`form-control ${styles['custom-input']}`}
                 aria-describedby="passwordHelpBlock"
@@ -96,7 +108,11 @@ export default function LogIn(props) {
                 numbers, and must not contain spaces, special characters, or
                 emoji.
               </div>
-              <button className={`text-white ${styles.button}`} type="submit">
+              <button
+                onClick={()=>{
+                  login
+                }}
+                className={`text-white ${styles.button}`} type="submit">
                 送出
               </button>
             </div>
