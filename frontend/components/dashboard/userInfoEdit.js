@@ -22,23 +22,7 @@ export default function UserProfile() {
     image_path: '',
     remarks: '',
   })
-  const userId = 1
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          '<http://localhost:3005/dashboard/${userId}>'
-        )
-        const result = await response.json()
-        if (response.data.status === 'success') {
-          setData(result.data.data)
-        }
-      } catch (error) {
-        console.error('無法取得資料:', error)
-      }
-    }
-    fetchData()
-  }, [userId])
+  
 
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'

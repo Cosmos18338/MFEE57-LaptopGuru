@@ -5,6 +5,7 @@ const router = express.Router()
 const upload = multer()
 
 import sequelize from '##/configs/db.js'
+import db from '##/configs/mysql.js'
 
 router.get('/', async function (req, res) {
   try {
@@ -39,6 +40,16 @@ router.post('/', async (req, res) => {
 router.get('/:user_id', async function (req, res) {
   try {
     const [users] = await sequelize.query('SELECT * FROM users')
+    return res.json({ status: 'success', data: { users } })
+  } catch (error) {
+    console.error('無法取得資料:', error)
+    return res.status(500).json({ status: 'error', message: '無法連接' })
+  }
+})
+
+router.get('/:user_id', async function (req, res) {
+  try {
+    const [users] = await db.query('SELECT * FROM users WHERE user_id =$id' )
     return res.json({ status: 'success', data: { users } })
   } catch (error) {
     console.error('無法取得資料:', error)
