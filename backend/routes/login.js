@@ -11,6 +11,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 
 /* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
+
   console.log(req.body)
   const loginmember = req.body
 
@@ -29,13 +30,20 @@ router.post('/', upload.none(), async (req, res, next) => {
     {
       id: user.user_id,
       email: user.email,
+      country:user.country,
+      city:user.city,
+      road_name:user.road_name,
+      detailed_address:user.detailed_address,
+      level:user.level,
+      phone:user.phone,
+      
     },
     accessTokenSecret,
-    { expiresIn: '1h' }
+    { expiresIn: '5d' }
   )
 
-  res.cookie('token', token)
-
+  res.cookie('accessToken', token)
+ 
   res.json({
     status: 'success',
     data: {
