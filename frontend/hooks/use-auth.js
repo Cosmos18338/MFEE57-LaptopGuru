@@ -42,8 +42,6 @@ export const initUserData = {
   road_name:'',
   detailed_address:'',
   birthdate:'',
-  google_uid: '',
-  line_uid: '',
 }
 // 可以視為webtoken要押的資料
 
@@ -85,7 +83,49 @@ export const AuthProvider = ({ children }) => {
     '/test/user/profile',
     '/test/user/profile-password',
   ]
-
+  const login =async(email, password)=>{
+    try {
+      const response=await fetch('api/login',{
+        method:'POST',
+        body:JSON.stringify({email, password})
+        // JSON.stringify是物件變JSON字串方式傳輸
+      })
+      const result=await response.json()
+      if(result.status==="success"){
+        setAuth({
+          user_id: 0,
+          name: '',
+          phone:'',
+          created_at:'',
+          gender:'',
+          country:'',
+          city:'',
+          district:'',
+          road_name:'',
+          detailed_address:'',
+          birthdate:'',
+        })
+      }
+    }catch(error){
+      console.error('登入失敗：',error)
+    }
+  
+  }
+  const logout=()=>{
+    setAuth({
+      user_id: 0,
+      name: '',
+      phone:'',
+      created_at:'',
+      gender:'',
+      country:'',
+      city:'',
+      district:'',
+      road_name:'',
+      detailed_address:'',
+      birthdate:'',
+    })
+  }
   // 檢查會員認証用
   // 每次重新到網站中，或重新整理，都會執行這個函式，用於向伺服器查詢取回原本登入會員的資料
   const handleCheckAuth = async () => {
@@ -129,6 +169,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         auth,
+        login,
+        logout,
         setAuth,
         favorites,
         setFavorites,

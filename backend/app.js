@@ -6,6 +6,7 @@ import express from 'express'
 import logger from 'morgan'
 import path from 'path'
 import session from 'express-session'
+import authRouter from './routes/auth.js'
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -46,6 +47,7 @@ app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 // 在 public 的目錄，提供影像、CSS 等靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
+app.use('/api/auth', authRouter)
 
 // fileStore的選項 session-cookie使用
 const fileStoreOptions = { logFn: function () {} }

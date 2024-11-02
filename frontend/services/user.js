@@ -5,7 +5,8 @@ import useSWR from 'swr'
  * 檢查會員狀態使用
  */
 export const checkAuth = async () => {
-  return await axiosInstance.get('/auth/check')
+return await axiosInstance.get('/auth/check');
+
 }
 /**
  * Google Login(Firebase)登入用，providerData為登入後得到的資料
