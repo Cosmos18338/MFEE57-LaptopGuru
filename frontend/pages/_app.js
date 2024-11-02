@@ -38,3 +38,6 @@ export default function MyApp({ Component, pageProps }) {
     </AuthProvider>
   )
 }
+// <LoaderProvider close={2} CustomLoader={CatLoader}> 是一個用於顯示載入動畫的元件。裡面的 close={2} 是指這個載入動畫在某種條件下會自動關閉，而 2 可能代表關閉的延遲時間或狀態碼，具體意圖取決於你的 LoaderProvider 元件實作方式。
+
+// CustomLoader={CatLoader} 意味著你正在使用一個自定義的載入動畫元件，這個元件的名稱是 CatLoader。這樣可以替換掉預設的載入動畫，顯示你想要的動畫效果。
