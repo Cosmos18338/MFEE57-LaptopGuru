@@ -12,7 +12,7 @@ export default function LogIn(props) {
 
     try {
       const response = await fetch(
-        `http://localhost:3005/api/auth/login`,
+        `http://localhost:3005/api/login`,
         {
           method: 'POST',
           credentials: 'include',
