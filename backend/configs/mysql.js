@@ -12,6 +12,14 @@ const db = mysql.createPool({
   database: process.env.DB_DATABASE,
   dateStrings: true, // 轉換日期字串格式用
 })
-
+// 測試連線
+db.getConnection()
+  .then((connection) => {
+    console.log('資料庫連線成功')
+    connection.release()
+  })
+  .catch((err) => {
+    console.error('資料庫連線失敗:', err)
+  })
 // 輸出模組
 export default db

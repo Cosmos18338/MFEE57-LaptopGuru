@@ -7,6 +7,11 @@ import logger from 'morgan'
 import path from 'path'
 import session from 'express-session'
 import authRouter from './routes/auth.js'
+import loginRouter from './routes/login.js'
+import signupRouter from './routes/signup.js'
+import dashboardRouter from './routes/dashboard.js'
+import usersRouter from './routes/users.js'
+
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -33,7 +38,7 @@ app.use(
     credentials: true,
   })
 )
-
+// 
 // 視圖引擎設定
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
@@ -48,6 +53,10 @@ app.use(cookieParser())
 // 在 public 的目錄，提供影像、CSS 等靜態檔案
 app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api/auth', authRouter)
+app.use('/api/login', loginRouter)
+app.use('/api/signup', signupRouter)
+app.use('/api/dashboard', dashboardRouter)
+app.use('/api/users', usersRouter)
 
 // fileStore的選項 session-cookie使用
 const fileStoreOptions = { logFn: function () {} }
