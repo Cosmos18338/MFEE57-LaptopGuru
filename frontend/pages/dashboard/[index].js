@@ -8,7 +8,6 @@ import {useAuth} from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
 
 export default function Dashboard() {
-  const [data, setData] = useState(null) // 添加 state
   const { auth } = useAuth() // 從 auth context 獲取用戶資訊
   const router = useRouter()
 
@@ -38,7 +37,7 @@ export default function Dashboard() {
     }
 
     fetchData()
-  }, [auth?.userData?.id]) // 相依於 userId 的變化
+  }, [auth?.userData?.user_id]) // 相依於 user_id 的變化
 
   // 可以添加載入中的狀態顯示
 
