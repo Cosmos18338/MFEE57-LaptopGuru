@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 export default function Test(props) {
   return (
     <>
-      <Coupon />
+      <h1 className={`h1 container footer`}>123</h1>
     </>
   )
 }

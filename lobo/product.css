@@ -193,7 +193,17 @@ body{
     z-index: 2;
 }
 
-
+.price_tip {
+    position: absolute;
+    padding: 5px 10px;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none; /* 不影響滑鼠操作 */
+    transform: translate(-50%, -150%); /* 將 tooltip 定位到滑鼠上方 */
+    display: none; /* 預設隱藏 */
+  }
 
 
 
