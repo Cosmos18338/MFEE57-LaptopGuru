@@ -16,7 +16,17 @@ import usersRouter from './routes/users.js'
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
 const FileStore = sessionFileStore(session)
+// FileStore 是一個將 session 數據存儲在伺服器文件系統中的方案，而不是存在記憶體中。為什麼要用 FileStore：
+// 持久化保存：當伺服器重啟時，session 資料不會丟失
+// 開發階段方便：可以直接查看 session 文件內容進行除錯
+// 不需要額外的數據庫服務：適合小型專案或開發環境
 
+
+// 但在生產環境中通常不建議使用 FileStore：
+
+// 性能較差：讀寫文件比操作記憶體慢
+// 擴展性差：如果是多台伺服器，無法共享 session
+// 安全性考慮：文件可能被直接訪問
 // 修正 ESM 中的 __dirname 與 windows os 中的 ESM dynamic import
 import { fileURLToPath, pathToFileURL } from 'url'
 const __filename = fileURLToPath(import.meta.url)

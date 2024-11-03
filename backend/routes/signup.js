@@ -3,6 +3,7 @@ import db from '##/configs/mysql.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
+import { generateHash } from '#db-helpers/password-hash.js'
 
 router.post('/', upload.none(), async (req, res, next) => {
  try {
@@ -43,6 +44,8 @@ router.post('/', upload.none(), async (req, res, next) => {
      })
    }
 
+   const hashedPassword = await generateHash(password)
+
    const sql = `
      INSERT INTO users (
        email, password, phone, birthdate, gender,
@@ -50,15 +53,15 @@ router.post('/', upload.none(), async (req, res, next) => {
        country, city, district, road_name, detailed_address
      ) VALUES (
        ?, ?, ?, ?, ?,
-       1, 1, NOW(),
+       0, 1, NOW(),
        '', '', '', '', ''
      )
    `
    const params = [
      email, 
-     password, 
+     hashedPassword,  // 使用加密後的密碼 
      phone, 
-     birthdate || null,  // 如果 undefined 就給 null
+     birthdate || null,
      gender
    ]
 

@@ -4,8 +4,10 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
+import { useJumpingLetters } from '@/hooks/jumping-letters-hook';
 
 export default function LogIn(props) {
+  const { renderJumpingText } = useJumpingLetters();
   const router = useRouter()
   const { auth, login } = useAuth()
   const [email, setEmail] = useState('')
@@ -46,9 +48,10 @@ export default function LogIn(props) {
     <div className={styles['gradient-bg']}>
       <div className="row p-5 gx-5">
         <div className={`${styles.left} col`}>
-          <h4 className={styles.white}>Welcome to</h4>
+          <h4 className={styles.white}>{renderJumpingText('Welcome to', 'welcome-text')}</h4>
           <br />
-          <h3 className={`text-white ${styles['guru-laptop']}`}>GURU Laptop</h3>
+          <h3 className={`text-white ${styles['guru-laptop']}`}>{renderJumpingText('Laptop Guru', 'company-name')}
+          </h3>
         </div>
         <div className={`${styles.right} col`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>
