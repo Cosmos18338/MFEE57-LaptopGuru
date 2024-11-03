@@ -9,5 +9,6 @@ export default function ProductIndex() {
     router.push('/product/list')
   }
 
-  return <></>
+  return <>
+  </>
 }
