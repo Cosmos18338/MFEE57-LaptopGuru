@@ -31,19 +31,19 @@ const AuthContext = createContext(null)
 // 只需要必要的資料即可，沒有要多個頁面或元件用的資料不需要加在這裡
 // !!注意JWT存取令牌中只有id, username, google_uid, line_uid在登入時可以得到
 export const initUserData = {
-  user_id: 0,
   name: '',
-  phone:'',
-  created_at:'',
-  gender:'',
-  country:'',
-  city:'',
-  district:'',
-  road_name:'',
-  detailed_address:'',
-  birthdate:'',
-  google_uid: '',
-  line_uid: '',
+  password: '',
+  gender: '',
+  birthdate: '',
+  phone: '',
+  email: '',
+  country: '',
+  city: '',
+  district: '',
+  road_name: '',
+  detailed_address: '',
+  image_path: '',
+  remarks: '',
 }
 // 可以視為webtoken要押的資料
 
@@ -57,23 +57,23 @@ export const AuthProvider = ({ children }) => {
   const [favorites, setFavorites] = useState([])
 
   // 得到我的最愛
-  const handleGetFavorites = async () => {
-    const res = await getFavs()
-    //console.log(res.data)
-    if (res.data.status === 'success') {
-      setFavorites(res.data.data.favorites)
-    }
-  }
+  // const handleGetFavorites = async () => {
+  //   const res = await getFavs()
+  //   //console.log(res.data)
+  //   if (res.data.status === 'success') {
+  //     setFavorites(res.data.data.favorites)
+  //   }
+  // }
 
-  useEffect(() => {
-    if (auth.isAuth) {
-      // 成功登入後要執行一次向伺服器取得我的最愛清單
-      handleGetFavorites()
-    } else {
-      // 登出時要設回空陣列
-      setFavorites([])
-    }
-  }, [auth])
+  // useEffect(() => {
+  //   if (auth.isAuth) {
+  //     // 成功登入後要執行一次向伺服器取得我的最愛清單
+  //     handleGetFavorites()
+  //   } else {
+  //     // 登出時要設回空陣列
+  //     setFavorites([])
+  //   }
+  // }, [auth])
 
   const router = useRouter()
 
@@ -85,7 +85,52 @@ export const AuthProvider = ({ children }) => {
     '/test/user/profile',
     '/test/user/profile-password',
   ]
-
+  const login =async(email, password)=>{
+    try {
+      const response=await fetch('api/login',{
+        method:'POST',
+        body:JSON.stringify({email, password})
+        // JSON.stringify是物件變JSON字串方式傳輸
+      })
+      const result=await response.json()
+      if(result.status==="success"){
+        setAuth({
+          isAuth:true,
+          user_id: result.data.user_id,
+          name: result.data.name,
+          phone:result.data.phone,
+          created_at:result.data.created_at,
+          gender:result.data.gender,
+          country:result.data.country,
+          city:result.data.city,
+          district:result.data.district,
+          road_name:result.data.road_name,
+          detailed_address:result.data.detailed_address,
+          birthdate:result.data.birthdate,
+          remarks:result.data.remarks
+        })
+      }
+      console.log(response.json());
+    }catch(error){
+      console.error('登入失敗：',error)
+    }
+  
+  }
+  const logout=()=>{
+    setAuth({
+      user_id: 0,
+      name: '',
+      phone:'',
+      created_at:'',
+      gender:'',
+      country:'',
+      city:'',
+      district:'',
+      road_name:'',
+      detailed_address:'',
+      birthdate:'',
+    })
+  }
   // 檢查會員認証用
   // 每次重新到網站中，或重新整理，都會執行這個函式，用於向伺服器查詢取回原本登入會員的資料
   const handleCheckAuth = async () => {
@@ -129,6 +174,8 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         auth,
+        login,
+        logout,
         setAuth,
         favorites,
         setFavorites,
