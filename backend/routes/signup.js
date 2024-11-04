@@ -73,18 +73,34 @@ router.post('/', upload.none(), async (req, res, next) => {
       return res.json({
         status: 'success',
         message: '註冊成功',
-        userId: result.insertId, // 取得新插入的 id
+        data: {
+          user_id: result.insertId
+        }
       })
-    } else {
-      throw new Error('資料插入失敗')
+    } 
+  //   const connection = await db.getConnection()
+  //   console.log('Database connection successful')
+  //   connection.release()
+  //   throw new Error('資料插入失敗')
+
+  // } catch (error) {
+  //   console.error('註冊失敗:', error)
+  }catch(error){
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({
+          status: 'error',
+          message: '此 email 已被註冊'
+        })
+      }
+      
+      return res.status(500).json({
+        status: 'error',
+        message: '系統錯誤，請稍後再試'
+      })
     }
-  } catch (error) {
-    console.error('SQL Error:', error)
-    return res.status(500).json({
-      status: 'error',
-      message: error.message || '伺服器錯誤',
-    })
-  }
-})
+  })
+
+    
+    
 
 export default router
