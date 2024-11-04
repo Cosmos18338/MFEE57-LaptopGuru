@@ -2,69 +2,19 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import axios from 'axios'
+import {useAuth} from '@/hooks/use-auth'
 import $ from 'jquery'
 // 導入縣市資料
 // import { taiwanData, groupCitiesByRegion } from '@/data/address/data.js'
 
 export default function UserProfile() {
-  const [user, setUser] = useState({
-    name: '',
-    password: '',
-    gender: '',
-    birthdate: '',
-    phone: '',
-    email: '',
-    country: '',
-    city: '',
-    district: '',
-    road_name: '',
-    detailed_address: '',
-    image_path: '',
-    remarks: '',
-  })
-  const userId = 1
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          '<http://localhost:3005/dashboard/${userId}>'
-        )
-        const result = await response.json()
-        if (response.data.status === 'success') {
-          setData(result.data.data)
-        }
-      } catch (error) {
-        console.error('無法取得資料:', error)
-      }
-    }
-    fetchData()
-  }, [userId])
-
+  const {auth} = useAuth()
+  const {userData}=auth;
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
   )
   const [uploadStatus, setUploadStatus] = useState('')
-  const [selectedCity, setSelectedCity] = useState('')
-  const [selectedArea, setSelectedArea] = useState('')
-  const [selectedRoad, setSelectedRoad] = useState('')
-  const [areaList, setAreaList] = useState([])
-  const [roadList, setRoadList] = useState([])
 
-  // useEffect(() => {
-  //   const city = taiwanData.find(city => city.CityName === selectedCity);
-  //   setAreaList(city ? city.AreaList : []);
-  //   setRoadList([]);
-  // }, [selectedCity]);
-
-  // useEffect(() => {
-  //   const area = areaList.find(area => area.AreaName === selectedArea);
-  //   setRoadList(area ? area.RoadList : []);
-  // }, [selectedArea, areaList]);
-
-  const handleInputChange = async (e) => {
-    const { name, value } = e.target
-    setUser((prevUser) => ({ ...prevUser, [name]: value }))
-  }
 
   const handleProfilePicChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -296,8 +246,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="username"
                             name="username"
-                            value={user.name}
-                            onChange={handleInputChange}
+                            value={userData.name}
+
                           />
                         </div>
                       </div>
@@ -314,8 +264,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="password"
                             name="password"
-                            value={user.password}
-                            onChange={handleInputChange}
+                            value={userData.password}
                           />
                         </div>
                       </div>
@@ -332,8 +281,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={user.gender}
-                            onChange={handleInputChange}
+                            value={userData.gender}
+                            
                           />
                         </div>
                       </div>
@@ -350,8 +299,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={user.birthdate}
-                            onChange={handleInputChange}
+                            value={userData.birthdate}
+                            
                           />
                         </div>
                       </div>
@@ -368,8 +317,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={user.phone}
-                            onChange={handleInputChange}
+                            value={userData.phone}
+                            
                           />
                         </div>
                       </div>
@@ -390,6 +339,7 @@ export default function UserProfile() {
                               id="country"
                               className="form-select"
                               name="country"
+                              value={userData.country}
                             >
                               <option value>請選擇國家</option>
                               <option value="台灣">台灣</option>
@@ -413,6 +363,7 @@ export default function UserProfile() {
                             <select
                               id="city"
                               name="city"
+                              value={userData.city}
                               className="form-select"
                               disabled
                             >
@@ -432,6 +383,8 @@ export default function UserProfile() {
                             <select
                               id="district"
                               name="district"
+                              value={userData.district}
+                        
                               className="form-select"
                               disabled
                             >
@@ -519,8 +472,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={user.email}
-                            onChange={handleInputChange}
+                            value={userData.email}
+                            
                           />
                         </div>
                       </div>
@@ -573,7 +526,7 @@ export default function UserProfile() {
                             type="file"
                             accept="image/*"
                             className="d-none"
-                            value={user.image_path}
+                            value={userData.image_path}
                             onChange={handleProfilePicChange}
                           />
                         </div>
