@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import axios from 'axios';
-import Link from 'next/link';
-import styles from '@/styles/signUpForm.module.scss';
+import React, { useState } from 'react'
+import Image from 'next/image'
+import axios from 'axios'
+import Link from 'next/link'
+import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
 export default function Signup() {
-
   const validatePassword = (password) => {
     // 密碼驗證規則
     const rules = {
@@ -13,25 +12,25 @@ export default function Signup() {
       hasUpperCase: /[A-Z]/.test(password),
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
-      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     }
-  
+
     // 檢查所有規則
     const messages = {
       minLength: '密碼至少需要8個字元',
       hasUpperCase: '需要包含大寫字母',
       hasLowerCase: '需要包含小寫字母',
       hasNumber: '需要包含數字',
-      hasSpecialChar: '需要包含特殊符號'
+      hasSpecialChar: '需要包含特殊符號',
     }
-  
+
     // 回傳未通過的規則訊息
     return Object.entries(rules)
       .filter(([rule, valid]) => !valid)
       .map(([rule]) => messages[rule])
   }
 
-  const router=useRouter()
+  const router = useRouter()
   const [user, setUser] = useState({
     email: '',
     password: '',
@@ -40,7 +39,7 @@ export default function Signup() {
     birthdate: '',
     gender: '',
     agree: false,
-  });
+  })
 
   const [errors, setErrors] = useState({
     email: '',
@@ -49,89 +48,92 @@ export default function Signup() {
     phone: '',
     gender: '',
     agree: '',
-  });
+  })
 
-  const [showpassword, setShowpassword] = useState(false);
-  const [showConfirmpassword, setShowConfirmpassword] = useState(false);
-  const [submitError, setSubmitError] = useState('');
+  const [showpassword, setShowpassword] = useState(false)
+  const [showConfirmpassword, setShowConfirmpassword] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
   const handleFieldChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setUser(prev => ({
+    const { name, value, type, checked } = e.target
+    setUser((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
-    }));
+    }))
     // Clear error when user starts typing
     if (errors[name]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
         [name]: '',
-      }));
+      }))
     }
-  };
+  }
 
   const validateForm = () => {
-    const newErrors = {};
+    const newErrors = {}
 
     // Email validation
     if (!user.email) {
-      newErrors.email = 'Email為必填';
+      newErrors.email = 'Email為必填'
     } else if (!/\S+@\S+\.\S+/.test(user.email)) {
-      newErrors.email = '請輸入有效的Email格式';
+      newErrors.email = '請輸入有效的Email格式'
     }
 
     // Password validation
     if (!user.password) {
-      newErrors.password = '密碼為必填';
+      newErrors.password = '密碼為必填'
     } else if (user.password.length < 8) {
-      newErrors.password = '密碼長度至少8個字元';
+      newErrors.password = '密碼長度至少8個字元'
     }
 
     // Confirm password validation
     if (!user.confirmpassword) {
-      newErrors.confirmpassword = '確認密碼為必填';
+      newErrors.confirmpassword = '確認密碼為必填'
     } else if (user.password !== user.confirmpassword) {
-      newErrors.confirmpassword = '密碼與確認密碼不相符';
+      newErrors.confirmpassword = '密碼與確認密碼不相符'
     }
 
     // Phone validation
     if (!user.phone) {
-      newErrors.phone = '手機號碼為必填';
+      newErrors.phone = '手機號碼為必填'
     } else if (!/^\d{10}$/.test(user.phone)) {
-      newErrors.phone = '請輸入有效的手機號碼';
+      newErrors.phone = '請輸入有效的手機號碼'
     }
 
     // Gender validation
     if (!user.gender) {
-      newErrors.gender = '請選擇性別';
+      newErrors.gender = '請選擇性別'
     }
 
     // Agreement validation
     if (!user.agree) {
-      newErrors.agree = '請先同意會員註冊條款';
+      newErrors.agree = '請先同意會員註冊條款'
     }
 
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitError('');
+    e.preventDefault()
+    setSubmitError('')
     const passwordErrors = validatePassword(user.password)
     if (passwordErrors.length > 0) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        password: passwordErrors[0]
+        password: passwordErrors[0],
       }))
       return
     }
     if (!validateForm()) {
-      return;
+      return
     }
 
     try {
-      const response = await axios.post('http://localhost:3005/api/signup', user);
+      const response = await axios.post(
+        'http://localhost:3005/api/signup',
+        user
+      )
       if (response.data.status === 'success') {
         // 可以導向登入頁或顯示成功訊息
         if (response.data.status === 'success') {
@@ -144,27 +146,27 @@ export default function Signup() {
             gender: '',
             agree: false,
           })
-          
+
           // 清空錯誤訊息
           setErrors({})
           setSubmitError('')
-          
+
           // 顯示成功訊息（可選）
           alert('註冊成功！')
-          router.push('/member/login')  // 或你的登入頁面路徑
-
-      } else {
-        setSubmitError(response.data.message || '註冊失敗，請稍後再試');
+          router.push('/member/login') // 或你的登入頁面路徑
+        } else {
+          setSubmitError(response.data.message || '註冊失敗，請稍後再試')
+        }
       }
-    }}catch (error) {
-      console.error('註冊請求失敗:', error);
+    } catch (error) {
+      console.error('註冊請求失敗:', error)
       setSubmitError(error.response?.data?.message || '註冊過程中發生錯誤')
     }
-  };
+  }
 
   return (
     <div className={styles['gradient-bg']}>
-      <Image 
+      <Image
         src="/bgi/signup_bgi.png"
         alt="background"
         layout="fill"
@@ -179,11 +181,15 @@ export default function Signup() {
         <div className={`${styles.right} col-sm-12 col-md-4`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>
             <span className={`${styles.white} ${styles.hover}`}>
-              <Link className='text-decoration-none' href="/member/login">登入Log in</Link>
+              <Link className="text-decoration-none" href="/member/login">
+                登入Log in
+              </Link>
             </span>
             <span className={styles.white}>|</span>
             <span className={`${styles.white} ${styles.hover}`}>
-              <Link className='text-decoration-none' href="/member/signup">註冊Sign Up</Link>
+              <Link className="text-decoration-none" href="/member/signup">
+                註冊Sign Up
+              </Link>
             </span>
           </div>
 
@@ -232,11 +238,16 @@ export default function Signup() {
                     onChange={() => setShowpassword(!showpassword)}
                     className="form-check-input"
                   />
-                  <label htmlFor="showpassword" className={`${styles.white} form-check-label`}>
+                  <label
+                    htmlFor="showpassword"
+                    className={`${styles.white} form-check-label`}
+                  >
                     顯示密碼
                   </label>
                 </div>
-                {errors.password && <div className="error">{errors.password}</div>}
+                {errors.password && (
+                  <div className="error">{errors.password}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -256,14 +267,21 @@ export default function Signup() {
                     type="checkbox"
                     id="showConfirmpassword"
                     checked={showConfirmpassword}
-                    onChange={() => setShowConfirmpassword(!showConfirmpassword)}
+                    onChange={() =>
+                      setShowConfirmpassword(!showConfirmpassword)
+                    }
                     className="form-check-input"
                   />
-                  <label htmlFor="showConfirmpassword" className={`${styles.white} form-check-label`}>
+                  <label
+                    htmlFor="showConfirmpassword"
+                    className={`${styles.white} form-check-label`}
+                  >
                     顯示密碼
                   </label>
                 </div>
-                {errors.confirmpassword && <div className="error">{errors.confirmpassword}</div>}
+                {errors.confirmpassword && (
+                  <div className="error">{errors.confirmpassword}</div>
+                )}
               </div>
 
               <div className="mb-3">
@@ -324,7 +342,10 @@ export default function Signup() {
                     onChange={handleFieldChange}
                     className="form-check-input"
                   />
-                  <label htmlFor="agree" className={`${styles.white} form-check-label`}>
+                  <label
+                    htmlFor="agree"
+                    className={`${styles.white} form-check-label`}
+                  >
                     我同意網站會員註冊條款
                   </label>
                 </div>
@@ -347,5 +368,5 @@ export default function Signup() {
         }
       `}</style>
     </div>
-  );
+  )
 }

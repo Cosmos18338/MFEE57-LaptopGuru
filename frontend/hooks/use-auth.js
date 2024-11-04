@@ -85,50 +85,49 @@ export const AuthProvider = ({ children }) => {
     '/test/user/profile',
     '/test/user/profile-password',
   ]
-  const login =async(email, password)=>{
+  const login = async (email, password) => {
     try {
-      const response=await fetch('api/login',{
-        method:'POST',
-        body:JSON.stringify({email, password})
+      const response = await fetch('api/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
         // JSON.stringify是物件變JSON字串方式傳輸
       })
-      const result=await response.json()
-      if(result.status==="success"){
+      const result = await response.json()
+      if (result.status === 'success') {
         setAuth({
-          isAuth:true,
+          isAuth: true,
           user_id: result.data.user_id,
           name: result.data.name,
-          phone:result.data.phone,
-          created_at:result.data.created_at,
-          gender:result.data.gender,
-          country:result.data.country,
-          city:result.data.city,
-          district:result.data.district,
-          road_name:result.data.road_name,
-          detailed_address:result.data.detailed_address,
-          birthdate:result.data.birthdate,
-          remarks:result.data.remarks
+          phone: result.data.phone,
+          created_at: result.data.created_at,
+          gender: result.data.gender,
+          country: result.data.country,
+          city: result.data.city,
+          district: result.data.district,
+          road_name: result.data.road_name,
+          detailed_address: result.data.detailed_address,
+          birthdate: result.data.birthdate,
+          remarks: result.data.remarks,
         })
       }
-      console.log(response.json());
-    }catch(error){
-      console.error('登入失敗：',error)
+      console.log(response.json())
+    } catch (error) {
+      console.error('登入失敗：', error)
     }
-  
   }
-  const logout=()=>{
+  const logout = () => {
     setAuth({
       user_id: 0,
       name: '',
-      phone:'',
-      created_at:'',
-      gender:'',
-      country:'',
-      city:'',
-      district:'',
-      road_name:'',
-      detailed_address:'',
-      birthdate:'',
+      phone: '',
+      created_at: '',
+      gender: '',
+      country: '',
+      city: '',
+      district: '',
+      road_name: '',
+      detailed_address: '',
+      birthdate: '',
     })
   }
   // 檢查會員認証用
