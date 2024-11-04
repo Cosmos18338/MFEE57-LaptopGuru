@@ -7,6 +7,7 @@ import dotenv from 'dotenv'
 
 import { readFile, writeFile } from 'fs/promises'
 
+// 通常是在使用身份驗證中間件（如 Passport.js）時，中間件解析完 JWT token 或 session 後，將用戶資訊附加到 request 物件上的用戶資料。
 /**
  * Fetching data from the JSON file and parse to JS data
  * @param {string} pathname
