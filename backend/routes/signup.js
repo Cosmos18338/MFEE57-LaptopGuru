@@ -44,7 +44,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       })
     }
 
-    const hashedPassword = await generateHash(password)
+    // const hashedPassword = await generateHash(password)
 
     const sql = `
      INSERT INTO users (
@@ -74,33 +74,30 @@ router.post('/', upload.none(), async (req, res, next) => {
         status: 'success',
         message: '註冊成功',
         data: {
-          user_id: result.insertId
-        }
-      })
-    } 
-  //   const connection = await db.getConnection()
-  //   console.log('Database connection successful')
-  //   connection.release()
-  //   throw new Error('資料插入失敗')
-
-  // } catch (error) {
-  //   console.error('註冊失敗:', error)
-  }catch(error){
-      if (error.code === 'ER_DUP_ENTRY') {
-        return res.status(400).json({
-          status: 'error',
-          message: '此 email 已被註冊'
-        })
-      }
-      
-      return res.status(500).json({
-        status: 'error',
-        message: '系統錯誤，請稍後再試'
+          user_id: result.insertId,
+        },
       })
     }
-  })
+    //   const connection = await db.getConnection()
+    //   console.log('Database connection successful')
+    //   connection.release()
+    //   throw new Error('資料插入失敗')
 
-    
-    
+    // } catch (error) {
+    //   console.error('註冊失敗:', error)
+  } catch (error) {
+    if (error.code === 'ER_DUP_ENTRY') {
+      return res.status(400).json({
+        status: 'error',
+        message: '此 email 已被註冊',
+      })
+    }
+
+    return res.status(500).json({
+      status: 'error',
+      message: '系統錯誤，請稍後再試',
+    })
+  }
+})
 
 export default router

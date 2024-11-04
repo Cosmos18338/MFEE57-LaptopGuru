@@ -4,14 +4,15 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
-import { useJumpingLetters } from '@/hooks/jumping-letters-hook';
+import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 
 export default function LogIn(props) {
-  const { renderJumpingText } = useJumpingLetters();
+  const { renderJumpingText } = useJumpingLetters()
   const router = useRouter()
   const { auth, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+
   // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -34,6 +35,7 @@ export default function LogIn(props) {
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
         // 可以添加登入成功後的導向
+
         router.push('/dashboard')
       } else {
         // 處理錯誤情況
@@ -48,9 +50,12 @@ export default function LogIn(props) {
     <div className={styles['gradient-bg']}>
       <div className="row p-5 gx-5">
         <div className={`${styles.left} col`}>
-          <h4 className={styles.white}>{renderJumpingText('Welcome to', 'welcome-text')}</h4>
+          <h4 className={styles.white}>
+            {renderJumpingText('Welcome to', 'welcome-text')}
+          </h4>
           <br />
-          <h3 className={`text-white ${styles['guru-laptop']}`}>{renderJumpingText('Laptop Guru', 'company-name')}
+          <h3 className={`text-white ${styles['guru-laptop']}`}>
+            {renderJumpingText('Laptop Guru', 'company-name')}
           </h3>
         </div>
         <div className={`${styles.right} col`}>
@@ -75,7 +80,10 @@ export default function LogIn(props) {
           >
             <div className="inputs position-relative">
               <div className="position-relative">
-                <label htmlFor="email" className={`form-label text-white ${styles['custom-label']}`}>
+                <label
+                  htmlFor="email"
+                  className={`form-label text-white ${styles['custom-label']}`}
+                >
                   帳號(信箱)
                 </label>
                 <input
