@@ -1,7 +1,7 @@
 // import { useState } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
 import { useLoadProductItems } from '@/services/product'
-import ProductCard from '@/components/product-test/product-card'
+import ProductCard from '@/components/product/product-card'
 
 export default function ProductInfiniteScrollList({
   perPage = 3,
