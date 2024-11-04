@@ -5,7 +5,7 @@ import db from '##/configs/mysql.js'
 import jsonwebtoken from 'jsonwebtoken'
 import authenticate from '#middlewares/authenticate.js'
 import 'dotenv/config.js'
-import { compareHash } from '#db-helpers/password-hash.js'
+import { compareHash, generateHash } from '#db-helpers/password-hash.js'
 const upload = multer()
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
@@ -14,7 +14,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 router.get('/check', authenticate, async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id=?', [
-      req.user.user_id
+      req.user.user_id,
     ])
     const user = rows[0]
     delete user.password
@@ -24,7 +24,8 @@ router.get('/check', authenticate, async (req, res) => {
     return res.json({ status: 'error', message: '檢查失敗' })
   }
 })
-router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 next 參數
+router.post('/', upload.none(), async (req, res) => {
+  // 移除未使用的 next 參數
   try {
     const { email, password, phone, birthdate, gender } = req.body
 
@@ -32,7 +33,7 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
     if (!email || !password) {
       return res.status(400).json({
         status: 'error',
-        message: '缺少必要欄位'
+        message: '缺少必要欄位',
       })
     }
 
@@ -43,9 +44,9 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
     )
 
     if (existingUsers.length > 0) {
-      return res.status(400).json({ 
-        status: 'error', 
-        message: '電子郵件已被註冊' 
+      return res.status(400).json({
+        status: 'error',
+        message: '電子郵件已被註冊',
       })
     }
 
@@ -64,41 +65,34 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
         '', '', '', '', ''
       )
     `
-    const params = [
-      email, 
-      hashedPassword,
-      phone, 
-      birthdate || null,
-      gender
-    ]
+    const params = [email, hashedPassword, phone, birthdate || null, gender]
 
     const [result] = await db.query(sql, params)
-    
+
     if (result.affectedRows === 1) {
-      return res.json({ 
-        status: 'success', 
+      return res.json({
+        status: 'success',
         message: '註冊成功',
         data: {
-          user_id: result.insertId
-        }
+          user_id: result.insertId,
+        },
       })
-    } 
+    }
 
     throw new Error('資料插入失敗')
-
   } catch (error) {
     console.error('註冊失敗:', error)
-    
+
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(400).json({
         status: 'error',
-        message: '此 email 已被註冊'
+        message: '此 email 已被註冊',
       })
     }
 
     return res.status(500).json({
       status: 'error',
-      message: '系統錯誤，請稍後再試'
+      message: '系統錯誤，請稍後再試',
     })
   }
 })
@@ -125,24 +119,22 @@ router.post('/login', async (req, res) => {
     const tokenData = {
       user_id: user.user_id,
       email: user.email,
-      city: user.city
+      city: user.city,
     }
 
-    const accessToken = jsonwebtoken.sign(
-      tokenData,
-      accessTokenSecret,
-      { expiresIn: '3d' }
-    )
+    const accessToken = jsonwebtoken.sign(tokenData, accessTokenSecret, {
+      expiresIn: '3d',
+    })
 
-    res.cookie('accessToken', accessToken, { 
+    res.cookie('accessToken', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax'
+      sameSite: 'lax',
     })
-    
+
     return res.json({
       status: 'success',
-      data: { accessToken }
+      data: { accessToken },
     })
   } catch (error) {
     console.error('登入失敗:', error)

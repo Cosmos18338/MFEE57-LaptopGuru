@@ -1,13 +1,22 @@
+import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Header(props) {
+  const { auth } = useAuth() // 獲取 auth 對象
+  const { isAuth } = auth // 獲取 isAuth
+
   return (
     <>
       <header>
         <div className="container d-flex p-3 align-items-center">
-          <img className="logo me-auto" src="/logo.svg" />
+          <Link className="logo me-auto" href="/">
+            <img src="/logo.svg" />
+          </Link>
           <div className="me-7 nav-list">
-            <a className="text-light me-3">首頁</a>
+            <Link className="text-light me-3" href="/">
+              首頁
+            </Link>
             <a className="text-light me-3">商品</a>
             <a className="text-light me-3">比較</a>
             <a className="text-light me-3">租賃</a>
@@ -15,12 +24,27 @@ export default function Header(props) {
             <a className="text-light me-3">文章</a>
             <a className="text-light me-3">部落格</a>
           </div>
-          <div className="user-avater me-3">
-            <img src="/Vector.svg" />
-          </div>
-          <div className="cart">
-            <img src="/cart.svg" />
-          </div>
+          {isAuth ? (
+            <>
+              <Link href="/dashboard">
+                <div className="user-avater me-3">
+                  <img src="/Vector.svg" />
+                </div>
+              </Link>
+              <div className="cart">
+                <img src="/cart.svg" />
+              </div>
+            </>
+          ) : (
+            <>
+              <Link href="/member/login">
+                <button className="btn btn-primary me-3">登入</button>
+              </Link>
+              <Link href="/member/signup">
+                <button className="btn btn-primary">註冊</button>
+              </Link>
+            </>
+          )}
         </div>
       </header>
     </>
