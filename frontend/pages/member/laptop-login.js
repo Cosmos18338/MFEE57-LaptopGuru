@@ -1,45 +1,42 @@
-import React, { useState, useEffect } from 'react';
-import styles from '@/styles/laptopLogin.module.scss';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import { MdOutlineEmail, MdLockOutline, MdArrowForward } from "react-icons/md";
+import React, { useState, useEffect } from 'react'
+import styles from '@/styles/laptopLogin.module.scss'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
 
 export default function LaptopLogin() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isOpening, setIsOpening] = useState(false);
-  
+  const router = useRouter()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [isOpening, setIsOpening] = useState(false)
+
   useEffect(() => {
-    setIsOpening(true);
-  }, []);
+    setIsOpening(true)
+  }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
+    e.preventDefault()
+    const formData = new FormData(e.target)
     try {
-      const response = await fetch(
-        `http://localhost:3005/api/auth/login`,
-        {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: formData.get('email'),
-            password: formData.get('password')
-          })
-        }
-      );
-      const result = await response.json();
+      const response = await fetch(`http://localhost:3005/api/auth/login`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.get('email'),
+          password: formData.get('password'),
+        }),
+      })
+      const result = await response.json()
       if (result.status === 'success') {
-        router.push('/dashboard');
+        router.push('/dashboard')
       }
     } catch (error) {
-      console.error('登入錯誤:', error);
+      console.error('登入錯誤:', error)
     }
-  };
+  }
 
   return (
     <div className={styles.container}>
@@ -55,7 +52,7 @@ export default function LaptopLogin() {
           {/* 登入表單 */}
           <div className={styles.content}>
             <h1 className={styles.title}>GURU Laptop</h1>
-            
+
             <div className={styles.indicators}>
               <div className={styles.indicator}></div>
               <div className={styles.indicator}></div>
@@ -96,12 +93,12 @@ export default function LaptopLogin() {
             </div>
           </div>
         </div>
-        
+
         {/* 鍵盤底座 */}
         <div className={styles.base}>
           <div className={styles.touchpad}></div>
         </div>
       </div>
     </div>
-  );
+  )
 }

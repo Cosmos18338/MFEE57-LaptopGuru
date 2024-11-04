@@ -1,0 +1,194 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(76, 29, 149, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.customModal {
+  position: relative;
+  width: 320px;
+  background: rgba(97, 4, 4, 0.2);
+  border-radius: 12px;
+  border: 2px solid rgba(147, 197, 253, 0.6);
+  box-shadow: 0 8px 32px rgba(76, 29, 149, 0.3);
+  backdrop-filter: blur(8px);
+}
+
+.closeButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: rgba(147, 197, 253, 0.8);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.closeButton:hover {
+  color: #93c5fd;
+  background: rgba(147, 197, 253, 0.2);
+  transform: rotate(90deg);
+}
+
+.modalContent {
+  padding: 24px;
+}
+
+.modalTitle {
+  color: #93c5fd;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding-right: 24px;
+}
+
+.descriptionSection {
+  margin-bottom: 20px;
+}
+
+.eventName {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  line-height: 1.6;
+  margin-top: 8px;
+}
+
+.infoSection {
+  margin-bottom: 20px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.infoLabel {
+  color: #93c5fd;
+  min-width: 80px;
+}
+
+.infoValue {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.usersSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.navButton {
+  padding: 6px;
+  background: transparent;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.navButton:hover {
+  background-color: rgba(147, 197, 253, 0.2);
+}
+
+.navIcon {
+  width: 20px;
+  height: 20px;
+  color: #93c5fd;
+}
+
+.usersContainer {
+  display: flex;
+  margin: 0 -8px;
+}
+
+.userAvatarWrapper {
+  position: relative;
+  margin: 0 8px;
+}
+
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid rgba(147, 197, 253, 0.6);
+  transition: all 0.3s ease;
+}
+
+.userAvatarWrapper:hover .userAvatar {
+  transform: scale(1.1);
+  border-color: #93c5fd;
+}
+
+.userNameTooltip {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(88, 28, 135, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+  z-index: 3;
+}
+
+.userAvatarWrapper:hover .userNameTooltip {
+  opacity: 1;
+}
+
+/* 修改按鈕的容器和樣式 */
+.joinButton {
+  display: block; /* 讓按鈕可以接受 margin: auto */
+  width: 40%;
+  padding: 10px;
+  background: linear-gradient(to right, rgba(147, 197, 253, 0.5), rgba(121, 64, 254, 0.8));
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin: 0 auto; /* 水平置中 */
+}
+
+.joinButton:hover {
+  background: linear-gradient(to right, rgba(147, 197, 253, 0.9), rgba(139, 92, 246, 0.9));
+  box-shadow: 0 2px 8px rgba(147, 197, 253, 0.3);
+}
+
+.joinButton:active {
+  transform: scale(0.98);
+}
+
+.joinButton:disabled {
+  background: rgba(107, 114, 128, 0.5);
+  cursor: not-allowed;
+  transform: none;
+}

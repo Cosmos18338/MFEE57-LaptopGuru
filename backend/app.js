@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import createError from 'http-errors'
 import express from 'express'
+import db from '##/configs/mysql.js'
 import logger from 'morgan'
 import path from 'path'
 import session from 'express-session'
@@ -67,7 +68,18 @@ app.use('/api/login', loginRouter)
 app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
+async function testConnection() {
+  try {
+    const connection = await db.getConnection()
+    console.log('Database connection successful')
+    connection.release()
+  } catch (error) {
+    console.error('Database connection failed:', error)
+    process.exit(1)  // 如果連線失敗就終止程式
+  }
+}
 
+testConnection()
 // fileStore的選項 session-cookie使用
 const fileStoreOptions = { logFn: function () {} }
 app.use(
