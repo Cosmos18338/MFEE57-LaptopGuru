@@ -2,19 +2,31 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import axios from 'axios'
-import {useAuth} from '@/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 import $ from 'jquery'
 // 導入縣市資料
 // import { taiwanData, groupCitiesByRegion } from '@/data/address/data.js'
 
 export default function UserProfile() {
-  const {auth} = useAuth()
-  const {userData}=auth;
+  const { auth, setAuth } = useAuth()
+  const { userData } = auth
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
   )
+  const [showpassword, setShowpassword] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
-
+  useEffect(() => {
+    // Initialize city and area lists based on user data
+    if (userData.city) {
+      $('#city').val(userData.city).trigger('change')
+    }
+    if (userData.district) {
+      $('#district').val(userData.district).trigger('change')
+    }
+    if (userData.road_name) {
+      $('#roadList').val(userData.road_name)
+    }
+  }, [userData])
 
   const handleProfilePicChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -55,7 +67,7 @@ export default function UserProfile() {
   const handleDeactivate = async () => {
     if (window.confirm('確定要停用帳號嗎？')) {
       try {
-        const response = await axios.delete(`/api/dashboard/${userId}`)
+        const response = await axios.delete(`/api/dashboard/${user_id}`)
         if (response.data.status === 'success') {
           alert('帳號已停用')
           // 導向登出
@@ -244,10 +256,12 @@ export default function UserProfile() {
                           <input
                             type="text"
                             className="form-control"
-                            id="username"
-                            name="username"
+                            id="name"
+                            name="name"
                             value={userData.name}
-
+                            onChange={(e) => {
+                              setAuth(e.target.value)
+                            }}
                           />
                         </div>
                       </div>
@@ -260,11 +274,18 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="password"
+                            type="showpassword?'text':'password'"
                             className="form-control"
                             id="password"
                             name="password"
                             value={userData.password}
+                          />
+                          <input
+                            type="checkbox"
+                            id="showpassword"
+                            checked={showpassword}
+                            onChange={() => setShowpassword(!showpassword)}
+                            className="form-check-input"
                           />
                         </div>
                       </div>
@@ -282,7 +303,6 @@ export default function UserProfile() {
                             id="gender"
                             name="gender"
                             value={userData.gender}
-                            
                           />
                         </div>
                       </div>
@@ -300,7 +320,7 @@ export default function UserProfile() {
                             id="birthdate"
                             name="birthdate"
                             value={userData.birthdate}
-                            
+                            onChange={(e) => setAuth(e.target.value)}
                           />
                         </div>
                       </div>
@@ -318,7 +338,6 @@ export default function UserProfile() {
                             id="phone"
                             name="phone"
                             value={userData.phone}
-                            
                           />
                         </div>
                       </div>
@@ -384,7 +403,6 @@ export default function UserProfile() {
                               id="district"
                               name="district"
                               value={userData.district}
-                        
                               className="form-select"
                               disabled
                             >
@@ -406,6 +424,7 @@ export default function UserProfile() {
                               name="road_name"
                               className="form-select"
                               disabled
+                              value={userData.road_name}
                             >
                               <option value>請選擇居住街道</option>
                             </select>
@@ -423,6 +442,7 @@ export default function UserProfile() {
                             <input
                               type="text"
                               id="address"
+                              value={userData.detailed_address}
                               name="detailed_address"
                               className="form-control"
                               placeholder="巷弄門牌"
@@ -449,7 +469,7 @@ export default function UserProfile() {
                               className="form-control"
                               rows={3}
                               placeholder="輸入備註"
-                              defaultValue={''}
+                              value={userData.remarks}
                             />
                             <div className="form-text">
                               地址假如都不在以上選單的話，請填寫於備註
@@ -473,11 +493,10 @@ export default function UserProfile() {
                             id="email"
                             name="email"
                             value={userData.email}
-                            
                           />
                         </div>
                       </div>
-                      <div className="text-center">
+                      <div className="d-flex justify-content-between">
                         <button
                           type="submit"
                           className="btn btn-primary"
