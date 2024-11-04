@@ -130,9 +130,7 @@ export default function LogIn(props) {
                 />
               </div>
               <div id="passwordRule" className={`form-text text-white p-5`}>
-                
                 {/* ，我們會再經過加密處理！ */}
-
               </div>
               <button
                 onClick={() => {
