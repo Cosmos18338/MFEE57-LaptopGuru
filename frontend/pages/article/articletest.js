@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ArticleSection from '@/components/Article/ArticleDetailSetion'
+import ArticleSection from '@/components/article/ArticleDetailSetion'
 
 function Articletest() {
   return (
