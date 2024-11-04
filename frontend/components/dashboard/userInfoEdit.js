@@ -85,10 +85,11 @@ export default function UserProfile() {
   }
 
   return (
-    <div className="container">
-      <div className="row d-flex justify-content-center">
-        {/* LeftAside 左邊側欄 */}
-        <div className="col-md-2"></div>
+    <>
+      <div className="container">
+        <div className="row d-flex justify-content-center">
+          {/* LeftAside 左邊側欄 */}
+          <div className="col-md-2"></div>
 
         {/* Main Content (User Profile) */}
         <div className="col-md-9">
@@ -295,5 +296,6 @@ export default function UserProfile() {
         </div>
       </div>
     </div>
+  </>
   )
 }
