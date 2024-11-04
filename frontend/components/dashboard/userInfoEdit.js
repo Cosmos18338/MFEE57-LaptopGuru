@@ -1,32 +1,60 @@
 import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
-import axios from 'axios'
-import { useAuth } from '@/hooks/use-auth'
-import $ from 'jquery'
-// 導入縣市資料
-// import { taiwanData, groupCitiesByRegion } from '@/data/address/data.js'
+import AddressCompo from '@/components/dashboard/test-address'
 
 export default function UserProfile() {
-  const { auth, setAuth } = useAuth()
-  const { userData } = auth
+  const [user, setUser] = useState({
+    name: '',
+    password: '******',
+    gender: '男',
+    birthdate: '',
+    phone: '0900000000',
+    address: '100台北市中正區重慶南路一段122號',
+    email: 'LaiosTouden@gmail.com',
+  })
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('<http://localhost:3005/dashboard>')
+        const result = await response.json()
+        if (result.status === 'success') {
+          setData(result.users)
+        }
+      } catch (error) {
+        console.error('無法取得資料:', error)
+      }
+    }
+    fetchData()
+  }, [])
+
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
   )
   const [showpassword, setShowpassword] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
-  useEffect(() => {
-    // Initialize city and area lists based on user data
-    if (userData.city) {
-      $('#city').val(userData.city).trigger('change')
-    }
-    if (userData.district) {
-      $('#district').val(userData.district).trigger('change')
-    }
-    if (userData.road_name) {
-      $('#roadList').val(userData.road_name)
-    }
-  }, [userData])
+  const [selectedCity, setSelectedCity] = useState('')
+  const [selectedArea, setSelectedArea] = useState('')
+  const [selectedRoad, setSelectedRoad] = useState('')
+  const [areaList, setAreaList] = useState([])
+  const [roadList, setRoadList] = useState([])
+
+  // useEffect(() => {
+  //   const city = taiwanData.find(city => city.CityName === selectedCity);
+  //   setAreaList(city ? city.AreaList : []);
+  //   setRoadList([]);
+  // }, [selectedCity]);
+
+  // useEffect(() => {
+  //   const area = areaList.find(area => area.AreaName === selectedArea);
+  //   setRoadList(area ? area.RoadList : []);
+  // }, [selectedArea, areaList]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setUser((prevUser) => ({ ...prevUser, [name]: value }))
+  }
 
   const handleProfilePicChange = (e) => {
     if (e.target.files && e.target.files[0]) {
@@ -40,18 +68,10 @@ export default function UserProfile() {
     }
   }
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     // Handle form submission here
-    try {
-      const response = await axios.put(`/api/dashboard/${userId}`, user)
-      if (response.data.status === 'success') {
-        alert('更新成功！')
-      }
-    } catch (error) {
-      console.error('更新失敗:', error)
-      alert('更新失敗！')
-    }
+    console.log('Form submitted:', user)
   }
 
   // const handleAddressUpdate = (e) => {
@@ -64,154 +84,6 @@ export default function UserProfile() {
     // Handle profile picture upload here
     setUploadStatus('頭像更新成功！')
   }
-  const handleDeactivate = async () => {
-    if (window.confirm('確定要停用帳號嗎？')) {
-      try {
-        const response = await axios.delete(`/api/dashboard/${user_id}`)
-        if (response.data.status === 'success') {
-          alert('帳號已停用')
-          // 導向登出
-          window.location.href = '/logout'
-        }
-      } catch (error) {
-        console.error('停用失敗:', error)
-        alert('停用失敗！')
-      }
-    }
-  }
-  useEffect(() => {
-    // $(document).ready(function () {
-    const citySelect = $('#city')
-    const districtSelect = $('#district')
-    const roadSelect = $('#roadList') // 新增的路選單
-
-    // 按區域分組的縣市數據
-    const groupedCities = {
-      北部區域: [
-        { CityName: '台北市', CityEngName: 'Taipei City' },
-        { CityName: '新北市', CityEngName: 'New Taipei City' },
-        { CityName: '基隆市', CityEngName: 'Keelung City' },
-        { CityName: '新竹市', CityEngName: 'Hsinchu City' },
-        { CityName: '桃園市', CityEngName: 'Taoyuan City' },
-        { CityName: '新竹縣', CityEngName: 'Hsinchu County' },
-      ],
-      中部區域: [
-        { CityName: '台中市', CityEngName: 'Taichung City' },
-        { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
-        { CityName: '彰化縣', CityEngName: 'Changhua County' },
-        { CityName: '南投縣', CityEngName: 'Nantou County' },
-        { CityName: '雲林縣', CityEngName: 'Yunlin County' },
-      ],
-      南部區域: [
-        { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-        { CityName: '台南市', CityEngName: 'Tainan City' },
-        { CityName: '嘉義市', CityEngName: 'Chiayi City' },
-        { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
-        { CityName: '屏東縣', CityEngName: 'Pingtung County' },
-      ],
-      東部區域: [
-        { CityName: '宜蘭縣', CityEngName: 'Yilan County' },
-        { CityName: '花蓮縣', CityEngName: 'Hualien County' },
-        { CityName: '台東縣', CityEngName: 'Taitung County' },
-      ],
-      離島區域: [
-        { CityName: '金門縣', CityEngName: 'Kinmen County' },
-        { CityName: '連江縣', CityEngName: 'Lienchiang County' },
-        { CityName: '澎湖縣', CityEngName: 'Penghu County' },
-      ],
-    }
-
-    // 動態載入分組的縣市
-    for (const group in groupedCities) {
-      const optgroup = $('<optgroup>').attr('label', group)
-      groupedCities[group].forEach((city) => {
-        optgroup.append(
-          $('<option>')
-            .val(city.CityName)
-            .text(`${city.CityName} (${city.CityEngName})`)
-        )
-      })
-      citySelect.append(optgroup)
-    }
-
-    // 當選擇國家時，啟用縣市選擇
-    $('#country').on('change', function () {
-      const selectedCountry = $(this).val()
-      if (selectedCountry === '台灣') {
-        citySelect.prop('disabled', false) // 啟用縣市下拉選單
-      } else {
-        citySelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇縣市</option>') // 禁用並清空縣市下拉選單
-        districtSelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇鄉鎮市區</option>') // 禁用並清空鄉鎮市區下拉選單
-        roadSelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇居住街道</option>') // 禁用並清空街道下拉選單
-      }
-    })
-
-    // 當選擇縣市時，動態載入鄉鎮市區
-    citySelect.on('change', function () {
-      const selectedCity = $(this).val()
-      districtSelect
-        .prop('disabled', false)
-        .empty()
-        .append('<option value="">請選擇鄉鎮市區</option>')
-      roadSelect
-        .prop('disabled', true)
-        .empty()
-        .append('<option value="">請選擇居住街道</option>') // 禁用街道選單
-
-      // 根據選擇的縣市顯示相對應的鄉鎮市區
-      const city = taiwanData.find((city) => city.CityName === selectedCity)
-      if (city) {
-        city.AreaList.forEach((area) => {
-          districtSelect.append(
-            $('<option>')
-              .val(area.AreaName)
-              .text(`${area.AreaName} (${area.ZipCode})`)
-          )
-        })
-      }
-    })
-
-    // 當選擇鄉鎮市區時，動態載入對應的道路
-    districtSelect.on('change', function () {
-      const selectedArea = $(this).val()
-      roadSelect
-        .prop('disabled', false)
-        .empty()
-        .append('<option value="">請選擇居住街道</option>')
-
-      // 根據選擇的鄉鎮市區顯示相對應的道路
-      const selectedCity = citySelect.val() // 獲取選擇的縣市
-      const city = taiwanData.find((city) => city.CityName === selectedCity) // 找到選擇的城市
-
-      if (city) {
-        const area = city.AreaList.find(
-          (area) => area.AreaName === selectedArea
-        ) // 找到選擇的區域
-        if (area && area.RoadList) {
-          // 確保找到的區域有 RoadList
-          area.RoadList.forEach((road) => {
-            roadSelect.append(
-              $('<option>').val(road.RoadName).text(road.RoadName) // 假設 RoadName 是街道名稱
-            )
-          })
-        } else {
-          console.error('選擇的區域沒有對應的街道資料')
-        }
-      } else {
-        console.error('未找到對應的城市')
-      }
-    })
-    // }) // 確保結束大括號在這裡
-  }, [])
 
   return (
     <>
@@ -256,12 +128,10 @@ export default function UserProfile() {
                           <input
                             type="text"
                             className="form-control"
-                            id="name"
-                            name="name"
-                            value={userData.name}
-                            onChange={(e) => {
-                              setAuth(e.target.value)
-                            }}
+                            id="username"
+                            name="username"
+                            value={user.name}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
@@ -274,18 +144,12 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="showpassword?'text':'password'"
+                            type="password"
                             className="form-control"
                             id="password"
                             name="password"
-                            value={userData.password}
-                          />
-                          <input
-                            type="checkbox"
-                            id="showpassword"
-                            checked={showpassword}
-                            onChange={() => setShowpassword(!showpassword)}
-                            className="form-check-input"
+                            value={user.password}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
@@ -302,7 +166,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={userData.gender}
+                            value={user.gender}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
@@ -319,8 +184,8 @@ export default function UserProfile() {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={userData.birthdate}
-                            onChange={(e) => setAuth(e.target.value)}
+                            value={user.birthdate}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
@@ -337,146 +202,13 @@ export default function UserProfile() {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={userData.phone}
+                            value={user.phone}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
                       {/* 地址選擇 */}
-                      <div>
-                        <h2 className="mb-4">選擇國家、縣市與鄉鎮</h2>
-
-                        {/* 國家選單 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="country"
-                            className="col-sm-2 col-form-label"
-                          >
-                            國家:
-                          </label>
-                          <div className="col-sm-10">
-                            <select
-                              id="country"
-                              className="form-select"
-                              name="country"
-                              value={userData.country}
-                            >
-                              <option value>請選擇國家</option>
-                              <option value="台灣">台灣</option>
-                              <option value="美國">美國</option>
-                              <option value="加拿大">加拿大</option>
-                              <option value="日本">日本</option>
-                              <option value="韓國">韓國</option>
-                              {/* 可以繼續添加更多國家 */}
-                            </select>
-                          </div>
-                        </div>
-                        {/* 縣市選單 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="city"
-                            className="col-sm-2 col-form-label"
-                          >
-                            縣市:
-                          </label>
-                          <div className="col-sm-10">
-                            <select
-                              id="city"
-                              name="city"
-                              value={userData.city}
-                              className="form-select"
-                              disabled
-                            >
-                              <option value>請選擇縣市</option>
-                            </select>
-                          </div>
-                        </div>
-                        {/* 鄉鎮市區選單 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="district"
-                            className="col-sm-2 col-form-label"
-                          >
-                            鄉鎮市區:
-                          </label>
-                          <div className="col-sm-10">
-                            <select
-                              id="district"
-                              name="district"
-                              value={userData.district}
-                              className="form-select"
-                              disabled
-                            >
-                              <option value>請選擇鄉鎮市區</option>
-                            </select>
-                          </div>
-                        </div>
-                        {/* 街道選單 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="road_name"
-                            className="col-sm-2 col-form-label"
-                          >
-                            路:
-                          </label>
-                          <div className="col-sm-10">
-                            <select
-                              id="roadList"
-                              name="road_name"
-                              className="form-select"
-                              disabled
-                              value={userData.road_name}
-                            >
-                              <option value>請選擇居住街道</option>
-                            </select>
-                          </div>
-                        </div>
-                        {/* 詳細地址輸入 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="detailed_address"
-                            className="col-sm-2 col-form-label"
-                          >
-                            詳細地址:
-                          </label>
-                          <div className="col-sm-10">
-                            <input
-                              type="text"
-                              id="address"
-                              value={userData.detailed_address}
-                              name="detailed_address"
-                              className="form-control"
-                              placeholder="巷弄門牌"
-                              required
-                              autoComplete="address-level4"
-                            />
-                            <div className="form-text">
-                              請輸入詳細地址（例如：1號、2樓、A棟）
-                            </div>
-                          </div>
-                        </div>
-                        {/* 備註欄位 */}
-                        <div className="mb-3 row">
-                          <label
-                            htmlFor="remarks"
-                            className="col-sm-2 col-form-label"
-                          >
-                            備註:
-                          </label>
-                          <div className="col-sm-10">
-                            <textarea
-                              id="remarks"
-                              name="remarks"
-                              className="form-control"
-                              rows={3}
-                              placeholder="輸入備註"
-                              value={userData.remarks}
-                            />
-                            <div className="form-text">
-                              地址假如都不在以上選單的話，請填寫於備註
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                      <AddressCompo />
                       {/* 新的地址onChange沒有handleinput change */}
                       {/* 電子郵件 */}
                       <div className="mb-3 row">
@@ -492,11 +224,12 @@ export default function UserProfile() {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={userData.email}
+                            value={user.email}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
-                      <div className="d-flex justify-content-between">
+                      <div className="text-center">
                         <button
                           type="submit"
                           className="btn btn-primary"
@@ -506,17 +239,6 @@ export default function UserProfile() {
                           }}
                         >
                           儲存
-                        </button>
-                        <button
-                          type="submit"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
-                          onClick={handleDeactivate}
-                        >
-                          停用
                         </button>
                       </div>
                     </form>
@@ -545,7 +267,7 @@ export default function UserProfile() {
                             type="file"
                             accept="image/*"
                             className="d-none"
-                            value={userData.image_path}
+                            value={user.image_path}
                             onChange={handleProfilePicChange}
                           />
                         </div>
