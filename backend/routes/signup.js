@@ -72,19 +72,22 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
 
   // } catch (error) {
   //   console.error('註冊失敗:', error)
-    
-    if (error.code === 'ER_DUP_ENTRY') {
-      return res.status(400).json({
+  }catch(error){
+      if (error.code === 'ER_DUP_ENTRY') {
+        return res.status(400).json({
+          status: 'error',
+          message: '此 email 已被註冊'
+        })
+      }
+  
+      return res.status(500).json({
         status: 'error',
-        message: '此 email 已被註冊'
+        message: '系統錯誤，請稍後再試'
       })
     }
+  })
 
-    return res.status(500).json({
-      status: 'error',
-      message: '系統錯誤，請稍後再試'
-    })
-  }
-})
+    
+    
 
 export default router

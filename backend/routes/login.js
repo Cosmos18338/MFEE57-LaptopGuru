@@ -16,8 +16,8 @@ router.post('/', upload.none(), async (req, res, next) => {
    const { email, password } = req.body
 
    const [row] = await db.query(
-     'SELECT * FROM users WHERE email = ?',
-     [email]
+     'SELECT * FROM users WHERE email = ? AND password =?',
+     [email, password]
    )
 // 這邊實際上是帳號錯誤
    if (row.length == 0) {
@@ -47,7 +47,7 @@ router.post('/', upload.none(), async (req, res, next) => {
        phone: user.phone,
      },
      accessTokenSecret,
-     { expiresIn: '10m' }
+     { expiresIn: '2d' }
    )
 
    res.cookie('accessToken', token)
