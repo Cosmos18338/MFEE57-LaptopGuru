@@ -94,7 +94,7 @@ app.use(
     saveUninitialized: false,
   })
 )
-
+// 以上那個session-cookie 應該不是我們的
 // 載入routes中的各路由檔案，並套用api路由 START
 const apiPath = '/api' // 預設路由
 const routePath = path.join(__dirname, 'routes')
