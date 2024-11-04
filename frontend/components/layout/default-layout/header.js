@@ -10,7 +10,9 @@ export default function Header(props) {
     <>
       <header>
         <div className="container d-flex p-3 align-items-center">
-          <img className="logo me-auto" src="/logo.svg" />
+          <Link className="logo me-auto" href="/">
+            <img src="/logo.svg" />
+          </Link>
           <div className="me-7 nav-list">
             <Link className="text-light me-3" href="/">
               首頁
@@ -24,9 +26,11 @@ export default function Header(props) {
           </div>
           {isAuth ? (
             <>
-              <div className="user-avater me-3">
-                <img src="/Vector.svg" />
-              </div>
+              <Link href="/dashboard">
+                <div className="user-avater me-3">
+                  <img src="/Vector.svg" />
+                </div>
+              </Link>
               <div className="cart">
                 <img src="/cart.svg" />
               </div>
