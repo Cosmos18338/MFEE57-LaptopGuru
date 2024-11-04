@@ -7,6 +7,16 @@ import '@/styles/loader.scss'
 import '@/styles/coupon.scss'
 import '@/styles/header.scss'
 import '@/styles/footer.scss'
+
+// 文章/部落格用 css
+import '@/styles/articledetail.scss'
+import '@/styles/articlehomepage.scss'
+import '@/styles/blogcreated.scss'
+import '@/styles/blogdetail.scss'
+import '@/styles/blogedit.scss'
+import '@/styles/bloghomepage.scss'
+import '@/styles/bloguseroverview.scss'
+
 // 載入購物車context
 import { CartProvider } from '@/hooks/use-cart-state'
 // 載入認証用context

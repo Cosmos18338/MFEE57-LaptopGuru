@@ -32,6 +32,7 @@ export default function UserProfile() {
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
   )
+  const [showpassword, setShowpassword] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedCity, setSelectedCity] = useState('')
   const [selectedArea, setSelectedArea] = useState('')

@@ -122,7 +122,7 @@ export default function LogIn(props) {
                 />
               </div>
               <div id="passwordRule" className={`form-text text-white p-5`}>
-                密碼請至少輸入6個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。會再經過加密
+                輸入您的原明碼，我們會再經過加密處理！
               </div>
               <button
                 onClick={() => {

@@ -3,7 +3,7 @@ import db from '##/configs/mysql.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
-import { generateHash } from '#db-helpers/password-hash.js'
+// import { generateHash } from '#db-helpers/password-hash.js'
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
