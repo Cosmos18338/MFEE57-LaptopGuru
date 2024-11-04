@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-11-03 14:28:25
+-- 產生時間： 2024-11-04 10:46:24
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -30,7 +30,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `users` (
   `user_id` int(6) UNSIGNED NOT NULL,
   `level` tinyint(2) UNSIGNED NOT NULL DEFAULT 0,
-  `password` varchar(60) NOT NULL,
+  `password` varchar(80) NOT NULL,
   `name` varchar(30) DEFAULT NULL,
   `phone` varchar(30) DEFAULT NULL,
   `email` varchar(30) NOT NULL,
