@@ -260,7 +260,7 @@ export default function UserProfile() {
                             name="name"
                             value={userData.name}
                             onChange={(e) => {
-                              setAuth(e.target.value)
+                              setAuth.userData(e.target.value)
                             }}
                           />
                         </div>

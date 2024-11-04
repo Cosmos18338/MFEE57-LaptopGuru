@@ -3,7 +3,7 @@ import db from '##/configs/mysql.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
-// import { generateHash } from '#db-helpers/password-hash.js'
+import { generateHash } from '#db-helpers/password-hash.js'
 
 router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 next 參數
   try {
@@ -13,7 +13,7 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
     if (!email || !password) {
       return res.status(400).json({
         status: 'error',
-        message: '缺少必要欄位'
+        // message: '缺少必要欄位'
       })
     }
 
@@ -22,6 +22,7 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
       'SELECT 1 FROM users WHERE email = ?',
       [email]
     )
+    // 為什麼這邊是SELECT 1?在這個查詢中,使用SELECT 1而不是SELECT *是一種常見的優化技巧。它的目的是檢查是否存在符合條件的記錄,而不關心記錄的具體內容。
 
     if (existingUsers.length > 0) {
       return res.status(400).json({ 
@@ -31,27 +32,23 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
     }
 
     // 密碼加密
-    // const hashedPassword = await generateHash(password)
+    const hashedPassword = await generateHash(password)
 
     // SQL 查詢
     const sql = `
       INSERT INTO users (
-        email, password, phone, birthdate, gender,
-        level, valid, created_at, 
-        country, city, district, road_name, detailed_address
+        email, hashedPassword, phone, birthdate, gender
       ) VALUES (
-        ?, ?, ?, ?, ?,
-        0, 1, NOW(),
-        '', '', '', '', ''
+        ?, ?, ?, ?, ?,        
       )
     `
     const params = [
       email, 
-      // hashedPassword,
-      password,
-      phone, 
+      hashedPassword,
+      // password,
+      phone || null,
       birthdate || null,
-      gender
+      gender || null
     ]
 
     const [result] = await db.query(sql, params)
@@ -62,6 +59,7 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
         message: '註冊成功',
         data: {
           user_id: result.insertId
+          // 這通常用在註冊新用戶時，需要知道新用戶的 ID：
         }
       })
     } 
