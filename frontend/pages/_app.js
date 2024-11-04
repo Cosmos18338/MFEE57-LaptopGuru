@@ -28,6 +28,17 @@ import DefaultLayout from '@/components/layout/default-layout'
 // 自訂用載入動畫元件
 import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
 
+// event的scss
+import '../styles/event.scss';
+// eventdetail的scss
+import '../styles/eventDetail.scss';
+// evenRegistration的scss
+import '../styles/eventRegistration.scss';
+// group的scss
+import '../styles/group.scss';
+// groupCreat的scss
+import '../styles/groupCreat.scss';
+
 export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
   useEffect(() => {
