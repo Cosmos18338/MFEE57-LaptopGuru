@@ -1,32 +1,67 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import ArticleDetailMainArea from '@/components/article/articledetail/articledetail-mainarea'
 
-export default function ArticleDetailSection() {
+// 定义组件 ArticleDetail
+export default function ArticleDetail(props) {
+  // 使用 Router()
   const router = useRouter()
-  const { article_id } = router.query // 從路由中獲取 ArticleId
-  const [article, setArticle] = useState(null) // 初始化 article 狀態
+
+  // 初始化文章状态
+  const [article, setArticle] = useState({
+    article_id: 0,
+    article_title: '',
+    article_content: '',
+    article_created_date: '',
+    article_brand: '',
+    article_type: '',
+    article_valid_value: '',
+    article_url: '',
+  })
+  console.log('13245')
+
+  const [loading, setLoading] = useState(true) // 加载状态
+
+  const getArticle = async (article_id) => {
+    const url = `http://localhost:3005/api/article/article_detail/${article_id}`
+
+    try {
+      const res = await fetch(url)
+      const resData = await res.json()
+      console.log('Response Data:', resData) // 调试信息
+      // 检查返回的状态和数据结构
+      if (
+        resData.status === 'success' &&
+        Array.isArray(resData.data) &&
+        resData.data.length > 0
+      ) {
+        setArticle(resData.data[0])
+        console.log('Article Loaded:', resData.data[0]) // 确认加载的文章内容
+      } else {
+        console.log('資料錯誤:', resData)
+      }
+    } catch (e) {
+      console.log('Fetch error:', e)
+    } finally {
+      setLoading(false) // 完成加载
+    }
+  }
 
   useEffect(() => {
-    if (article_id) {
-      console.log('Fetching article with ID:', article_id) // 檢查 ArticleId 是否正確
-      // http://localhost:3005/api/article/article-detail/${ArticleId}
-      fetch(`http://localhost:3005/api/article/${article_id}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error('Network response was not ok')
-          }
-          return response.json()
-        })
-        .then((data) => {
-          console.log('Fetched article data:', data) // 檢查獲取的數據
-          setArticle(data) // 假設這裡的 data 是文章的詳細信息
-        })
-        .catch((error) => console.error('Error fetching article:', error))
+    console.log('Router query:', router.query) // 调试信息
+    console.log('Router is ready:', router.isReady) // 检查 router.isReady 的状态
+    if (router.isReady && router.query.article_id) {
+      console.log('Fetching article with ID:', router.query.article_id) // 调试信息
+      console.log('11111')
+
+      getArticle(router.query.article_id)
     }
-  }, [article_id]) // 當 ArticleId 改變時重新執行
+  }, [router.isReady, router.query.article_id])
 
   return (
     <>
+      <ArticleDetailMainArea />
+
       {article ? (
         <section className="ArticleDetailSectionContentArea">
           <p className="fs-5 fw-bold ArticleDetailSectionContentAreaTitle">
