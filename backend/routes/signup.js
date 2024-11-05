@@ -36,12 +36,23 @@ router.post('/', upload.none(), async (req, res) => {  // 移除未使用的 nex
 
     // SQL 查詢
     const sql = `
+<<<<<<< Updated upstream
       INSERT INTO users (
         email, hashedPassword, phone, birthdate, gender
       ) VALUES (
         ?, ?, ?, ?, ?,        
       )
     `
+=======
+     INSERT INTO users (
+       email, password, phone, birthdate, gender,
+ 
+     ) VALUES (
+       ?, ?, ?, ?, ?,
+      
+     )
+   `
+>>>>>>> Stashed changes
     const params = [
       email, 
       hashedPassword,
