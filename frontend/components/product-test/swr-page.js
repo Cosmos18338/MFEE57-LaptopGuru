@@ -1,5 +1,5 @@
 import { useProduct } from '@/services/product'
-import ProductCard from './product-card'
+import ProductCard from '../product/product-card'
 
 export default function SwrPage({
   searchCriteria = {},
