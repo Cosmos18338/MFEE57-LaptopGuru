@@ -36,8 +36,6 @@ import { extendLog } from '#utils/tool.js'
 import 'colors'
 extendLog()
 
-app.use('/api/article', articleRouter)
-
 // 建立 Express 應用程式
 const app = express()
 
@@ -75,7 +73,7 @@ async function testConnection() {
     connection.release()
   } catch (error) {
     console.error('Database connection failed:', error)
-    process.exit(1)  // 如果連線失敗就終止程式
+    process.exit(1) // 如果連線失敗就終止程式
   }
 }
 
