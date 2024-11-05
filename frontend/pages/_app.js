@@ -8,6 +8,9 @@ import '@/styles/coupon.scss'
 import '@/styles/header.scss'
 import '@/styles/footer.scss'
 
+// 首頁
+import '@/styles/frontPage.scss'
+
 // 文章/部落格用 css
 import '@/styles/articledetail.scss'
 import '@/styles/articlehomepage.scss'
@@ -28,6 +31,17 @@ import DefaultLayout from '@/components/layout/default-layout'
 // 自訂用載入動畫元件
 import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
 
+// event的scss
+import '../styles/event.scss';
+// eventdetail的scss
+import '../styles/eventDetail.scss';
+// evenRegistration的scss
+import '../styles/eventRegistration.scss';
+// group的scss
+import '../styles/group.scss';
+// groupCreat的scss
+import '../styles/groupCreat.scss';
+
 export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
   useEffect(() => {
@@ -40,7 +54,6 @@ export default function MyApp({ Component, pageProps }) {
     Component.getLayout || ((page) => <DefaultLayout>{page}</DefaultLayout>)
 
   return (
-
     <AuthProvider>
       <LoaderProvider close={2} CustomLoader={CatLoader}>
         <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>

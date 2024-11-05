@@ -1,10 +1,10 @@
-import React , { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Tabs, Tab } from 'react-bootstrap'
 import FileManagementTable from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/pages/dashboard/membership-levels'
 import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
-import {useAuth} from '@/hooks/use-auth'
+import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
 
 export default function Dashboard() {
@@ -25,8 +25,9 @@ export default function Dashboard() {
           }
         )
         const result = await response.json()
-        
-        if (result.status === 'success') { // 改用 result 而不是 response
+
+        if (result.status === 'success') {
+          // 改用 result 而不是 response
           setData(result.data)
         } else {
           console.error('獲取資料失敗:', result.message)
@@ -59,11 +60,11 @@ export default function Dashboard() {
           <Tab eventKey="shopping-record" title="購買清單">
             <div>
               <h4>購買清單components\bootstrap\cards.js</h4>
-              <CardExample/>
+              <CardExample />
             </div>
           </Tab>
           <Tab eventKey="lease-record" title="租賃清單">
-            <div className='col-6'>
+            <div className="col-6">
               <h4>Link Tab Content</h4>
               <p>這裡是另一個連結對應的內容。</p>
             </div>
@@ -86,9 +87,7 @@ export default function Dashboard() {
               <p>這裡是活動。</p>
             </div>
           </Tab>
-          <Tab eventKey="group-record" title="揪團">
-           
-          </Tab>
+          <Tab eventKey="group-record" title="揪團"></Tab>
         </Tabs>
       </div>
     </div>

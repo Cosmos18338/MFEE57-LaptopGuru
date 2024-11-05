@@ -3,23 +3,27 @@ import { useRouter } from 'next/router'
 
 export default function ArticleDetailSection() {
   const router = useRouter()
-  const { ArticleId } = router.query // 從路由中獲取 ArticleId
+  const { article_id } = router.query // 從路由中獲取 ArticleId
   const [article, setArticle] = useState(null) // 初始化 article 狀態
 
   useEffect(() => {
-    // 確保 ArticleId 存在後進行 fetch
-    if (ArticleId) {
-      fetch(`/article/${ArticleId}`) // 假設你的 API 路徑是這樣
+    if (article_id) {
+      console.log('Fetching article with ID:', article_id) // 檢查 ArticleId 是否正確
+      // http://localhost:3005/api/article/article-detail/${ArticleId}
+      fetch(`http://localhost:3005/api/article/${article_id}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error('Network response was not ok')
           }
           return response.json()
         })
-        .then((data) => setArticle(data.article)) // 更新狀態
-        .catch((error) => console.error('Error fetching article:', error)) // 錯誤處理
+        .then((data) => {
+          console.log('Fetched article data:', data) // 檢查獲取的數據
+          setArticle(data) // 假設這裡的 data 是文章的詳細信息
+        })
+        .catch((error) => console.error('Error fetching article:', error))
     }
-  }, [ArticleId]) // 當 ArticleId 改變時重新執行
+  }, [article_id]) // 當 ArticleId 改變時重新執行
 
   return (
     <>
@@ -28,7 +32,7 @@ export default function ArticleDetailSection() {
           <p className="fs-5 fw-bold ArticleDetailSectionContentAreaTitle">
             {article.ArticleTitle}
           </p>
-          <p className="ArticleDetailText">{article.ArticleContent}</p>
+          <p className="ArticleDetailText">{article.article_content}</p>
           <div className="d-flex align-items-center justify-content-center gap-5 mb-5">
             <div className="col-6">
               <img
@@ -45,7 +49,7 @@ export default function ArticleDetailSection() {
               />
             </div>
           </div>
-          <p className="ArticleDetailText">{article.ArticleContent}</p>
+          <p className="ArticleDetailText">{article.article_content}</p>
           <div className="d-flex align-items-center justify-content-center col-12 mb-5 gap-5">
             <div className="row">
               <div className="col-6">
