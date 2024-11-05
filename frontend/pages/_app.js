@@ -8,6 +8,9 @@ import '@/styles/coupon.scss'
 import '@/styles/header.scss'
 import '@/styles/footer.scss'
 
+// 首頁
+import '@/styles/frontPage.scss'
+
 // 文章/部落格用 css
 import '@/styles/articledetail.scss'
 import '@/styles/articlehomepage.scss'
