@@ -219,11 +219,13 @@
 // }
 import React from 'react'
 import FrontPage from '@/components/frontPage/frontPage'
+import MyFooter from '@/components/layout/default-layout/my-footer'
+import Header from '@/components/layout/default-layout/header'
 
 export default function Home() {
   return (
     <>
-    <FrontPage/>
+      <FrontPage />
     </>
   )
 }
