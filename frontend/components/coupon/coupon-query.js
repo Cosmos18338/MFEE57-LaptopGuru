@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import Coupon from '.'
 
 export default function CouponQuery(props) {
   return (
