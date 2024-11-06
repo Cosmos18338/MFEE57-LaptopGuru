@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
+import { useAuth } from '@/hooks/use-auth'
+
 
 export default function UserProfile() {
+  const { auth } = useAuth()
+
   const [user, setUser] = useState({
     name: '',
     password: '******',
@@ -56,8 +60,10 @@ export default function UserProfile() {
   // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setUser((prevUser) => ({ ...prevUser, [name]: value }))
+    setUser((prevUser) => ({
+      ...prevUser,
+      [e.target.name]: e.target.value,
+    }));
   }
 
   const handleProfilePicChange = (e) => {
@@ -136,6 +142,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="name"
                             name="name"
+                            value={auth.userData.name}
                             // value={userData.name}
                             // onChange={(e) => {
                             //   setAuth(e.target.value)
@@ -156,7 +163,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="password"
                             name="password"
-                            value={user.password}
+                            value={auth.userData.password}
                             onChange={handleInputChange}
                           />
                           <input
@@ -181,7 +188,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={user.gender}
+                            value={auth.userData.gender}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -199,7 +206,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={user.birthdate}
+                            value={auth.userData.birthdate}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -217,7 +224,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={user.phone}
+                            value={auth.userData.phone}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -239,7 +246,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={user.email}
+                            value={auth.userData.email}
                             onChange={handleInputChange}
                           />
                         </div>
