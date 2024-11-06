@@ -12,18 +12,10 @@ export default function CartIndex() {
   const { isAuth } = auth
 
   useEffect(() => {
-    // 這裡可以寫一些初始化的邏輯
-    if (!isAuth) {
-      // 如果沒有登入，可以跳轉到登入頁
-      return router.push('/member/login')
-    }
-    const fetchData = async () => {
-      try {
-        const data = await fetch('http://localhost:3005/api/cart/lease')
-      } catch (error) {
-        console.error('無法取得資料:', error)
-      }
-    }
+    // if (!isAuth) {
+    //   router.push('/login')
+    // }
+    console.log('isAuth:', isAuth)
   }, [])
 
   const handleCheckboxChange = (selectedCategory) => {
