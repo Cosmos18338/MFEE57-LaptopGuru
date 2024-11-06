@@ -4,9 +4,9 @@ export default function BloghomepageBrandCardGroup(props) {
   const [blogs, setBlogs] = useState([])
 
   useEffect(() => {
-    fetch('/api/blogs')
+    fetch('/api/blogcard')
       .then((response) => response.json())
-      .then((data) => setBlogs(data))
+      .then((data) => setBlogs(data.data || [])) // 確認 `data.data` 是否存在並設置為預設值
       .catch((error) => console.error('Error fetching blogs:', error))
   }, [])
 
@@ -16,9 +16,9 @@ export default function BloghomepageBrandCardGroup(props) {
         {blogs.map((blog) => (
           <div className="card BlogSmallerCard" key={blog.blog_id}>
             <img
-              src={blog.image_url || 'default_image_url.jpg'} // 使用預設圖片
+              src={blog.image_url || 'default_image_url.jpg'}
               className="card-img-top BlogHomePageSmallerCardImg"
-              alt={blog.blog_title}
+              alt="Blog Card"
             />
             <div className="card-body BlogHomePageSmallerCardBody p-4">
               <h5 className="card-title BlogHomePageSmallerCardBodyTitle">

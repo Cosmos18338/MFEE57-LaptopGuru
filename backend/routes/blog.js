@@ -11,49 +11,108 @@ const upload = multer()
 // 動態路由記得寫
 
 // 查詢後得到的變數是 responseData
+console.log('有進來 blog.js 而已，下一步沒有進去')
+
 router.get('/blog_detail/:blog_id', upload.none(), async (req, res, next) => {
   const blog_id = req.params.blog_id
   console.log(blog_id)
 
-  // 查詢 blogoverview 表
-  const [overviewData] = await db.query(
-    'SELECT * FROM blogoverview WHERE blog_id = ? AND blog_validvalue = 1',
-    [blog_id]
-  )
+  try {
+    const [overviewData] = await db.query(
+      'SELECT blog_id, blog_user_id, blog_title, blog_content, blog_created_date, blog_brand, blog_brand_model, blog_type, blog_views, blog_url ' +
+        'FROM blogoverview WHERE blog_id = ? AND blog_valid_value = 1',
+      [blog_id]
+    )
 
-  if (overviewData.length === 0) {
-    return res.json({ status: 'error', message: '查無此文章' })
+    if (overviewData.length === 0) {
+      return res.json({ status: 'error', message: '查無此文章' })
+    }
+
+    const [comments] = await db.query(
+      'SELECT blog_comment_userid, blog_comment_created_time, blog_comment_text FROM blogcomment WHERE blog_id = ? AND blog_valid_value = 1',
+      [blog_id]
+    )
+
+    const [images] = await db.query(
+      'SELECT blog_image FROM blogimage WHERE blog_id = ?',
+      [blog_id]
+    )
+
+    const [keywords] = await db.query(
+      'SELECT blog_keyword FROM blogkeyword WHERE blog_id = ?',
+      [blog_id]
+    )
+
+    const responseData = {
+      overview: overviewData,
+      comments: comments,
+      images: images,
+      keywords: keywords,
+    }
+
+    res.json({ status: 'success', data: responseData })
+  } catch (error) {
+    console.error('Error fetching blog details:', error)
+    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
   }
-
-  // 查詢 blogcomment 表
-  const [comments] = await db.query(
-    'SELECT blog_comment_userId, blog_comment_created_time, blog_comment_text FROM blogcomment WHERE blog_id = ? AND blog_validvalue = 1',
-    [blog_id]
-  )
-
-  // 查詢 blogimage 表
-  const [images] = await db.query(
-    'SELECT blog_image FROM blogimage WHERE blog_id = ? AND blog_validvalue = 1',
-    [blog_id]
-  )
-
-  // 查詢 blogkeyword 表
-  const [keywords] = await db.query(
-    'SELECT blog_keyword FROM blogkeyword WHERE blog_id = ? AND blog_validvalue = 1',
-    [blog_id]
-  )
-
-  const responseData = {
-    overview: overviewData,
-    comments: comments,
-    images: images,
-    keywords: keywords,
-  }
-
-  res.json({ status: 'success', data: responseData })
 })
 
-router.post('/blog/blog-created', upload.none(), async (req, res) => {
+router.get('/api/blogcard', upload.none(), async (req, res, next) => {
+  try {
+    // 從 blogoverview 表中撈取符合條件的最新 6 筆資料
+    const [blogData] = await db.query(`
+      SELECT 
+        blog_id,
+        blog_title,
+        blog_content,
+        blog_created_date,
+        blog_brand,
+        blog_brand_model,
+        blog_type,
+        blog_views,
+        blog_url
+      FROM blogoverview
+      WHERE blog_valid_value = 1
+      ORDER BY blog_id DESC
+      LIMIT 6
+    `)
+
+    // 檢查是否有撈到資料
+    if (blogData.length === 0) {
+      return res.json({ status: 'error', message: '查無相關部落格資料' })
+    }
+
+    // 2. 對於每個 blog_id，從 blogimage 表中撈取對應的圖片
+    const blogIds = blogData.map((blog) => blog.blog_id)
+    const [imagesData] = await db.query(
+      `
+      SELECT blog_id, blog_image
+      FROM blogimage
+      WHERE blog_id IN (?)
+      ORDER BY blog_id DESC
+    `,
+      [blogIds]
+    )
+
+    const blogWithImages = blogData.map((blog) => {
+      const images = imagesData
+        .filter((image) => image.blog_id === blog.blog_id)
+        .map((image) => image.blog_image)
+      return {
+        ...blog,
+        images: images,
+      }
+    })
+
+    // 回傳資料
+    res.json({ status: 'success', data: blogWithImages })
+  } catch (error) {
+    console.error('Error fetching blog data:', error)
+    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
+  }
+})
+
+router.post('/blog-created', upload.none(), async (req, res) => {
   const {
     blog_user_id,
     blog_title,
@@ -113,7 +172,7 @@ router.post('/blog/blog-created', upload.none(), async (req, res) => {
   }
 })
 
-router.patch('/blog/blog-delete/:blog_id', async (req, res) => {
+router.patch('/blog-delete/:blog_id', async (req, res) => {
   const { blog_id } = req.params
 
   if (!blog_id) {
@@ -122,7 +181,7 @@ router.patch('/blog/blog-delete/:blog_id', async (req, res) => {
 
   try {
     const [result] = await db.query(
-      'UPDATE blogoverview SET blog_validvalue = 0 WHERE blog_id = ?',
+      'UPDATE blogoverview SET blog_valid_value = 0 WHERE blog_id = ?',
       [blog_id]
     )
 

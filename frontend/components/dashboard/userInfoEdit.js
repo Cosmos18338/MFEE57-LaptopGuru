@@ -2,16 +2,24 @@ import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
+import { useAuth } from '@/hooks/use-auth'
+
 
 export default function UserProfile() {
+  const { auth } = useAuth()
+
   const [user, setUser] = useState({
     name: '',
     password: '******',
     gender: '男',
     birthdate: '',
     phone: '0900000000',
-    address: '100台北市中正區重慶南路一段122號',
-    email: 'LaiosTouden@gmail.com',
+    country: '',
+    city: '',
+    district: '',
+    road_name: '',
+    detailed_address: '',
+    email: '@gmail.com',
   })
 
   useEffect(() => {
@@ -52,8 +60,10 @@ export default function UserProfile() {
   // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setUser((prevUser) => ({ ...prevUser, [name]: value }))
+    setUser((prevUser) => ({
+      ...prevUser,
+      [e.target.name]: e.target.value,
+    }));
   }
 
   const handleProfilePicChange = (e) => {
@@ -90,10 +100,12 @@ export default function UserProfile() {
       <div className="container">
         <div className="row d-flex justify-content-center">
           {/* LeftAside 左邊側欄 */}
-          <div className="col-md-2"></div>
+            {/* <div className="col-md-2"></div> */}
+
 
           {/* Main Content (User Profile) */}
-          <div className="col-md-9">
+          <div className="">{/* <div className="col-md-9"></div> */}
+
             <div className="card">
               <div
                 className="card-header d-flex align-items-center"
@@ -130,6 +142,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="name"
                             name="name"
+                            value={auth.userData.name}
                             // value={userData.name}
                             // onChange={(e) => {
                             //   setAuth(e.target.value)
@@ -146,12 +159,19 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="password"
+                            type={showpassword ? 'text' : 'password'}
                             className="form-control"
                             id="password"
                             name="password"
-                            value={user.password}
+                            value={auth.userData.password}
                             onChange={handleInputChange}
+                          />
+                          <input
+                            type="checkbox"
+                            id="showpassword"
+                            checked={showpassword}
+                            onChange={() => setShowpassword(!showpassword)}
+                            className="form-check-input"
                           />
                         </div>
                       </div>
@@ -168,7 +188,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={user.gender}
+                            value={auth.userData.gender}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -186,7 +206,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={user.birthdate}
+                            value={auth.userData.birthdate}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -204,7 +224,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={user.phone}
+                            value={auth.userData.phone}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -226,7 +246,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={user.email}
+                            value={auth.userData.email}
                             onChange={handleInputChange}
                           />
                         </div>

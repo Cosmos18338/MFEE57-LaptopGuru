@@ -2,7 +2,7 @@ import React from 'react'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import BlogHomepageSearchbox from '@/components/blog/bloghomepage/bloghomepage-searchbox'
 import BloghomepageTypesearch from '@/components/blog/bloghomepage/bloghomepage-typesearch'
-import BloghomepageBrandCardGroup from '@/components/blog/bloghomepage/bloghomepage-brandsmallercard'
+import BloghomepageBrandCardGroup from '@/components/blog/bloghomepage/bloghomepage-brandcardgroup'
 
 export default function ArticleDetailMainArea() {
   return (

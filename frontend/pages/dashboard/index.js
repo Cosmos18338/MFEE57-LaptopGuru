@@ -6,11 +6,13 @@ import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
 import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
+// 優惠卷
+import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 
 export default function Dashboard() {
   const { auth } = useAuth() // 從 auth context 獲取用戶資訊
-  const router = useRouter()
+  // const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
