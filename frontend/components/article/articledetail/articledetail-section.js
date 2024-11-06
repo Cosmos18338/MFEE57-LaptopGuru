@@ -3,14 +3,14 @@ import { useRouter } from 'next/router'
 
 export default function ArticleDetailSection() {
   const router = useRouter()
-  const { ArticleId } = router.query // 從路由中獲取 ArticleId
-  const [article, setArticle] = useState('123') // 初始化 article 狀態
+  const { article_id } = router.query // 從路由中獲取 ArticleId
+  const [article, setArticle] = useState(null) // 初始化 article 狀態
 
   useEffect(() => {
-    if (ArticleId) {
-      console.log('Fetching article with ID:', ArticleId) // 檢查 ArticleId 是否正確
+    if (article_id) {
+      console.log('Fetching article with ID:', article_id) // 檢查 ArticleId 是否正確
       // http://localhost:3005/api/article/article-detail/${ArticleId}
-      fetch(`localhost:3005/api/article/article-detail/${ArticleId}`)
+      fetch(`http://localhost:3005/api/article/${article_id}`)
         .then((response) => {
           if (!response.ok) {
             throw new Error('Network response was not ok')
@@ -23,7 +23,7 @@ export default function ArticleDetailSection() {
         })
         .catch((error) => console.error('Error fetching article:', error))
     }
-  }, [ArticleId]) // 當 ArticleId 改變時重新執行
+  }, [article_id]) // 當 ArticleId 改變時重新執行
 
   return (
     <>
@@ -32,7 +32,7 @@ export default function ArticleDetailSection() {
           <p className="fs-5 fw-bold ArticleDetailSectionContentAreaTitle">
             {article.ArticleTitle}
           </p>
-          <p className="ArticleDetailText">{article.ArticleContent}</p>
+          <p className="ArticleDetailText">{article.article_content}</p>
           <div className="d-flex align-items-center justify-content-center gap-5 mb-5">
             <div className="col-6">
               <img
@@ -49,7 +49,7 @@ export default function ArticleDetailSection() {
               />
             </div>
           </div>
-          <p className="ArticleDetailText">{article.ArticleContent}</p>
+          <p className="ArticleDetailText">{article.article_content}</p>
           <div className="d-flex align-items-center justify-content-center col-12 mb-5 gap-5">
             <div className="row">
               <div className="col-6">

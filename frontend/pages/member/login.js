@@ -63,13 +63,13 @@ export default function LogIn(props) {
             <h7
               className={`text-white ${styles.hover} link-opacity-50-hover underline-opacity-0 `}
             >
-              <Link className="text-decoration-none" href="/login">
+              <Link className="text-decoration-none" href="/member/login">
                 Log in
               </Link>
             </h7>
             <h7 className="text-white">|</h7>
             <h7 className={`text-white ${styles.hover}`}>
-              <Link className="text-decoration-none" href="signup">
+              <Link className="text-decoration-none" href="/member/signup">
                 Sign up
               </Link>
             </h7>

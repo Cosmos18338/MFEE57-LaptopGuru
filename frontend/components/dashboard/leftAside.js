@@ -6,7 +6,7 @@ import { FaPenFancy } from "react-icons/fa";
 const LeftAside = () => {
   return (
     <div className="card col-2 border-0">
-      <div className="card-body text-center ">
+      <div className=" text-center "> {/*把card-body拿掉*/}
         <img
           src="https://via.placeholder.com/70x70"
           alt="Profile"
@@ -23,8 +23,8 @@ const LeftAside = () => {
         </button>
       </div>
       <div className="list-group list-group-flush">
-        <Link href="#" className="list-group-item list-group-item-action">收藏清單</Link>
-        <Link href="dashboard/membership-levels" className="list-group-item list-group-item-action">會員等級
+        <Link href="#" className="list-group-item list-group-item-action text-center">收藏清單</Link>
+        <Link href="dashboard/membership-levels" className="list-group-item list-group-item-action text-center">會員等級
        </Link>
       </div>
     </div>
