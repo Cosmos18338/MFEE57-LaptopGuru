@@ -1,29 +1,49 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
-import LeaseCard from '@/components/cart/lease-card'
 import BuyCard from '@/components/cart/buy-card'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
+import { data } from 'jquery'
+import { set } from 'lodash'
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值
 
-const parseJwt = (token) => {
-  const base64Payload = token.split('.')[1]
-  const payload = atob(base64Payload)
-  return JSON.parse(payload.toString())
-}
-
 export default function CartIndex() {
   const [category, setCategory] = useState('lease')
   const { auth } = useAuth()
-  const { isAuth } = auth
+  const { userData } = auth
   const router = useRouter()
+  const [cartdata, setCartdata] = useState([])
+
+  const user_id = userData?.user_id
 
   const handleCheckboxChange = (selectedCategory) => {
     setCategory(selectedCategory)
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      const result = await fetch(`http://localhost:3005/api/cart/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: user_id }),
+      })
+
+      const data = await result.json()
+      const arrData = data.data
+      console.log(arrData)
+      setCartdata(arrData)
+      console.log(cartdata)
+    }
+
+    if (user_id) {
+      fetchData()
+    }
+  }, [user_id])
 
   return (
     <>
@@ -35,29 +55,13 @@ export default function CartIndex() {
           <h2>購物車</h2>
         </div>
       </div>
-      <div className="check-box mb-3">
-        <form action className="d-flex">
-          <div className="form-check">
-            <input
-              type="checkbox"
-              checked={category === 'buy'}
-              onChange={() => handleCheckboxChange('buy')}
-            />
-            <label htmlFor="buy">購買</label>
-          </div>
-          <div className="form-check">
-            <input
-              type="checkbox"
-              checked={category === 'lease'}
-              onChange={() => handleCheckboxChange('lease')}
-            />
-            <label htmlFor="lease">租賃</label>
-          </div>
-        </form>
-      </div>
+
       <div className="row">
         <div className="col-8 cart h-100">
-          {category == 'lease' ? <LeaseCard /> : <BuyCard />}
+          {cartdata.map((item) => {
+            item = { item }
+            return <BuyCard key={item.product_id} item={item} />
+          })}
         </div>
         <div className="col bill h-50">
           <div className="card p-3 border-primary">
