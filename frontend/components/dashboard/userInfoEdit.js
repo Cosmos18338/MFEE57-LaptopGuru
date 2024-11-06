@@ -10,8 +10,12 @@ export default function UserProfile() {
     gender: '男',
     birthdate: '',
     phone: '0900000000',
-    address: '100台北市中正區重慶南路一段122號',
-    email: 'LaiosTouden@gmail.com',
+    country: '',
+    city: '',
+    district: '',
+    road_name: '',
+    detailed_address: '',
+    email: '@gmail.com',
   })
 
   useEffect(() => {
@@ -146,12 +150,19 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="password"
+                            type={showpassword ? 'text' : 'password'}
                             className="form-control"
                             id="password"
                             name="password"
                             value={user.password}
                             onChange={handleInputChange}
+                          />
+                          <input
+                            type="checkbox"
+                            id="showpassword"
+                            checked={showpassword}
+                            onChange={() => setShowpassword(!showpassword)}
+                            className="form-check-input"
                           />
                         </div>
                       </div>
