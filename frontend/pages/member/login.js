@@ -19,7 +19,7 @@ export default function LogIn(props) {
     const formData = new FormData(e.target)
 
     try {
-      const response = await fetch(`http://localhost:3005/api/login`, {
+      const response = await fetch(`http://localhost:3005/api/auth/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
