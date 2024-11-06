@@ -94,10 +94,12 @@ export default function UserProfile() {
       <div className="container">
         <div className="row d-flex justify-content-center">
           {/* LeftAside 左邊側欄 */}
-          <div className="col-md-2"></div>
+            {/* <div className="col-md-2"></div> */}
+
 
           {/* Main Content (User Profile) */}
-          <div className="col-md-9">
+          <div className="">{/* <div className="col-md-9"></div> */}
+
             <div className="card">
               <div
                 className="card-header d-flex align-items-center"
