@@ -6,6 +6,7 @@ import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
 import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
+import UserProfile from '@/components/dashboard/userInfoEdit'
 
 export default function Dashboard() {
   const { auth } = useAuth() // 從 auth context 獲取用戶資訊
@@ -54,7 +55,7 @@ export default function Dashboard() {
         >
           <Tab className="align-items-center" eventKey="home" title="會員中心">
             <div>
-              <FileManagementTable />
+              <UserProfile />
             </div>
           </Tab>
           <Tab eventKey="shopping-record" title="購買清單">
