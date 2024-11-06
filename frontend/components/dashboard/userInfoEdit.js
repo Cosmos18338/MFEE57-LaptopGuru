@@ -119,7 +119,7 @@ export default function UserProfile() {
 
                       <div className="mb-3 row">
                         <label
-                          htmlFor="username"
+                          htmlFor="name"
                           className="col-sm-3 col-form-label"
                         >
                           使用者名稱
@@ -130,10 +130,10 @@ export default function UserProfile() {
                             className="form-control"
                             id="name"
                             name="name"
-                            value={userData.name}
-                            onChange={(e) => {
-                              setAuth(e.target.value)
-                            }}
+                            // value={userData.name}
+                            // onChange={(e) => {
+                            //   setAuth(e.target.value)
+                            // }}
                           />
                         </div>
                       </div>

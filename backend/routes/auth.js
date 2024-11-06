@@ -110,7 +110,7 @@ router.post('/login', async (req, res) => {
       'SELECT * FROM users WHERE email = ? AND password = ?',
       [loginUser.email, loginUser.password]
     )
-
+// 有雜湊碼的情況
     if (rows.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤' })
     }

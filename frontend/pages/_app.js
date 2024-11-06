@@ -12,13 +12,13 @@ import '@/styles/footer.scss'
 import '@/styles/frontPage.scss'
 
 // 文章/部落格用 css
-import '@/styles/articledetail.scss'
-import '@/styles/articlehomepage.scss'
+import '@/styles/ArticleDetail.scss'
+import '@/styles/ArticleHomePage.scss'
 import '@/styles/blogcreated.scss'
-import '@/styles/blogdetail.scss'
+import '@/styles/BlogDetail.scss'
 import '@/styles/blogedit.scss'
-import '@/styles/bloghomepage.scss'
-import '@/styles/bloguseroverview.scss'
+import '@/styles/BlogHomePage.scss'
+import '@/styles/BlogUserOverview.scss'
 
 // 載入購物車context
 import { CartProvider } from '@/hooks/use-cart-state'
@@ -32,15 +32,15 @@ import DefaultLayout from '@/components/layout/default-layout'
 import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
 
 // event的scss
-import '../styles/event.scss';
+import '../styles/event.scss'
 // eventdetail的scss
-import '../styles/eventDetail.scss';
+import '../styles/eventDetail.scss'
 // evenRegistration的scss
-import '../styles/eventRegistration.scss';
+import '../styles/eventRegistration.scss'
 // group的scss
-import '../styles/group.scss';
+import '../styles/group.scss'
 // groupCreat的scss
-import '../styles/groupCreat.scss';
+import '../styles/groupCreat.scss'
 
 export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
