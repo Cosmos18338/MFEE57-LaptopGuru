@@ -1,130 +1,68 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import BlogDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
-import BlogComments from '@/components/blog/blogdetail/blogdetail-commentgroup'
+import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 
-export default function BlogDetail(props) {
-  // 使用 Router()
+export default function BlogId() {
   const router = useRouter()
+  const { blog_id } = router.query // 動態獲取 blog_id
+  const [blogData, setBlogData] = useState(null)
 
-  const [blog, setBlog] = useState({
-    blog_id: 0,
-    blog_title: '',
-    blog_content: '',
-    blog_created_date: '',
-    blog_brand: '',
-    blog_type: '',
-    blog_valid_value: '',
-    blog_url: '',
-  })
-  console.log('BlogDetail鉤子有成功上狀態')
-
-  const [loading, setLoading] = useState(true)
-
-  const getBlog = async (blog_id) => {
-    const url = `http://localhost:3005/api/blog/blog_detail/${blog_id}`
-
-    try {
-      const res = await fetch(url)
-      const resData = await res.json()
-      console.log('Response Data:', resData)
-
-      if (resData.status === 'success' && resData.data) {
-        const { overview, comments, images, keywords } = resData.data
-
-        setBlog({
-          blog_id: blog_id,
-          blog_title: overview[0]?.title || '',
-          blog_content: overview[0]?.content || '',
-          blog_created_date: overview[0]?.created_at || '',
-          blog_brand: overview[0]?.brand || '',
-          blog_type: overview[0]?.type || '',
-          blog_valid_value: overview[0]?.valid_value || '',
-          blog_url: overview[0]?.url || '',
-        })
-
-        // 傳遞 comments 資料給 BlogComments 組件
-        setComments(comments)
-
-        console.log('Blog Loaded:', resData.data)
-      } else {
-        console.log('資料錯誤:', resData)
-      }
-    } catch (e) {
-      console.log('Fetch error:', e)
-    } finally {
-      setLoading(false) // 完成加載
-    }
-  }
+  console.log(blogData)
 
   useEffect(() => {
-    console.log('Router query:', router.query) // 調試信息
-    console.log('Router is ready:', router.isReady) // 檢查 router.isReady 的狀態
-    if (router.isReady && router.query.blog_id) {
-      console.log('Fetching blog with ID:', router.query.blog_id) // 調試信息
-      console.log('11111')
-
-      getBlog(router.query.blog_id)
+    if (blog_id) {
+      fetch(`http://localhost:3005/api/blog/blog-detail/${blog_id}`) // 這裡替換為你實際的 API 路徑
+        .then((response) => response.json())
+        .then((data) => {
+          setBlogData(data.data) // 設定資料
+          console.log('撈取資料正常')
+        })
+        .catch((error) => console.error('Error fetching blog data:', error))
     }
-  }, [router.isReady, router.query.blog_id])
+  }, [blog_id]) // 當 blog_id 改變時重新執行 useEffect
+
+  if (!blogData) {
+    return <p>Loading...</p> // 當資料還沒載入時顯示 loading
+  }
 
   return (
     <>
-      <BlogDetailMainArea />
-
-      {blog.blog_id !== 0 ? ( // 確保 blog_id 已經存在並且不為 0
-        <section className="BlogDetailSectionContentArea">
-          <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
-            {blog.blog_title}
-          </p>
-          <p className="BlogDetailText">{blog.blog_content}</p>
-          <div className="d-flex align-items-center justify-content-center gap-5 mb-5">
-            <div className="col-6">
-              <img
-                className="w-100 h-100 ratio"
-                src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                alt="Blog Image 1"
-              />
-            </div>
-            <div className="col-6">
-              <img
-                className="w-100 h-100 ratio"
-                src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                alt="Blog Image 2"
-              />
-            </div>
-          </div>
-          <p className="BlogDetailText">{blog.blog_content}</p>
-          <div className="d-flex align-items-center justify-content-center col-12 mb-5 gap-5">
-            <div className="row">
-              <div className="col-6">
-                <img
-                  className="w-100 h-100 ratio"
-                  src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                  alt="Blog Image 3"
-                />
+      <ArticleDetailMainArea />
+      <div>
+        <section className="container-fluid ArticleSectionContainer">
+          <div className="container">
+            <div className="row d-flex">
+              <div className="ArticleSectionTitle">
+                <p className="text-light">{blogData.blog_title}</p>
               </div>
-              <div className="col-6">
-                <img
-                  className="w-100 h-100 ratio"
-                  src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                  alt="Blog Image 4"
-                />
+              <div className="ArticleSectionIntroduction">
+                <p className="text-light h5">{blogData.blog_content}</p>
               </div>
             </div>
-          </div>
-          <div className="container d-flex align-items-center justify-content-center col-12">
-            <img
-              className="w-50 h-50 ratio"
-              src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-              alt="Blog Image 5"
-            />
           </div>
         </section>
-      ) : (
-        <p>Loading...</p> // 加載中的提示
-      )}
-      <BlogComments />
+        <div className="container mt-5">
+          <div className="mb-5">
+            <p className="fs-5 fw-bold">{blogData.blog_brand}</p>
+          </div>
+          <div className="mb-5">
+            <p className="fs-5 fw-bold">購買機型型號</p>
+          </div>
+          <div className="w-100 h-25 overflow-hidden m-auto">
+            <img
+              className="object-fit-cover w-100 h-100"
+              src={blogData.blog_blog_image}
+              alt="..."
+            />
+          </div>
+        </div>
+        <section className="container BlogDetailSectionContentArea">
+          <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
+            {blogData.blog_title}
+          </p>
+          <p className="BlogDetailText">{blogData.blog_content}</p>
+        </section>
+      </div>
     </>
   )
 }
