@@ -4,31 +4,30 @@ import { useAuth } from '@/hooks/use-auth'
 import LeaseCard from '@/components/cart/lease-card'
 import BuyCard from '@/components/cart/buy-card'
 import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
+
+const accessToken = Cookies.get('accessToken')
+console.log(accessToken) // 顯示 accessToken 的值
+
+const parseJwt = (token) => {
+  const base64Payload = token.split('.')[1]
+  const payload = atob(base64Payload)
+  return JSON.parse(payload.toString())
+}
 
 export default function CartIndex() {
   const [category, setCategory] = useState('lease')
-  const router = useRouter()
   const { auth } = useAuth()
   const { isAuth } = auth
-
-  useEffect(() => {
-    // 這裡可以寫一些初始化的邏輯
-    if (!isAuth) {
-      // 如果沒有登入，可以跳轉到登入頁
-      return router.push('/member/login')
-    }
-    const fetchData = async () => {
-      try {
-        const data = await fetch('http://localhost:3005/api/cart/lease')
-      } catch (error) {
-        console.error('無法取得資料:', error)
-      }
-    }
-  }, [])
+  const router = useRouter()
 
   const handleCheckboxChange = (selectedCategory) => {
     setCategory(selectedCategory)
   }
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken')
+    console.log(accessToken) // 顯示 accessToken 的值
+  }, [])
 
   return (
     <>
