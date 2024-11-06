@@ -6,6 +6,8 @@ import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
 import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
+// 優惠卷
+import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 
 export default function Dashboard() {
@@ -55,7 +57,7 @@ export default function Dashboard() {
         >
           <Tab className="align-items-center" eventKey="home" title="會員中心">
             <div>
-              <UserProfile />
+              <FileManagementTable />
             </div>
           </Tab>
           <Tab eventKey="shopping-record" title="購買清單">

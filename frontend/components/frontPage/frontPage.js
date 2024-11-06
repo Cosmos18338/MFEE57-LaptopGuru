@@ -28,7 +28,7 @@ export default function FrontPage(props) {
             <div className="home-two">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>02</span>
+                  <span>01</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
@@ -38,7 +38,7 @@ export default function FrontPage(props) {
             <div className="home-three">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>03</span>
+                  <span>02</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
@@ -48,16 +48,16 @@ export default function FrontPage(props) {
             <div className="home-four">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>04</span>
+                  <span>03</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
                 </div>
               </div>
             </div>
-            <button className="home-btn">
+            {/* <button className="home-btn">
               <img src="/images/index/arrow.svg" alt />
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="home-section2">
