@@ -57,7 +57,7 @@ export default function Dashboard() {
         >
           <Tab className="align-items-center" eventKey="home" title="會員中心">
             <div>
-              <FileManagementTable />
+              <UserProfile />
             </div>
           </Tab>
           <Tab eventKey="shopping-record" title="購買清單">
