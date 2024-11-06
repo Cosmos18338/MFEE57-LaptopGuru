@@ -24,10 +24,6 @@ export default function CartIndex() {
   const handleCheckboxChange = (selectedCategory) => {
     setCategory(selectedCategory)
   }
-  useEffect(() => {
-    const accessToken = Cookies.get('accessToken')
-    console.log(accessToken) // 顯示 accessToken 的值
-  }, [])
 
   return (
     <>
