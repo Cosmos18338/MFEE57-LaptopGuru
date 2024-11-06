@@ -31,6 +31,7 @@ const AuthContext = createContext(null)
 // 只需要必要的資料即可，沒有要多個頁面或元件用的資料不需要加在這裡
 // !!注意JWT存取令牌中只有id, username, google_uid, line_uid在登入時可以得到
 export const initUserData = {
+  user_id: 0,
   name: '',
   password: '',
   gender: '',
@@ -46,7 +47,7 @@ export const initUserData = {
   remarks: '',
 }
 // 可以視為webtoken要押的資料
-
+// 承接登入以後用的
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuth: false,
