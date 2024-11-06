@@ -40,7 +40,7 @@ router.post('/', async (req, res) => {
 })
 
 
-router.delete('/', async function (req, res) {
+router.put('/', async function (req, res) {
   const {user_id} =req.body
   try {
     const [users] = await db.query('UPDATE users SET valid = 0 WHERE user_id=?',[user_id] )
