@@ -11,7 +11,96 @@ const upload = multer()
 // 動態路由記得寫
 
 // 查詢後得到的變數是 responseData
-console.log('有進來 blog.js 而已，下一步沒有進去')
+console.log('有進來 blog.js 而已，下一步路由沒有進去，檢查分個路由')
+
+router.get('/blog-detail/:blog_id', async (req, res) => {
+  try {
+    const blogId = req.params.blog_id // 從 URL 參數中獲取 blog_id
+
+    // 從 blogoverview 表中撈取符合條件的資料
+    const [blogData] = await db.query(
+      `
+      SELECT 
+        blog_user_id,
+        blog_type,
+        blog_title,
+        blog_content,
+        blog_created_date,
+        blog_brand,
+        blog_image,
+        blog_views,
+        blog_keyword,
+        blog_valid_value,
+        blog_url
+      FROM blogoverview
+      WHERE blog_valid_value = 1 AND blog_id = ?
+    `,
+      [blogId]
+    )
+
+    // 檢查是否有撈到資料
+    if (blogData.length === 0) {
+      return res.json({ status: 'error', message: '查無相關部落格資料' })
+    }
+
+    // 回傳資料
+    res.json({ status: 'success', data: blogData[0] })
+  } catch (error) {
+    console.error('Error fetching blog data:', error)
+    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
+  }
+})
+
+router.post('/blogcreated', async (req, res) => {
+  try {
+    // 從請求中獲取數據
+    const {
+      blog_title,
+      blog_content,
+      blog_brand,
+      blog_brand_model,
+      blog_image,
+    } = req.body
+
+    // 基本驗證
+    if (!blog_title || !blog_content || !blog_brand || !blog_brand_model) {
+      return res.status(400).json({
+        success: false,
+        message: '請填寫所有必要欄位',
+      })
+    }
+
+    // 插入資料庫
+    const sql = `
+      INSERT INTO blogoverview 
+      (blog_title, blog_content, blog_brand, blog_brand_model, blog_image) 
+      VALUES (?, ?, ?, ?, ?)
+    `
+
+    const values = [
+      blog_title,
+      blog_content,
+      blog_brand,
+      blog_brand_model,
+      blog_image,
+    ]
+
+    const [result] = await db.query(sql, values)
+
+    // 回傳成功訊息
+    res.json({
+      success: true,
+      message: '新增成功',
+      id: result.insertId,
+    })
+  } catch (error) {
+    console.error('資料庫錯誤:', error)
+    res.status(500).json({
+      success: false,
+      message: '新增失敗，請稍後再試',
+    })
+  }
+})
 
 router.get('/blog_detail/:blog_id', upload.none(), async (req, res, next) => {
   const blog_id = req.params.blog_id
@@ -57,43 +146,49 @@ router.get('/blog_detail/:blog_id', upload.none(), async (req, res, next) => {
   }
 })
 
-router.get('/api/blogcard', upload.none(), async (req, res, next) => {
+router.get('/blogcard', upload.none(), async (req, res, next) => {
   try {
-    // 從 blogoverview 表中撈取符合條件的最新 6 筆資料
-    const [blogData] = await db.query(`
+    // 從 query 參數中接收 blog_id
+    const blogId = req.query.blog_id
+
+    // 從 blogoverview 表中撈取符合條件的資料，根據 blog_id
+    const [blogData] = await db.query(
+      `
       SELECT 
-        blog_id,
+        blog_user_id,
+        blog_type,
         blog_title,
         blog_content,
         blog_created_date,
         blog_brand,
-        blog_brand_model,
-        blog_type,
+        blog_image,
         blog_views,
+        blog_keyword,
+        blog_valid_value,
         blog_url
       FROM blogoverview
-      WHERE blog_valid_value = 1
-      ORDER BY blog_id DESC
-      LIMIT 6
-    `)
+      WHERE blog_valid_value = 1 AND blog_id = ?
+    `,
+      [blogId]
+    )
 
     // 檢查是否有撈到資料
     if (blogData.length === 0) {
       return res.json({ status: 'error', message: '查無相關部落格資料' })
     }
 
-    // 2. 對於每個 blog_id，從 blogimage 表中撈取對應的圖片
-    const blogIds = blogData.map((blog) => blog.blog_id)
+    // 2. 根據 blog_id 從 blogimage 表中撈取對應的圖片
     const [imagesData] = await db.query(
       `
       SELECT blog_id, blog_image
       FROM blogimage
-      WHERE blog_id IN (?)
+      WHERE blog_id = ?
       ORDER BY blog_id DESC
     `,
-      [blogIds]
+      [blogId]
     )
 
+    // 把圖片資料加入每篇文章
     const blogWithImages = blogData.map((blog) => {
       const images = imagesData
         .filter((image) => image.blog_id === blog.blog_id)

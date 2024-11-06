@@ -5,7 +5,6 @@ export default function BlogcreatedCoverimageupload(props) {
     <>
       <div className="container BlogImgUploadDiv d-flex align-items-center justify-content-center">
         <i className="fa-solid fa-arrow-up-from-bracket" />
-        {/* <input type="text" style="display: none" /> */}
       </div>
     </>
   )
