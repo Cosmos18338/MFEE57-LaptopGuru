@@ -11,44 +11,44 @@ const router = express.Router()
 
 /* GET home page. */
 router.post('/login', upload.none(), async (req, res, next) => {
- try {
-   console.log(req.body)
-   const { email, password } = req.body
+  try {
+    console.log(req.body)
+    const { email, password } = req.body
 
-   const [row] = await db.query(
-     'SELECT user_id, email, password FROM users WHERE email = ?',
-     [email]
-   )
-// 這邊實際上是帳號錯誤
-   if (row.length === 0) {
-     return res.json({ status: 'error', message: '帳號或密碼錯誤' })
-   }
+    const [row] = await db.query(
+      'SELECT user_id, email, password FROM users WHERE email = ?',
+      [email]
+    )
+    // 這邊實際上是帳號錯誤
+    if (row.length === 0) {
+      return res.json({ status: 'error', message: '帳號或密碼錯誤' })
+    }
 
-   const user = row[0]
-   // compareHash比對輸入與資料庫中的密碼~
-   const passwordMatch = await compareHash(password, user.password)
-  //  這邊實際上是密碼錯誤
-   if (!passwordMatch) {
-     return res.json({
-       status: 'error',
-       message: '帳號或密碼錯誤'
-     })
-   }
-   // 之後想改這邊邏輯，因為帳號密碼應該只能有比對出一組，如果email一樣不予註冊才對。
-   const token = jsonwebtoken.sign(
-     {
-       user_id: user.user_id,
-       email: user.email,
-       country: user.country,
-       city: user.city,
-       road_name: user.road_name,
-       detailed_address: user.detailed_address,
-       level: user.level,
-       phone: user.phone,
-     },
-     accessTokenSecret,
-     { expiresIn: '2d' }
-   )
+    const user = row[0]
+    // compareHash比對輸入與資料庫中的密碼~
+    const passwordMatch = await compareHash(password, user.password)
+    //  這邊實際上是密碼錯誤
+    if (!passwordMatch) {
+      return res.json({
+        status: 'error',
+        message: '帳號或密碼錯誤',
+      })
+    }
+    // 之後想改這邊邏輯，因為帳號密碼應該只能有比對出一組，如果email一樣不予註冊才對。
+    const token = jsonwebtoken.sign(
+      {
+        user_id: user.user_id,
+        email: user.email,
+        country: user.country,
+        city: user.city,
+        road_name: user.road_name,
+        detailed_address: user.detailed_address,
+        level: user.level,
+        phone: user.phone,
+      },
+      accessTokenSecret,
+      { expiresIn: '2d' }
+    )
 
     res.cookie('accessToken', token)
 

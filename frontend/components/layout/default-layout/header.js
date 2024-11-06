@@ -24,16 +24,18 @@ export default function Header(props) {
             <a className="text-light me-3">文章</a>
             <a className="text-light me-3">部落格</a>
           </div>
-          {isAuth ? (
+          {isAuth == true ? (
             <>
               <Link href="/dashboard">
                 <div className="user-avater me-3">
                   <img src="/Vector.svg" />
                 </div>
               </Link>
-              <div className="cart">
-                <img src="/cart.svg" />
-              </div>
+              <Link href="/cart">
+                <div className="cart">
+                  <img src="/cart.svg" />
+                </div>
+              </Link>
             </>
           ) : (
             <>

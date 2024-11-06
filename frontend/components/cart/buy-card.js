@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 
 export default function BuyCard(props) {
+  const { item, image, model, price } = props
   return (
     <>
       <div className="card p-3 border-primary mb-3">
@@ -20,11 +21,15 @@ export default function BuyCard(props) {
               <img src="/images/lease/15-fd1149TU.png" alt />
             </div>
           </div>
-          <div className="col-5">15-fd1149TU</div>
+          <div className="col-5">{model}</div>
           <div className="col-2">
-            <input type="number" defaultValue={1} className="w-50" />
+            <input
+              type="number"
+              defaultValue={item.quantity}
+              className="w-50"
+            />
           </div>
-          <div className="col-2">$1000</div>
+          <div className="col-2">{price}</div>
         </div>
       </div>
     </>
