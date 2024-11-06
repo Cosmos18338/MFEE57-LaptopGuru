@@ -12,7 +12,7 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 
 export default function Dashboard() {
   const { auth } = useAuth() // 從 auth context 獲取用戶資訊
-  const router = useRouter()
+  // const router = useRouter()
 
   useEffect(() => {
     const fetchData = async () => {
