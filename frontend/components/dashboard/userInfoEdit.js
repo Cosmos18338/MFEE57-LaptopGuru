@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Swal from 'sweetalert2'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
 import { useAuth } from '@/hooks/use-auth'
@@ -25,7 +26,8 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('<http://localhost:3005/dashboard>')
+        const response1 = await axios.get(`/api/dashboard/${user_id}`, user)
+
         const result = await response.json()
         if (result.status === 'success') {
           setData(result.users)
@@ -78,11 +80,60 @@ export default function UserProfile() {
     }
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', user)
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      // 表單驗證
+      if (!user.name || !user.email) {
+        Swal.fire('請填寫必要欄位');
+        return;
+      }
+     
+      // 更新使用者
+      const response = await axios.put(`/api/users/${user.id}`, {
+        name: user.name,
+        email: user.email,
+        // 其他要更新的欄位...
+      });
+  
+      if (response.status === 200) {
+        Swal.fire('使用者資料更新成功');
+        // 可能需要更新本地狀態或重新導向
+        // setUser(response.data);
+        // router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('更新失敗:', error);
+      Swal.fire(error.response?.data?.message || '更新失敗，請稍後再試');
+    }
+  };
+  
+  const handleDeactivate = async () => {
+    try {
+      // 建議加入確認對話框
+      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號');
+      
+      if (!isConfirmed) {
+        return;
+      }
+  
+      // 軟刪除/停用使用者
+      const response = await axios.patch(`/api/users/${user.id}/deactivate`, {
+        isActive: false,
+        deactivatedAt: new Date().toISOString()
+      });
+  
+      if (response.status === 200) {
+        Swal.fire('使用者已停用');
+        // 可能需要更新使用者列表或重新導向
+        // router.push('/users');
+      }
+    } catch (error) {
+      console.error('停用失敗:', error);
+      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試');
+    }
+  };
 
   // const handleAddressUpdate = (e) => {
   //   const { name, value } = e.target;
@@ -251,16 +302,27 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
-                      <div className="text-center">
+                      <div className="d-flex justify-content-between">
                         <button
-                          type="submit"
+                          type="button"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
                             borderColor: '#805AF5',
                           }}
                         >
-                          儲存
+                          更新
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          style={{
+                            backgroundColor: '#805AF5',
+                            borderColor: '#805AF5',
+                          }}
+                          onClick={handleDeactivate}
+                        >
+                          停用
                         </button>
                       </div>
                     </form>
@@ -294,15 +356,17 @@ export default function UserProfile() {
                           />
                         </div>
                         <button
-                          type="submit"
+                          type="button"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
                             borderColor: '#805AF5',
                           }}
                         >
-                          更新大頭照
+                          更新
                         </button>
+
+                       
 
                         {/* 顯示上傳狀態 */}
                         {uploadStatus && (
