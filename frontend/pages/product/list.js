@@ -1,35 +1,51 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import styles from '@/styles/product.module.scss'
-import NextBreadCrumb from '@/components/common/next-breadcrumb'
+import NextBreadCrumbLight from '@/components/common/next-breadcrumb-light'
+import ProductCard from '@/components/product/product-card'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
+import Image from 'next/image'
 export default function List() {
-  // Toggle the side navigation
-  useEffect(() => {
-    // fix next issue
-    if (typeof window !== 'undefined') {
-      const sidebarToggle = document.body.querySelector('#sidebarToggle')
+  // 小尺寸時的側邊欄開關
+  const [isChecked, setIsChecked] = useState(false)
+  const handleToggle = (event) => {
+    setIsChecked(event.target.checked)
+  }
 
-      if (sidebarToggle) {
-        // 在localStorage中儲存目前sidebar情況
-        if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-          document.body.classList.toggle('sb-sidenav-toggled')
-        }
+  // 價格提示框 與 防呆
+  const [priceMin, setPriceMin] = useState(0)
+  const [priceMax, setPriceMax] = useState(200000)
+  const [tooltipMinVisible, setTooltipMinVisible] = useState(false)
+  const [tooltipMaxVisible, setTooltipMaxVisible] = useState(false)
 
-        sidebarToggle.addEventListener('click', (event) => {
-          event.preventDefault()
-
-          document.body.classList.toggle('sb-sidenav-toggled')
-
-          localStorage.setItem(
-            'sb|sidebar-toggle',
-            document.body.classList.contains('sb-sidenav-toggled')
-          )
-        })
-      }
+  const handleMinChange = (e) => {
+    const minValue = parseInt(e.target.value)
+    if (minValue + 4000 > priceMax) {
+      setPriceMin(priceMax - 4000)
+    } else {
+      setPriceMin(minValue)
     }
-  }, [])
+  }
+
+  const handleMaxChange = (e) => {
+    const maxValue = parseInt(e.target.value)
+    if (maxValue - 4000 < priceMin) {
+      setPriceMax(priceMin + 4000)
+    } else {
+      setPriceMax(maxValue)
+    }
+  }
+
+  const updateTooltipPosition = (value, min, max, sliderWidth) => {
+    const percent = (value - min) / (max - min)
+    return percent * sliderWidth
+  }
+
+  useEffect(() => {}, [])
 
   return (
     <>
+      <Header />
       <div className={`${styles.product_container}`}>
         <div className={`${styles.product_banner}`}>
           <div className={`${styles.product_text_container}`}>
@@ -42,11 +58,12 @@ export default function List() {
           </div>
         </div>
         <nav className={`${styles.product_breadcrumb}`}>
-          <NextBreadCrumb />
+          <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
         </nav>
         <input
           type="checkbox"
           id="product_aside_toggle"
+          onChange={handleToggle}
           className={`${styles.product_aside_toggle}`}
         />
         <div className={`${styles.product_aside_toggle_wrapper}`}>
@@ -65,17 +82,23 @@ export default function List() {
         </div>
         <div className="d-flex align-items-start">
           {/* 側邊欄 */}
-          <aside className={`${styles.product_aside}`}>
+          <aside
+            className={`${styles.product_aside} ${
+              isChecked ? `${styles.show}` : ''
+            }`}
+          >
             <div className={`${styles.product_aside_content}`}>
               <input
                 type="text"
                 className={`${styles.product_search}`}
                 placeholder="Search"
               />
-              <img
+              <Image
                 src="/images/product/search.svg"
-                className="
-              product_search_icon"
+                className={`${styles.product_search_icon}`}
+                alt="search"
+                width={20}
+                height={20}
               />
             </div>
             <div className={`${styles.product_slider_container}`}>
@@ -85,23 +108,58 @@ export default function List() {
                 min={5000}
                 max={200000}
                 defaultValue={5000}
+                value={priceMin}
+                onInput={handleMinChange}
+                onMouseEnter={() => setTooltipMinVisible(true)}
+                onMouseLeave={() => setTooltipMinVisible(false)}
                 className={`${styles.product_slider}`}
                 id="slider-1"
               />
-              <div id="price_tip-1" className={`${styles.price_tip}`}>
-                5000
-              </div>
+              {tooltipMinVisible && (
+                <div
+                  id="price_tip-1"
+                  style={{
+                    left: `${updateTooltipPosition(
+                      priceMin,
+                      0,
+                      200000,
+                      150
+                    )}px`,
+                  }}
+                  className={`${styles.price_tip}`}
+                >
+                  {priceMin}
+                </div>
+              )}
+
               <input
                 type="range"
                 min={5000}
                 max={200000}
                 defaultValue={200000}
+                value={priceMax}
+                onInput={handleMaxChange}
+                onMouseEnter={() => setTooltipMaxVisible(true)}
+                onMouseLeave={() => setTooltipMaxVisible(false)}
                 className={`${styles.product_slider}`}
                 id="slider-2"
               />
-              <div id="price_tip-2" className={`${styles.price_tip}`}>
-                200000
-              </div>
+              {tooltipMaxVisible && (
+                <div
+                  id="price_tip-2"
+                  style={{
+                    left: `${updateTooltipPosition(
+                      priceMax,
+                      0,
+                      200000,
+                      150
+                    )}px`,
+                  }}
+                  className={`${styles.price_tip}`}
+                >
+                  {priceMax}
+                </div>
+              )}
             </div>
             {/* 選單 */}
             <div className={`${styles.product_list_container}`}>
@@ -380,714 +438,12 @@ export default function List() {
           </aside>
           {/* 產品列表 */}
           <main className={`${styles.product_list}`}>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
-            <div className={`${styles.product_card}`}>
-              <div className={`${styles.product_card_img}`}>
-                <input
-                  type="checkbox"
-                  id="productCompareCheck"
-                  className={`${styles.product_compare_checkbox}`}
-                />
-                <label
-                  htmlFor="productCompareCheck"
-                  className={`${styles.product_compare_label}`}
-                >
-                  &nbsp;
-                </label>
-                <span className={`${styles.product_compare_text}`}>比較</span>
-                <img src="/images/product/product.png" />
-              </div>
-              <div className={`${styles.product_card_content}`}>
-                <div className={`${styles.product_text}`}>
-                  <div>Katana 15</div>
-                  <div>B13VGK-1201TW...</div>
-                </div>
-                <div className={`${styles.product_icons}`}>
-                  <input
-                    type="checkbox"
-                    id="heartCheckbox"
-                    className={`${styles.product_collection_checkbox}`}
-                  />
-                  <svg
-                    className={`${styles.product_collection_icon}`}
-                    onclick="toggleHeart()"
-                    width={20}
-                    height={20}
-                    viewBox="0 0 32 30"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      id="Vector"
-                      fillRule="evenodd"
-                      clipRule="evenodd"
-                      d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-                      stroke="white"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  <img
-                    onClick="showCartAlert()"
-                    src="/images/product/cart.svg"
-                    alt="cart"
-                  />
-                </div>
-              </div>
-              <div className={`${styles.price_button}`}>
-                <span className={`${styles.price}`}>$50,000</span>
-                <span className={`${styles.arrow}`}>→</span>
-              </div>
-            </div>
+            {
+              // 產品卡片
+              [...Array(12).keys()].map((v, i) => (
+                <ProductCard key={i} />
+              ))
+            }
           </main>
         </div>
         <div className={`${styles.product_pagination}`}>
@@ -1146,6 +502,8 @@ export default function List() {
           style={{ zIndex: 1050 }}
         ></div>
       </div>
+      <MyFooter />
     </>
   )
 }
+List.getLayout = (page) => page

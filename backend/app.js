@@ -13,7 +13,6 @@ import signupRouter from './routes/signup.js'
 import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
 
-
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
 const FileStore = sessionFileStore(session)
@@ -21,7 +20,6 @@ const FileStore = sessionFileStore(session)
 // 持久化保存：當伺服器重啟時，session 資料不會丟失
 // 開發階段方便：可以直接查看 session 文件內容進行除錯
 // 不需要額外的數據庫服務：適合小型專案或開發環境
-
 
 // 但在生產環境中通常不建議使用 FileStore：
 
@@ -44,12 +42,12 @@ const app = express()
 // cors設定，參數為必要，注意不要只寫`app.use(cors())`
 app.use(
   cors({
-    origin: ['http://localhost:3000','https://localhost:9000'],
+    origin: ['http://localhost:3000', 'https://localhost:9000'],
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 )
-// 
+//
 // 視圖引擎設定
 app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'pug')
@@ -75,7 +73,7 @@ async function testConnection() {
     connection.release()
   } catch (error) {
     console.error('Database connection failed:', error)
-    process.exit(1)  // 如果連線失敗就終止程式
+    process.exit(1) // 如果連線失敗就終止程式
   }
 }
 
@@ -94,7 +92,7 @@ app.use(
     saveUninitialized: false,
   })
 )
-
+// 以上那個session-cookie 應該不是我們的
 // 載入routes中的各路由檔案，並套用api路由 START
 const apiPath = '/api' // 預設路由
 const routePath = path.join(__dirname, 'routes')

@@ -177,7 +177,7 @@ export default function Signup() {
         <div className={`${styles.left} col-4`}>
           <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
           <h3 className={`text-white ${styles['guru-laptop']}`}>GURU Laptop</h3>
-          {/* 密碼請至少輸入6個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。 */}
+          {/* 密碼請至少輸入8個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。 */}
         </div>
         <div className={`${styles.right} col-sm-12 col-md-4`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>
