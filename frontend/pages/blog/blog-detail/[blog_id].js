@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import BlogDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
+import BlogComments from '@/components/blog/blogdetail/blogdetail-commentgroup'
 
 export default function BlogDetail(props) {
   // 使用 Router()
@@ -16,7 +17,7 @@ export default function BlogDetail(props) {
     blog_valid_value: '',
     blog_url: '',
   })
-  console.log('13245')
+  console.log('BlogDetail鉤子有成功上狀態')
 
   const [loading, setLoading] = useState(true)
 
@@ -27,28 +28,40 @@ export default function BlogDetail(props) {
       const res = await fetch(url)
       const resData = await res.json()
       console.log('Response Data:', resData)
-      if (
-        resData.status === 'success' &&
-        Array.isArray(resData.data) &&
-        resData.data.length > 0
-      ) {
-        setBlog(resData.data[0])
-        console.log('Blog Loaded:', resData.data[0])
+
+      if (resData.status === 'success' && resData.data) {
+        const { overview, comments, images, keywords } = resData.data
+
+        setBlog({
+          blog_id: blog_id,
+          blog_title: overview[0]?.title || '',
+          blog_content: overview[0]?.content || '',
+          blog_created_date: overview[0]?.created_at || '',
+          blog_brand: overview[0]?.brand || '',
+          blog_type: overview[0]?.type || '',
+          blog_valid_value: overview[0]?.valid_value || '',
+          blog_url: overview[0]?.url || '',
+        })
+
+        // 傳遞 comments 資料給 BlogComments 組件
+        setComments(comments)
+
+        console.log('Blog Loaded:', resData.data)
       } else {
         console.log('資料錯誤:', resData)
       }
     } catch (e) {
       console.log('Fetch error:', e)
     } finally {
-      setLoading(false) // 完成加载
+      setLoading(false) // 完成加載
     }
   }
 
   useEffect(() => {
-    console.log('Router query:', router.query) // 调试信息
-    console.log('Router is ready:', router.isReady) // 检查 router.isReady 的状态
+    console.log('Router query:', router.query) // 調試信息
+    console.log('Router is ready:', router.isReady) // 檢查 router.isReady 的狀態
     if (router.isReady && router.query.blog_id) {
-      console.log('Fetching blog with ID:', router.query.blog_id) // 调试信息
+      console.log('Fetching blog with ID:', router.query.blog_id) // 調試信息
       console.log('11111')
 
       getBlog(router.query.blog_id)
@@ -59,7 +72,7 @@ export default function BlogDetail(props) {
     <>
       <BlogDetailMainArea />
 
-      {blog ? (
+      {blog.blog_id !== 0 ? ( // 確保 blog_id 已經存在並且不為 0
         <section className="BlogDetailSectionContentArea">
           <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
             {blog.blog_title}
@@ -70,14 +83,14 @@ export default function BlogDetail(props) {
               <img
                 className="w-100 h-100 ratio"
                 src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                alt=""
+                alt="Blog Image 1"
               />
             </div>
             <div className="col-6">
               <img
                 className="w-100 h-100 ratio"
                 src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                alt=""
+                alt="Blog Image 2"
               />
             </div>
           </div>
@@ -88,14 +101,14 @@ export default function BlogDetail(props) {
                 <img
                   className="w-100 h-100 ratio"
                   src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                  alt=""
+                  alt="Blog Image 3"
                 />
               </div>
               <div className="col-6">
                 <img
                   className="w-100 h-100 ratio"
                   src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-                  alt=""
+                  alt="Blog Image 4"
                 />
               </div>
             </div>
@@ -104,13 +117,14 @@ export default function BlogDetail(props) {
             <img
               className="w-50 h-50 ratio"
               src="https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain"
-              alt=""
+              alt="Blog Image 5"
             />
           </div>
         </section>
       ) : (
         <p>Loading...</p> // 加載中的提示
       )}
+      <BlogComments />
     </>
   )
 }
