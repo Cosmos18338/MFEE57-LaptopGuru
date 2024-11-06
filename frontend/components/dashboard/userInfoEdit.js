@@ -10,8 +10,12 @@ export default function UserProfile() {
     gender: '男',
     birthdate: '',
     phone: '0900000000',
-    address: '100台北市中正區重慶南路一段122號',
-    email: 'LaiosTouden@gmail.com',
+    country: '',
+    city: '',
+    district: '',
+    road_name: '',
+    detailed_address: '',
+    email: '@gmail.com',
   })
 
   useEffect(() => {
@@ -90,10 +94,12 @@ export default function UserProfile() {
       <div className="container">
         <div className="row d-flex justify-content-center">
           {/* LeftAside 左邊側欄 */}
-          <div className="col-md-2"></div>
+            {/* <div className="col-md-2"></div> */}
+
 
           {/* Main Content (User Profile) */}
-          <div className="col-md-9">
+          <div className="">{/* <div className="col-md-9"></div> */}
+
             <div className="card">
               <div
                 className="card-header d-flex align-items-center"
@@ -119,7 +125,7 @@ export default function UserProfile() {
 
                       <div className="mb-3 row">
                         <label
-                          htmlFor="username"
+                          htmlFor="name"
                           className="col-sm-3 col-form-label"
                         >
                           使用者名稱
@@ -130,10 +136,10 @@ export default function UserProfile() {
                             className="form-control"
                             id="name"
                             name="name"
-                            value={userData.name}
-                            onChange={(e) => {
-                              setAuth(e.target.value)
-                            }}
+                            // value={userData.name}
+                            // onChange={(e) => {
+                            //   setAuth(e.target.value)
+                            // }}
                           />
                         </div>
                       </div>
@@ -146,12 +152,19 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="password"
+                            type={showpassword ? 'text' : 'password'}
                             className="form-control"
                             id="password"
                             name="password"
                             value={user.password}
                             onChange={handleInputChange}
+                          />
+                          <input
+                            type="checkbox"
+                            id="showpassword"
+                            checked={showpassword}
+                            onChange={() => setShowpassword(!showpassword)}
+                            className="form-check-input"
                           />
                         </div>
                       </div>
