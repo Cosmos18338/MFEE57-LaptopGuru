@@ -43,8 +43,8 @@ export default function CouponUse(props) {
     <>
       <div className="filter-section mb-4">
         <div className="d-flex align-items-center">
-          <span className="me-3">狀態篩選</span>
-          <button
+          <span className="me-3">現有優惠卷</span>
+          {/* <button
             className="btn btn-outline-primary btn-sm me-2"
             style={{
               color: '#805AF5',
@@ -82,7 +82,7 @@ export default function CouponUse(props) {
             }}
           >
             已過期
-          </button>
+          </button> */}
         </div>
       </div>
     </>
