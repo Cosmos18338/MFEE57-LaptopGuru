@@ -66,6 +66,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
+
 async function testConnection() {
   try {
     const connection = await db.getConnection()
