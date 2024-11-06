@@ -128,10 +128,12 @@ export default function UserProfile() {
                           <input
                             type="text"
                             className="form-control"
-                            id="username"
-                            name="username"
-                            value={user.name}
-                            onChange={handleInputChange}
+                            id="name"
+                            name="name"
+                            value={userData.name}
+                            onChange={(e) => {
+                              setAuth(e.target.value)
+                            }}
                           />
                         </div>
                       </div>

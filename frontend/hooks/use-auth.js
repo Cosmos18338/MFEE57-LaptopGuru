@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
   const loginRoute = '/member/login'
   // 隱私頁面路由，未登入時會，檢查後跳轉至登入頁
   const protectedRoutes = [
-    '/test/user/status',
+    '/dashboard/index',
     '/test/user/profile',
     '/test/user/profile-password',
     '/dashboard',
