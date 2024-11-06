@@ -4,23 +4,30 @@ import { useAuth } from '@/hooks/use-auth'
 import LeaseCard from '@/components/cart/lease-card'
 import BuyCard from '@/components/cart/buy-card'
 import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
+
+const accessToken = Cookies.get('accessToken')
+console.log(accessToken) // 顯示 accessToken 的值
+
+const parseJwt = (token) => {
+  const base64Payload = token.split('.')[1]
+  const payload = atob(base64Payload)
+  return JSON.parse(payload.toString())
+}
 
 export default function CartIndex() {
   const [category, setCategory] = useState('lease')
-  const router = useRouter()
   const { auth } = useAuth()
   const { isAuth } = auth
-
-  useEffect(() => {
-    // if (!isAuth) {
-    //   router.push('/login')
-    // }
-    console.log('isAuth:', isAuth)
-  }, [])
+  const router = useRouter()
 
   const handleCheckboxChange = (selectedCategory) => {
     setCategory(selectedCategory)
   }
+  useEffect(() => {
+    const accessToken = Cookies.get('accessToken')
+    console.log(accessToken) // 顯示 accessToken 的值
+  }, [])
 
   return (
     <>
