@@ -9,7 +9,7 @@ const upload = multer()
 /* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
   const { user_id } = req.body
-  const [data] = await db.query('SELECT * FROM cart WHERE user_id = ? ', [
+  const [data] = await db.query('SELECT * FROM cart WHERE user_id = ?', [
     user_id,
   ])
   if (data.length == 0) {
