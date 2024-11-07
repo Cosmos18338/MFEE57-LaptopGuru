@@ -43,7 +43,7 @@ router.put('/:user_id', async (req, res) => {
     const { user_id } = req.params
     const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks ,valid} = req.body
     if (password === '******') { 
-      let [result] = await db.query(
+      var [result] = await db.query(
         'UPDATE users SET name=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
         [
           name, birthdate, phone, email, gender,
@@ -53,7 +53,7 @@ router.put('/:user_id', async (req, res) => {
       )
     }else{
       const hashedPassword = await generateHash(password)
-      let [result] = await db.query(
+      var [result] = await db.query(
         'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
         [
           name, hashedPassword, birthdate, phone, email, gender,
