@@ -123,7 +123,7 @@ export default function UserProfile() {
     }))
 
     const selectedCity = taiwanData.find(city => city.CityName === editableUser.city)
-    if (selectedCity) {
+    if (editableUser.city) {
       const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
       if (selectedArea && selectedArea.RoadList) {
         setRoads(selectedArea.RoadList)
