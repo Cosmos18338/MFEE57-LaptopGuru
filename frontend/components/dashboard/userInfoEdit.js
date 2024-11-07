@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2'
 import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
-import $ from 'jquery'
 import { taiwanData } from '@/data/address/data.js'
 
 export default function UserProfile() {
@@ -30,7 +29,112 @@ export default function UserProfile() {
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedImg, setSelectedImg] = useState(null)
 
-  // 获取用户数据
+  // 添加地址相关的状态
+  const [cities, setCities] = useState([])
+  const [districts, setDistricts] = useState([])
+  const [roads, setRoads] = useState([])
+  const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
+  const [isRoadDisabled, setIsRoadDisabled] = useState(true)
+
+  // 按区域分组的城市数据
+  const groupedCities = {
+    北部區域: [
+      { CityName: '台北市', CityEngName: 'Taipei City' },
+      { CityName: '新北市', CityEngName: 'New Taipei City' },
+      { CityName: '基隆市', CityEngName: 'Keelung City' },
+      { CityName: '新竹市', CityEngName: 'Hsinchu City' },
+      { CityName: '桃園市', CityEngName: 'Taoyuan City' },
+      { CityName: '新竹縣', CityEngName: 'Hsinchu County' },
+    ],
+    中部區域: [
+      { CityName: '台中市', CityEngName: 'Taichung City' },
+      { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
+      { CityName: '彰化縣', CityEngName: 'Changhua County' },
+      { CityName: '南投縣', CityEngName: 'Nantou County' },
+      { CityName: '雲林縣', CityEngName: 'Yunlin County' },
+    ],
+    南部區域: [
+      { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
+      { CityName: '台南市', CityEngName: 'Tainan City' },
+      { CityName: '嘉義市', CityEngName: 'Chiayi City' },
+      { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
+      { CityName: '屏東縣', CityEngName: 'Pingtung County' },
+    ],
+    東部區域: [
+      { CityName: '宜蘭縣', CityEngName: 'Yilan County' },
+      { CityName: '花蓮縣', CityEngName: 'Hualien County' },
+      { CityName: '台東縣', CityEngName: 'Taitung County' },
+    ],
+    離島區域: [
+      { CityName: '金門縣', CityEngName: 'Kinmen County' },
+      { CityName: '連江縣', CityEngName: 'Lienchiang County' },
+      { CityName: '澎湖縣', CityEngName: 'Penghu County' },
+    ],
+  }
+
+  // 处理国家选择变化
+  const handleCountryChange = (e) => {
+    const { name, value } = e.target
+    setEditableUser(prev => ({
+      ...prev,
+      [name]: value,
+      city: '',
+      district: '',
+      road_name: ''
+    }))
+
+    if (value === '台灣') {
+      setIsDistrictDisabled(false)
+    } else {
+      setIsDistrictDisabled(true)
+      setIsRoadDisabled(true)
+      setDistricts([])
+      setRoads([])
+    }
+  }
+
+  const handleCityChange = (e) => {
+    const { name, value } = e.target
+    setEditableUser(prev => ({
+      ...prev,
+      [name]: value,
+      district: '',
+      road_name: ''
+    }))
+
+    const selectedCity = taiwanData.find(city => city.CityName === value)
+    if (selectedCity) {
+      setDistricts(selectedCity.AreaList)
+      setIsDistrictDisabled(false)
+    } else {
+      setDistricts([])
+      setIsDistrictDisabled(true)
+    }
+    setRoads([])
+    setIsRoadDisabled(true)
+  }
+
+  const handleDistrictChange = (e) => {
+    const { name, value } = e.target
+    setEditableUser(prev => ({
+      ...prev,
+      [name]: value,
+      road_name: ''
+    }))
+
+    const selectedCity = taiwanData.find(city => city.CityName === editableUser.city)
+    if (selectedCity) {
+      const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
+      if (selectedArea && selectedArea.RoadList) {
+        setRoads(selectedArea.RoadList)
+        setIsRoadDisabled(false)
+      } else {
+        setRoads([])
+        setIsRoadDisabled(true)
+      }
+    }
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -68,131 +172,6 @@ export default function UserProfile() {
     }
   }, [user_id])
 
-  // 地址选择相关逻辑
-  useEffect(() => {
-    const citySelect = $('#city')
-    const districtSelect = $('#district')
-    const roadSelect = $('#roadList')
-
-    // 按區域分組的縣市數據
-    const groupedCities = {
-      北部區域: [
-        { CityName: '台北市', CityEngName: 'Taipei City' },
-        { CityName: '新北市', CityEngName: 'New Taipei City' },
-        { CityName: '基隆市', CityEngName: 'Keelung City' },
-        { CityName: '新竹市', CityEngName: 'Hsinchu City' },
-        { CityName: '桃園市', CityEngName: 'Taoyuan City' },
-        { CityName: '新竹縣', CityEngName: 'Hsinchu County' },
-      ],
-      中部區域: [
-        { CityName: '台中市', CityEngName: 'Taichung City' },
-        { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
-        { CityName: '彰化縣', CityEngName: 'Changhua County' },
-        { CityName: '南投縣', CityEngName: 'Nantou County' },
-        { CityName: '雲林縣', CityEngName: 'Yunlin County' },
-      ],
-      南部區域: [
-        { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-        { CityName: '台南市', CityEngName: 'Tainan City' },
-        { CityName: '嘉義市', CityEngName: 'Chiayi City' },
-        { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
-        { CityName: '屏東縣', CityEngName: 'Pingtung County' },
-      ],
-      東部區域: [
-        { CityName: '宜蘭縣', CityEngName: 'Yilan County' },
-        { CityName: '花蓮縣', CityEngName: 'Hualien County' },
-        { CityName: '台東縣', CityEngName: 'Taitung County' },
-      ],
-      離島區域: [
-        { CityName: '金門縣', CityEngName: 'Kinmen County' },
-        { CityName: '連江縣', CityEngName: 'Lienchiang County' },
-        { CityName: '澎湖縣', CityEngName: 'Penghu County' },
-      ],
-    }
-
-    // 動態載入分組的縣市
-    for (const group in groupedCities) {
-      const optgroup = $('<optgroup>').attr('label', group)
-      groupedCities[group].forEach((city) => {
-        optgroup.append(
-          $('<option>')
-            .val(city.CityName)
-            .text(`${city.CityName} (${city.CityEngName})`)
-        )
-      })
-      citySelect.append(optgroup)
-    }
-
-    // 當選擇國家時，啟用縣市選擇
-    $('#country').on('change', function () {
-      const selectedCountry = $(this).val()
-      if (selectedCountry === '台灣') {
-        citySelect.prop('disabled', false)
-      } else {
-        citySelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇縣市</option>')
-        districtSelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇鄉鎮市區</option>')
-        roadSelect
-          .prop('disabled', true)
-          .empty()
-          .append('<option value="">請選擇居住街道</option>')
-      }
-    })
-
-    // 當選擇縣市時，動態載入鄉鎮市區
-    citySelect.on('change', function () {
-      const selectedCity = $(this).val()
-      districtSelect
-        .prop('disabled', false)
-        .empty()
-        .append('<option value="">請選擇鄉鎮市區</option>')
-      roadSelect
-        .prop('disabled', true)
-        .empty()
-        .append('<option value="">請選擇居住街道</option>')
-
-      const city = taiwanData.find((city) => city.CityName === selectedCity)
-      if (city) {
-        city.AreaList.forEach((area) => {
-          districtSelect.append(
-            $('<option>')
-              .val(area.AreaName)
-              .text(`${area.AreaName} (${area.ZipCode})`)
-          )
-        })
-      }
-    })
-
-    // 當選擇鄉鎮市區時，動態載入對應的道路
-    districtSelect.on('change', function () {
-      const selectedArea = $(this).val()
-      roadSelect
-        .prop('disabled', false)
-        .empty()
-        .append('<option value="">請選擇居住街道</option>')
-
-      const selectedCity = citySelect.val()
-      const city = taiwanData.find((city) => city.CityName === selectedCity)
-
-      if (city) {
-        const area = city.AreaList.find((area) => area.AreaName === selectedArea)
-        if (area && area.RoadList) {
-          area.RoadList.forEach((road) => {
-            roadSelect.append(
-              $('<option>').val(road.RoadName).text(road.RoadName)
-            )
-          })
-        }
-      }
-    })
-  }, [])
-
-  // 处理输入变化
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setEditableUser((prev) => ({
@@ -201,7 +180,6 @@ export default function UserProfile() {
     }))
   }
 
-  // 处理图片上传
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -228,7 +206,6 @@ export default function UserProfile() {
     }
   }
 
-  // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -406,7 +383,7 @@ export default function UserProfile() {
                               className="form-select" 
                               name="country"
                               value={editableUser.country}
-                              onChange={handleInputChange}
+                              onChange={handleCountryChange}
                             >
                               <option value="">請選擇國家</option>
                               <option value="台灣">台灣</option>
@@ -427,11 +404,20 @@ export default function UserProfile() {
                               id="city" 
                               name="city" 
                               className="form-select" 
-                              disabled
+                              disabled={editableUser.country !== '台灣'}
                               value={editableUser.city}
-                              onChange={handleInputChange}
+                              onChange={handleCityChange}
                             >
                               <option value="">請選擇縣市</option>
+                              {Object.entries(groupedCities).map(([region, cities]) => (
+                                <optgroup key={region} label={region}>
+                                  {cities.map(city => (
+                                    <option key={city.CityName} value={city.CityName}>
+                                      {city.CityName} ({city.CityEngName})
+                                    </option>
+                                  ))}
+                                </optgroup>
+                              ))}
                             </select>
                           </div>
                         </div>
@@ -445,11 +431,16 @@ export default function UserProfile() {
                               id="district" 
                               name="district" 
                               className="form-select" 
-                              disabled
+                              disabled={isDistrictDisabled}
                               value={editableUser.district}
-                              onChange={handleInputChange}
+                              onChange={handleDistrictChange}
                             >
                               <option value="">請選擇鄉鎮市區</option>
+                              {districts.map(area => (
+                                <option key={area.AreaName} value={area.AreaName}>
+                                  {area.AreaName} ({area.ZipCode})
+                                </option>
+                              ))}
                             </select>
                           </div>
                         </div>
@@ -463,11 +454,16 @@ export default function UserProfile() {
                               id="roadList" 
                               name="road_name" 
                               className="form-select" 
-                              disabled
+                              disabled={isRoadDisabled}
                               value={editableUser.road_name}
                               onChange={handleInputChange}
                             >
                               <option value="">請選擇居住街道</option>
+                              {roads.map(road => (
+                                <option key={road.RoadName} value={road.RoadName}>
+                                  {road.RoadName}
+                                </option>
+                              ))}
                             </select>
                           </div>
                         </div>
