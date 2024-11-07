@@ -255,23 +255,43 @@ export default function UserProfile() {
   // 处理账号停用
   const handleDeactivate = async () => {
     try {
-      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號')
+      const isConfirmed = await Swal.fire({
+        title: '確定要停用帳號嗎？',
+        text: '停用後請聯繫客服以重新啟用帳號',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#805AF5',
+        cancelButtonColor: '#d33',
+        confirmButtonText: '確定停用',
+        cancelButtonText: '取消'
+      })
       
-      if (!isConfirmed) {
+      if (!isConfirmed.isConfirmed) {
         return
       }
-  
-      const response = await axios.patch(`/api/users/${user_id}/deactivate`, {
-        isActive: false,
-        deactivatedAt: new Date().toISOString()
+
+      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
+        ...editableUser,
+        remarks: '0'
       })
-  
-      if (response.status === 200) {
-        Swal.fire('使用者已停用')
+
+      if (response.data.status === 'success') {
+        Swal.fire({
+          title: '帳號已停用',
+          icon: 'success',
+          confirmButtonColor: '#805AF5'
+        })
+        // 可選：重新導向到登出頁面或首頁
+        // window.location.href = '/logout'
       }
     } catch (error) {
       console.error('停用失敗:', error)
-      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試')
+      Swal.fire({
+        title: '停用失敗',
+        text: error.response?.data?.message || '請稍後再試',
+        icon: 'error',
+        confirmButtonColor: '#805AF5'
+      })
     }
   }
 
