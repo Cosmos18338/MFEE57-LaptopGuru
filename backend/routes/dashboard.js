@@ -38,16 +38,28 @@ router.get('/:user_id', async function (req, res) {
 
 // 更新使用者資料
 router.put('/:user_id', async (req, res) => {
-  const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks } = req.body
-  let result = await db.query(
-    'UPDATE users SET name=?, password=?,birthdate =?,phone=?,email=?,gender=?,country=?,city=?,district=?,road_name=?,detailed_address=?,image_path=?,remarks=?',
-    // 這邊插入的值會去找req.body使用者input name裡面的名字的值對嗎
-    [
-      name, password, birthdate, phone, email, gender,
-      country, city, district, road_name, detailed_address, image_path,remarks,
-    ]
-  )
-  return res.json({ status: 'success', data: { user: result[0] } })
+  try {
+    const { user_id } = req.params
+    const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks } = req.body
+    
+    let [result] = await db.query(
+      'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=? WHERE user_id=?',
+      [
+        name, password, birthdate, phone, email, gender,
+        country, city, district, road_name, detailed_address, image_path, remarks,
+        user_id  // 加入 WHERE 條件的參數
+      ]
+    )
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ status: 'error', message: '找不到該用戶' })
+    }
+
+    return res.json({ status: 'success', message: '更新成功' })
+  } catch (error) {
+    console.error('更新失敗:', error)
+    return res.status(500).json({ status: 'error', message: '更新失敗' })
+  }
 })
 
 // 會員資料停用(軟刪除)
