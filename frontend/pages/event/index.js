@@ -3,6 +3,8 @@ import EventCard from '@/components/event/EventCard'
 import Carousel from '@/components/event/Carousel'
 import EventNavbar from '@/components/event/EventNavbar'
 import axios from 'axios'
+import EventManagement from '@/components/event/EventManagement'
+import GroupManagement from '@/components/group/GroupManagement'
 
 // 分頁標籤組件
 const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
@@ -13,9 +15,10 @@ const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
       <ul className="nav nav-underline justify-content-center gap-5">
         {tabs.map((tab) => (
           <li key={tab} className="nav-item">
-            
             <a
-              className={`nav-link event-nav-link ${activeTab === tab ? 'active' : ''}`}
+              className={`nav-link event-nav-link ${
+                activeTab === tab ? 'active' : ''
+              }`}
               href="#"
               onClick={(e) => {
                 e.preventDefault()
@@ -215,6 +218,8 @@ export default function Event() {
                 onPageChange={handlePageChange}
               />
             )}
+            <EventManagement />
+            <GroupManagement />
           </div>
         </main>
       </div>
