@@ -80,9 +80,8 @@ export default function UserProfile() {
       district: '',
       road_name: ''
     }))
-
+    
     if (value === '台灣') {
-      
       setIsDistrictDisabled(false)
     } else {
       setIsDistrictDisabled(true)
@@ -100,10 +99,11 @@ export default function UserProfile() {
       district: '',
       road_name: ''
     }))
-
+    console.log(value)
     const selectedCity = taiwanData.find(city => city.CityName === value)
+    console.log(selectedCity)
     if (selectedCity) {
-      setDistricts(selectedCity.AreaList || [])
+      setDistricts(selectedCity.AreaList)
       setIsDistrictDisabled(false)
     } else {
       setDistricts([])
@@ -125,7 +125,6 @@ export default function UserProfile() {
     if (selectedCity) {
       const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
       if (selectedArea && selectedArea.RoadList) {
-        console.log(selectedArea.RoadList)
         setRoads(selectedArea.RoadList)
         setIsRoadDisabled(false)
       } else {
