@@ -8,6 +8,37 @@ import { useAuth } from '@/hooks/use-auth'
 
 export default function UserProfile() {
   const { auth } = useAuth()
+  const [editableUser, setEditableUser] = useState({
+    name: auth.userData?.name || '',
+    password: auth.userData?.password || '******',
+    gender: auth.userData?.gender || '男',
+    birthdate: auth.userData?.birthdate || '',
+    phone: auth.userData?.phone || '',
+    email: auth.userData?.email || '',
+    country: auth.userData?.country || '',
+    city: auth.userData?.city || '',
+    district: auth.userData?.district || '',
+    road_name: auth.userData?.road_name || '',
+    detailed_address: auth.userData?.detailed_address || '',
+  })
+
+  useEffect(() => {
+    if (auth.userData) {
+      setEditableUser({
+        name: auth.userData.name,
+        password: auth.userData.password,
+        gender: auth.userData.gender,
+        birthdate: auth.userData.birthdate,
+        phone: auth.userData.phone,
+        email: auth.userData.email,
+        country: auth.userData.country,
+        city: auth.userData.city,
+        district: auth.userData.district,
+        road_name: auth.userData.road_name,
+        detailed_address: auth.userData.detailed_address,
+      })
+    }
+  }, [auth.userData])
 
   const [user, setUser] = useState({
     name: '',
@@ -63,10 +94,11 @@ export default function UserProfile() {
   // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target
+    setEditableUser((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
   }
 
 // 第一種方法較適合，因為可以直接把 File 物件傳給後端
@@ -213,11 +245,8 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="name"
                             name="name"
-                            value={auth.userData.name}
-                            // value={userData.name}
-                            // onChange={(e) => {
-                            //   setAuth(e.target.value)
-                            // }}
+                            value={editableUser.name}
+                            onChange={handleInputChange}
                           />
                         </div>
                       </div>
@@ -234,7 +263,7 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="password"
                             name="password"
-                            value={auth.userData.password}
+                            value={editableUser.password}
                             onChange={handleInputChange}
                           />
                           <input
@@ -259,7 +288,7 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={auth.userData.gender}
+                            value={editableUser.gender}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -277,7 +306,7 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={auth.userData.birthdate}
+                            value={editableUser.birthdate}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -295,7 +324,7 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={auth.userData.phone}
+                            value={editableUser.phone}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -317,7 +346,7 @@ const handleImageChange = (e) => {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={auth.userData.email}
+                            value={editableUser.email}
                             onChange={handleInputChange}
                           />
                         </div>
