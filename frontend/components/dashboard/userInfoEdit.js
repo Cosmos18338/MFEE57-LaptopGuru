@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
 import { useAuth } from '@/hooks/use-auth'
-
 
 export default function UserProfile() {
   const { auth } = useAuth()
@@ -49,7 +47,7 @@ export default function UserProfile() {
   const [selectedRoad, setSelectedRoad] = useState('')
   const [areaList, setAreaList] = useState([])
   const [roadList, setRoadList] = useState([])
-  const [selectedImg, setSelectedImg] = useState(null)//紀錄選擇的圖檔，初始值用null
+  const [selectedImg, setSelectedImg] = useState(null) //紀錄選擇的圖檔，初始值用null
 
   // useEffect(() => {
   //   const city = taiwanData.find(city => city.CityName === selectedCity);
@@ -66,94 +64,97 @@ export default function UserProfile() {
     setUser((prevUser) => ({
       ...prevUser,
       [e.target.name]: e.target.value,
-    }));
+    }))
   }
 
-// 第一種方法較適合，因為可以直接把 File 物件傳給後端
-const handleImageChange = (e) => {
-  const file = e.target.files[0]
-  if (file) {
-    // 檢查檔案大小
-    if (file.size > 5 * 1024 * 1024) { // 例如限制5MB
-      alert('檔案太大')
-      return
-    }
-    
-    // 檢查檔案類型
-    if (!file.type.startsWith('image/')) {
-      alert('請上傳圖片檔案')
-      return
-    }
-
-    setSelectedImg(file)
-    
-    // 使用 FormData 傳送到後端
-    const formData = new FormData()
-    formData.append('image', file)
-    
-    // 發送到後端
-    axios.post('/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  // 第一種方法較適合，因為可以直接把 File 物件傳給後端
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      // 檢查檔案大小
+      if (file.size > 5 * 1024 * 1024) {
+        // 例如限制5MB
+        alert('檔案太大')
+        return
       }
-    })
+
+      // 檢查檔案類型
+      if (!file.type.startsWith('image/')) {
+        alert('請上傳圖片檔案')
+        return
+      }
+
+      setSelectedImg(file)
+
+      // 使用 FormData 傳送到後端
+      const formData = new FormData()
+      formData.append('image', file)
+
+      // 發送到後端
+      axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+    }
   }
-}
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    
+    e.preventDefault()
+
     try {
       // 表單驗證
       if (!user.name || !user.email) {
-        Swal.fire('請填寫必要欄位');
-        return;
+        Swal.fire('請填寫必要欄位')
+        return
       }
-     
+
       // 更新使用者
       const response = await axios.put(`/api/users/${user.id}`, {
         name: user.name,
         email: user.email,
         // 其他要更新的欄位...
-      });
-  
+      })
+
       if (response.status === 200) {
-        Swal.fire('使用者資料更新成功');
+        Swal.fire('使用者資料更新成功')
         // 可能需要更新本地狀態或重新導向
         // setUser(response.data);
         // router.push('/dashboard');
       }
     } catch (error) {
-      console.error('更新失敗:', error);
-      Swal.fire(error.response?.data?.message || '更新失敗，請稍後再試');
+      console.error('更新失敗:', error)
+      Swal.fire(error.response?.data?.message || '更新失敗，請稍後再試')
     }
-  };
-  
+  }
+
   const handleDeactivate = async () => {
     try {
       // 建議加入確認對話框
-      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號');
-      
+      const isConfirmed = window.confirm(
+        '確定要停用此使用者嗎？請至聯繫克服以重新使用帳號'
+      )
+
       if (!isConfirmed) {
-        return;
+        return
       }
-  
+
       // 軟刪除/停用使用者
       const response = await axios.patch(`/api/users/${user.id}/deactivate`, {
         isActive: false,
-        deactivatedAt: new Date().toISOString()
-      });
-  
+        deactivatedAt: new Date().toISOString(),
+      })
+
       if (response.status === 200) {
-        Swal.fire('使用者已停用');
+        Swal.fire('使用者已停用')
         // 可能需要更新使用者列表或重新導向
         // router.push('/users');
       }
     } catch (error) {
-      console.error('停用失敗:', error);
-      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試');
+      console.error('停用失敗:', error)
+      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試')
     }
-  };
+  }
 
   // const handleAddressUpdate = (e) => {
   //   const { name, value } = e.target;
@@ -171,11 +172,11 @@ const handleImageChange = (e) => {
       <div className="container">
         <div className="row d-flex justify-content-center">
           {/* LeftAside 左邊側欄 */}
-            {/* <div className="col-md-2"></div> */}
-
+          {/* <div className="col-md-2"></div> */}
 
           {/* Main Content (User Profile) */}
-          <div className="">{/* <div className="col-md-9"></div> */}
+          <div className="">
+            {/* <div className="col-md-9"></div> */}
 
             <div className="card">
               <div
@@ -373,7 +374,6 @@ const handleImageChange = (e) => {
                             className="d-none"
                             value={user.image_path}
                             onChange={handleImageChange}
-
                           />
                         </div>
                         <button
@@ -386,8 +386,6 @@ const handleImageChange = (e) => {
                         >
                           更新
                         </button>
-
-                       
 
                         {/* 顯示上傳狀態 */}
                         {uploadStatus && (
