@@ -4,72 +4,60 @@ import Swal from 'sweetalert2'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
 import { useAuth } from '@/hooks/use-auth'
+import axios from 'axios'
 
 
 export default function UserProfile() {
   const { auth } = useAuth()
   const user_id = auth.user_id
   const [editableUser, setEditableUser] = useState({
-    name: auth.userData?.name || '',
-    password: auth.userData?.password || '******',
-    gender: auth.userData?.gender || '男',
-    birthdate: auth.userData?.birthdate || '',
-    phone: auth.userData?.phone || '',
-    email: auth.userData?.email || '',
-    country: auth.userData?.country || '',
-    city: auth.userData?.city || '',
-    district: auth.userData?.district || '',
-    road_name: auth.userData?.road_name || '',
-    detailed_address: auth.userData?.detailed_address || '',
-  })
-
-  useEffect(() => {
-    if (auth.userData) {
-      setEditableUser({
-        name: auth.userData.name,
-        password: auth.userData.password,
-        gender: auth.userData.gender,
-        birthdate: auth.userData.birthdate,
-        phone: auth.userData.phone,
-        email: auth.userData.email,
-        country: auth.userData.country,
-        city: auth.userData.city,
-        district: auth.userData.district,
-        road_name: auth.userData.road_name,
-        detailed_address: auth.userData.detailed_address,
-      })
-    }
-  }, [auth.userData])
-
-  const [user, setUser] = useState({
     name: '',
     password: '******',
-    gender: '男',
+    gender: '',
     birthdate: '',
-    phone: '0900000000',
+    phone: '',
+    email: '',
     country: '',
     city: '',
     district: '',
     road_name: '',
     detailed_address: '',
-    email: '@gmail.com',
+    image_path: '',
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await axios.get(`/api/dashboard/${user_id}`, user)
-
-        const result = await response.json()
-        if (result.status === 'success') {
-          setData(result.users)
+        const response = await axios.get(`/api/dashboard/${user_id}`)
+        if (response.data.status === 'success') {
+          const userData = response.data.data.user
+          setEditableUser({
+            name: userData.name || '',
+            password: '******',
+            gender: userData.gender || '',
+            birthdate: userData.birthdate || '',
+            phone: userData.phone || '',
+            email: userData.email || '',
+            country: userData.country || '',
+            city: userData.city || '',
+            district: userData.district || '',
+            road_name: userData.road_name || '',
+            detailed_address: userData.detailed_address || '',
+            image_path: userData.image_path || '',
+          })
+          if (userData.image_path) {
+            setProfilePic(userData.image_path)
+          }
         }
       } catch (error) {
-        console.error('無法取得資料:', error)
+        console.error('無法獲取資料:', error)
+        Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
       }
     }
-    fetchData()
-  }, [])
+    if (user_id) {
+      fetchData()
+    }
+  }, [user_id])
 
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
@@ -81,7 +69,7 @@ export default function UserProfile() {
   const [selectedRoad, setSelectedRoad] = useState('')
   const [areaList, setAreaList] = useState([])
   const [roadList, setRoadList] = useState([])
-  const [selectedImg, setSelectedImg] = useState(null)//紀錄選擇的圖檔，初始值用null
+  const [selectedImg, setSelectedImg] = useState(null)
 
   // useEffect(() => {
   //   const city = taiwanData.find(city => city.CityName === selectedCity);
@@ -102,85 +90,67 @@ export default function UserProfile() {
     }))
   }
 
-// 第一種方法較適合，因為可以直接把 File 物件傳給後端
-const handleImageChange = (e) => {
-  const file = e.target.files[0]
-  if (file) {
-    // 檢查檔案大小
-    if (file.size > 5 * 1024 * 1024) { // 例如限制5MB
-      alert('檔案太大')
-      return
-    }
-    
-    // 檢查檔案類型
-    if (!file.type.startsWith('image/')) {
-      alert('請上傳圖片檔案')
-      return
-    }
-
-    setSelectedImg(file)
-    
-    // 使用 FormData 傳送到後端
-    const formData = new FormData()
-    formData.append('image', file)
-    
-    // 發送到後端
-    axios.post('/api/upload', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
+  const handleImageChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        alert('檔案太大')
+        return
       }
-    })
+      
+      if (!file.type.startsWith('image/')) {
+        alert('請上傳圖片檔案')
+        return
+      }
+
+      setSelectedImg(file)
+      
+      const formData = new FormData()
+      formData.append('image', file)
+      
+      axios.post('/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    }
   }
-}
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     
     try {
-      // 表單驗證
-      if (!user.name || !user.email) {
-        Swal.fire('請填寫必要欄位');
-        return;
+      if (!editableUser.name || !editableUser.email) {
+        Swal.fire('错误', '请填写必要栏位', 'error')
+        return
       }
      
-      // 更新使用者
-      const response = await axios.put(`/api/users/${user.id}`, {
-        name: user.name,
-        email: user.email,
-        // 其他要更新的欄位...
-      });
+      const response = await axios.put(`/api/dashboard/${user_id}`, editableUser)
   
-      if (response.status === 200) {
-        Swal.fire('使用者資料更新成功');
-        // 可能需要更新本地狀態或重新導向
-        // setUser(response.data);
-        // router.push('/dashboard');
+      if (response.data.status === 'success') {
+        Swal.fire('成功', '用户资料更新成功', 'success')
       }
     } catch (error) {
-      console.error('更新失敗:', error);
-      Swal.fire(error.response?.data?.message || '更新失敗，請稍後再試');
+      console.error('更新失败:', error)
+      Swal.fire('错误', error.response?.data?.message || '更新失败，请稍后再试', 'error')
     }
-  };
-  
+  }
+
   const handleDeactivate = async () => {
     try {
-      // 建議加入確認對話框
       const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號');
       
       if (!isConfirmed) {
         return;
       }
   
-      // 軟刪除/停用使用者
-      const response = await axios.patch(`/api/users/${user.id}/deactivate`, {
+      const response = await axios.patch(`/api/users/${user_id}/deactivate`, {
         isActive: false,
         deactivatedAt: new Date().toISOString()
       });
   
       if (response.status === 200) {
         Swal.fire('使用者已停用');
-        // 可能需要更新使用者列表或重新導向
-        // router.push('/users');
       }
     } catch (error) {
       console.error('停用失敗:', error);
@@ -188,14 +158,8 @@ const handleImageChange = (e) => {
     }
   };
 
-  // const handleAddressUpdate = (e) => {
-  //   const { name, value } = e.target;
-  //   setUser((prevUser) => ({ ...prevUser, address: `${selectedCity} ${selectedArea} ${selectedRoad} ${value}` }));
-  // };
-
   const handleProfilePicSubmit = (e) => {
     e.preventDefault()
-    // Handle profile picture upload here
     setUploadStatus('頭像更新成功！')
   }
 
@@ -404,7 +368,7 @@ const handleImageChange = (e) => {
                             type="file"
                             accept="image/*"
                             className="d-none"
-                            value={user.image_path}
+                            value={editableUser.image_path}
                             onChange={handleImageChange}
 
                           />
