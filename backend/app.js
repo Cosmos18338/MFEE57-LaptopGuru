@@ -82,12 +82,7 @@ async function testConnection() {
 
 testConnection()
 // fileStore的選項 session-cookie使用
-const fileStoreOptions = {
-  path: './sessions',  // session文件存儲路徑
-  ttl: 86400000,         // session有效期為1天
-  retries: 0,         // 讀取文件失敗時的重試次數
-  reapInterval: 3600000, // 每小時清理過期session
-}
+const fileStoreOptions = { logFn: function () {} }
 app.use(
   session({
     store: new FileStore(fileStoreOptions), // 使用檔案記錄session
