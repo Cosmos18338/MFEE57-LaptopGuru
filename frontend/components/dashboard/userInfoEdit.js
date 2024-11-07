@@ -20,7 +20,8 @@ export default function UserProfile() {
     road_name: '',
     detailed_address: '',
     image_path: '',
-    remarks: ''
+    remarks: '',
+    valid: 1
   })
 
   const [profilePic, setProfilePic] = useState('https://via.placeholder.com/220x220')
@@ -251,7 +252,6 @@ export default function UserProfile() {
     }
   }
 
-  // 处理账号停用
   const handleDeactivate = async () => {
     try {
       const isConfirmed = await Swal.fire({
@@ -271,7 +271,7 @@ export default function UserProfile() {
 
       const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
         ...editableUser,
-        remarks: '0'
+        valid: 0
       })
 
       if (response.data.status === 'success') {
