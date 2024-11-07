@@ -10,7 +10,7 @@ const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 const router = express.Router()
 
 /* GET home page. */
-router.post('/login', upload.none(), async (req, res, next) => {
+router.post('/', upload.none(), async (req, res, next) => {
   try {
     console.log(req.body)
     const { email, password } = req.body
