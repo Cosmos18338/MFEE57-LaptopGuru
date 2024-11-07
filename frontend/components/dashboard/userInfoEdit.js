@@ -28,14 +28,12 @@ export default function UserProfile() {
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedImg, setSelectedImg] = useState(null)
 
-  // 添加地址相关的状态
   const [cities, setCities] = useState([])
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
-  // 按区域分组的城市数据
   const groupedCities = {
     北部區域: [
       { CityName: '台北市', CityEngName: 'Taipei City' },
@@ -221,8 +219,13 @@ export default function UserProfile() {
       
       const reader = new FileReader()
       reader.onloadend = () => {
-        setSelectedImg(reader.result) // 存储base64字符串
-        setProfilePic(reader.result) // 预览图片
+        setSelectedImg(reader.result)
+        setProfilePic(reader.result)
+        // 將 base64 圖片數據存儲到 editableUser 的 image_path 中
+        setEditableUser(prev => ({
+          ...prev,
+          image_path: reader.result
+        }))
       }
       reader.readAsDataURL(file)
     }
@@ -300,7 +303,6 @@ export default function UserProfile() {
     }
 
     try {
-      // 直接将base64图片数据作为image_path发送
       const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
         ...editableUser,
         image_path: selectedImg
