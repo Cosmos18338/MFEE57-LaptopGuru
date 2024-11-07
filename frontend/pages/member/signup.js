@@ -16,7 +16,7 @@ export default function Signup() {
       hasUpperCase: /[A-Z]/.test(password),
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
-      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      // hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     }
 
     // 檢查所有規則
@@ -25,7 +25,7 @@ export default function Signup() {
       hasUpperCase: '需要包含大寫字母',
       hasLowerCase: '需要包含小寫字母',
       hasNumber: '需要包含數字',
-      hasSpecialChar: '需要包含特殊符號',
+      // hasSpecialChar: '需要包含特殊符號',
     }
 
     // 回傳未通過的規則訊息
@@ -39,8 +39,8 @@ export default function Signup() {
     email: '',
     password: '',
     confirmpassword: '',
-    phone: '',
-    birthdate: '',
+    // phone: '',
+    // birthdate: '',
     gender: '',
     agree: false,
   })
@@ -49,7 +49,8 @@ export default function Signup() {
     email: '',
     password: '',
     confirmpassword: '',
-    phone: '',
+    // phone: '',
+    // birthdate: '',
     gender: '',
     agree: '',
   })
@@ -100,11 +101,11 @@ export default function Signup() {
     }
 
     // Phone validation
-    if (!user.phone) {
-      newErrors.phone = '手機號碼為必填'
-    } else if (!/^\d{10}$/.test(user.phone)) {
-      newErrors.phone = '請輸入有效的手機號碼'
-    }
+    // if (!user.phone) {
+    //   newErrors.phone = '手機號碼為必填'
+    // } else if (!/^\d{10}$/.test(user.phone)) {
+    //   newErrors.phone = '請輸入有效的手機號碼'
+    // }
 
     // Gender validation
     // if (!user.gender) {
@@ -269,9 +270,8 @@ export default function Signup() {
                   name="password"
                   className={`form-control ${styles.inputs}`}
                   value={user.password}
-                  onChange={handleFieldChange}
-                  minLength={6}
-                  maxLength={48}
+                  onChange={handleFieldChange}   
+                  maxLength={62}
                 />
                 <div className="form-check">
                   <input
@@ -339,7 +339,7 @@ export default function Signup() {
                   value={user.phone}
                   onChange={handleFieldChange}
                 />
-                {errors.phone && <div className="error">{errors.phone}</div>}
+                {/* {errors.phone && <div className="error">{errors.phone}</div>} */}
               </div>
 
               <div className="mb-3">
@@ -372,7 +372,7 @@ export default function Signup() {
                   <option value="男">男</option>
                   <option value="不透漏">不透漏</option>
                 </select>
-                {errors.gender && <div className="error">{errors.gender}</div>}
+                {/* {errors.gender && <div className="error">{errors.gender}</div>} */}
               </div>
 
               <div className="mb-3">

@@ -42,8 +42,13 @@ router.patch('/:user_id', async (req, res) => {
 })
 
 // 會員資料停用(軟刪除)
+<<<<<<< Updated upstream
 router.patch('/', async function (req, res) {
   const {user_id} =req.body
+=======
+router.put('/:user_id/address', async function (req, res) {
+  const {user_id} =req.params
+>>>>>>> Stashed changes
   try {
     const [users] = await db.query('UPDATE users SET valid = 0 WHERE user_id=?',[user_id] )
     return res.json({ status: 'success', data: { users } })
