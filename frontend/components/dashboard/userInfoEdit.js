@@ -283,14 +283,17 @@ const handleImageChange = (e) => {
                           性別
                         </label>
                         <div className="col-sm-9">
-                          <input
-                            type="text"
+                          <select
                             className="form-control"
                             id="gender"
                             name="gender"
                             value={editableUser.gender}
                             onChange={handleInputChange}
-                          />
+                          >
+                            <option value="male">男</option>
+                            <option value="female">女</option>
+                            <option value="undisclosed">不公開</option>
+                          </select>
                         </div>
                       </div>
                       <div className="mb-3 row">
