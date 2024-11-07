@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import useInfiniteScroll from 'react-infinite-scroll-hook'
 import { useLoadProductItems } from '@/services/product'
-import ProductCard from '@/components/product-test/product-card'
+import ProductCard from '@/components/product/product-card'
 
 export default function ListInfiniteScrollP() {
   // 1. 此設定會影響到每頁呈現的商品數量與伺服器回傳的次數，請勿設太小，最好是滿2-3頁的數量一次載入

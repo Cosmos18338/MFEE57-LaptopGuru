@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getProducts } from '@/services/product'
 import BS5Pagination from '@/components/common/bs5-pagination'
-import ProductCard from '@/components/product-test/product-card'
+import ProductCard from '@/components/product/product-card'
 
 export default function List() {
   const [pageNow, setPageNow] = useState(1) // 目前頁數

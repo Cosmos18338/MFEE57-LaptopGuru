@@ -1,182 +1,171 @@
 import React from 'react'
+import { useState, useEffect } from 'react'
+import { useAuth } from '@/hooks/use-auth'
+import BuyCard from '@/components/cart/buy-card'
+import { useRouter } from 'next/router'
+import Cookies from 'js-cookie'
+
+const accessToken = Cookies.get('accessToken')
+console.log(accessToken) // 顯示 accessToken 的值
 
 export default function CartIndex() {
+  const { auth } = useAuth()
+  const { userData } = auth
+  const [cartdata, setCartdata] = useState([])
+  // const [total, setTotal] = useState(0)
+  const [order, setOrder] = useState({})
+
+  const user_id = userData?.user_id
+  const country = userData?.country
+  const city = userData?.city
+  const district = userData?.district
+  const road_name = userData?.road_name
+  const detail_address = userData?.detail_address
+  const address = `${country}${city}${district}${road_name}${detail_address}`
+
+  // 處理遞增
+  const handle = (itemId, newQuantity) => {
+    const nextProducts = cartdata.map((v, i) => {
+      // 這裡判斷id值是否等於productId，如果是就count屬性遞增
+
+      if (v.id === itemId) {
+        return { ...v, quantity: newQuantity }
+      } else {
+        return v
+      }
+    })
+
+    setCartdata(nextProducts)
+  }
+
+  // 產生訂單
+  const createOrder = async () => {
+    const result = await fetch(`http://localhost:3005/api/cart/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        amount: total,
+        coupon_id: '',
+        detail: cartdata,
+        address: address,
+      }),
+    })
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      const result = await fetch(`http://localhost:3005/api/cart/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ user_id: user_id }),
+      })
+
+      const data = await result.json()
+      const arrData = data.data
+      setCartdata(arrData)
+    }
+
+    if (user_id) {
+      fetchData()
+    }
+  }, [user_id])
+
+  // useEffect(() => {
+  //   if (cartdata.length > 0) {
+  //     let total = 0
+  //     cartdata.forEach((item) => {
+  //       total += item.list_price * item.quantity
+  //       setTotal(total)
+  //     })
+  //   }
+  // }, [cartdata])
+  const total = cartdata.reduce(
+    (acc, v) => acc + Number(v.quantity) * v.list_price,
+    0
+  )
+
   return (
     <>
-      <div className="row mt-5 mx-5">
-        <div className="col-sm-8 cart-area">
-          <h4 className="mb-3">購物車</h4>
-          <div className="card mb-3 border-0 cart-card">
-            <div className="row g-0">
-              <div className="col-md-3">
-                <img
-                  src="/images/product/thumb/t1.jpg"
-                  className="img-fluid rounded-start"
-                  alt="..."
-                />
-              </div>
-              <div className="col-md-9">
-                <div className="card-body">
-                  <h5 className="card-title card-text d-flex justify-content-between align-items-center">
-                    Nike Air Force 1 PLT.AF.ORM <span>$4,000.00</span>
-                  </h5>
-                  <p className="card-text">
-                    Pale Ivory/Light Orewood Brown/白/Summit White
-                  </p>
-
-                  <div className="row g-3 align-items-center">
-                    <div className="col-auto">
-                      <label
-                        htmlFor="inputPassword6"
-                        className="col-form-label"
-                      >
-                        數量:
-                      </label>
-                    </div>
-                    <div className="col-auto">
-                      <select
-                        className="form-select form-select-sm"
-                        aria-label=".form-select-sm example"
-                      >
-                        <option selected>0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="iconbar">
-                    <i className="bi bi-suit-heart"></i>
-                    <i className="bi bi-trash3"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="card mb-3 border-0 cart-card">
-            <div className="row g-0">
-              <div className="col-md-3">
-                <img
-                  src="/images/product/thumb/t1.jpg"
-                  className="img-fluid rounded-start"
-                  alt="..."
-                />
-              </div>
-              <div className="col-md-9">
-                <div className="card-body">
-                  <h5 className="card-title card-text d-flex justify-content-between align-items-center">
-                    Nike Air Force 1 PLT.AF.ORM <span>$4,000.00</span>
-                  </h5>
-                  <p className="card-text">
-                    Pale Ivory/Light Orewood Brown/白/Summit White
-                  </p>
-
-                  <div className="row g-3 align-items-center">
-                    <div className="col-auto">
-                      <label
-                        htmlFor="inputPassword6"
-                        className="col-form-label"
-                      >
-                        數量:
-                      </label>
-                    </div>
-                    <div className="col-auto">
-                      <select
-                        className="form-select form-select-sm"
-                        aria-label=".form-select-sm example"
-                      >
-                        <option selected>0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="iconbar">
-                    <i className="bi bi-suit-heart"></i>
-                    <i className="bi bi-trash3"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr />
-          <div className="card mb-3 border-0 cart-card">
-            <div className="row g-0">
-              <div className="col-md-3">
-                <img
-                  src="/images/product/thumb/t1.jpg"
-                  className="img-fluid rounded-start"
-                  alt="..."
-                />
-              </div>
-              <div className="col-md-9">
-                <div className="card-body">
-                  <h5 className="card-title card-text d-flex justify-content-between align-items-center">
-                    Nike Air Force 1 PLT.AF.ORM <span>$4,000.00</span>
-                  </h5>
-                  <p className="card-text">
-                    Pale Ivory/Light Orewood Brown/白/Summit White
-                  </p>
-
-                  <div className="row g-3 align-items-center">
-                    <div className="col-auto">
-                      <label
-                        htmlFor="inputPassword6"
-                        className="col-form-label"
-                      >
-                        數量:
-                      </label>
-                    </div>
-                    <div className="col-auto">
-                      <select
-                        className="form-select form-select-sm"
-                        aria-label=".form-select-sm example"
-                      >
-                        <option selected>0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="iconbar">
-                    <i className="bi bi-suit-heart"></i>
-                    <i className="bi bi-trash3"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <hr />
+      <div className="tilte d-flex mb-3">
+        <div className="logo border-end me-3">
+          <img src="/logo-black.svg" alt />
         </div>
-        <div className="col-sm-4">
-          <h4 className="mb-3">摘要</h4>
-
-          <p className="card-text d-flex justify-content-between align-items-center">
-            小計 <span>$4,000.00</span>
-          </p>
-          <hr />
-          <p className="card-text d-flex justify-content-between align-items-center">
-            預估運費與手續費 <span>$300.00</span>
-          </p>
-          <hr />
-          <p className="card-text d-flex justify-content-between align-items-center">
-            總計 <span>$4,300.00</span>
-          </p>
-          <hr />
-          <button className="btn btn-primary w-100 mb-3">會員結帳</button>
-          <button className="btn btn-primary w-100 mb-3">訪客結帳</button>
+        <div className="h2 align-items-center">
+          <h2>購物車</h2>
         </div>
       </div>
-      <div className="row mt-5 mx-5">
-        <div className="col-sm-12 cart-area">
-          <h4 className="mb-3">最愛</h4>
-          <p>想要檢視你的最愛嗎？ 加入我們 或 登入</p>
+
+      <div className="row">
+        <div className="col-8 cart h-100">
+          {cartdata && cartdata.length > 0 ? (
+            cartdata.map((item) => (
+              <BuyCard
+                key={item.product_id}
+                item={item}
+                onDataChange={(newQuantity) => {
+                  // console.log(item.quantity)
+                  handle(item.product_id, newQuantity)
+                  if (newQuantity === 0) {
+                    setCartdata(
+                      cartdata.filter((v) => v.product_id !== item.product_id)
+                    )
+                  }
+                }}
+              />
+            ))
+          ) : (
+            <p>購物車是空的</p>
+          )}
+        </div>
+        <div className="col bill h-50">
+          <div className="card p-3 border-primary">
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className="col-6 text-primary">
+                <img src="/diamond.svg" alt />
+                清單資訊
+              </div>
+            </div>
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className="row">
+                <div className="col">商品總計</div>
+                <div className="col-auto">{total}</div>
+              </div>
+              <div className="row">
+                <div className="col">運費總計</div>
+                <div className="col-auto">$200</div>
+              </div>
+            </div>
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className=" d-flex justify-content-center">
+                <button
+                  className="btn btn-primary w-50  text-light"
+                  type="button"
+                >
+                  使用優惠券
+                </button>
+              </div>
+            </div>
+            <div>
+              <div className="discount row w-100 mb-2">
+                <div className="col">折價</div>
+                <div className="col-auto">$200</div>
+              </div>
+              <div className="total row w-100 mb-2">
+                <div className="col">總計</div>
+                <div className="col-auto">{total}</div>
+              </div>
+              <div className="d-flex justify-content-center">
+                <button className="btn btn-primary w-50 text-light">
+                  結帳
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </>

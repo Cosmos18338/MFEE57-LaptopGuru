@@ -4,21 +4,24 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
-import { useJumpingLetters } from '@/hooks/jumping-letters-hook';
+import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 
 export default function LogIn(props) {
-  const { renderJumpingText } = useJumpingLetters();
+  const { renderJumpingText } = useJumpingLetters()
   const router = useRouter()
   const { auth, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState({ error: ' ' })
+
+
   // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-
+    
     try {
-      const response = await fetch(`http://localhost:3005/api/auth/login`, {
+      const response = await fetch(`http://localhost:3005/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -34,13 +37,18 @@ export default function LogIn(props) {
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
         // 可以添加登入成功後的導向
+
         router.push('/dashboard')
-      } else {
+      }
+       else{
         // 處理錯誤情況
-        console.log(result.message)
+        setErrors({
+          message: result.message
+        })
       }
     } catch (error) {
       console.error('無法取得資料:', error)
+      alert('登入失敗')
     }
   }
 
@@ -48,9 +56,12 @@ export default function LogIn(props) {
     <div className={styles['gradient-bg']}>
       <div className="row p-5 gx-5">
         <div className={`${styles.left} col`}>
-          <h4 className={styles.white}>{renderJumpingText('Welcome to', 'welcome-text')}</h4>
+          <h4 className={styles.white}>
+            {renderJumpingText('Welcome to', 'welcome-text')}
+          </h4>
           <br />
-          <h3 className={`text-white ${styles['guru-laptop']}`}>{renderJumpingText('Laptop Guru', 'company-name')}
+          <h3 className={`text-white ${styles['guru-laptop']}`}>
+            {renderJumpingText('Laptop Guru', 'company-name')}
           </h3>
         </div>
         <div className={`${styles.right} col`}>
@@ -58,13 +69,13 @@ export default function LogIn(props) {
             <h7
               className={`text-white ${styles.hover} link-opacity-50-hover underline-opacity-0 `}
             >
-              <Link className="text-decoration-none" href="/login">
+              <Link className="text-decoration-none" href="/member/login">
                 Log in
               </Link>
             </h7>
             <h7 className="text-white">|</h7>
             <h7 className={`text-white ${styles.hover}`}>
-              <Link className="text-decoration-none" href="signup">
+              <Link className="text-decoration-none" href="/member/signup">
                 Sign up
               </Link>
             </h7>
@@ -75,7 +86,10 @@ export default function LogIn(props) {
           >
             <div className="inputs position-relative">
               <div className="position-relative">
-                <label htmlFor="email" className={`form-label text-white ${styles['custom-label']}`}>
+                <label
+                  htmlFor="email"
+                  className={`form-label text-white ${styles['custom-label']}`}
+                >
                   帳號(信箱)
                 </label>
                 <input
@@ -121,8 +135,8 @@ export default function LogIn(props) {
                   style={{ color: '#E0B0FF' }}
                 />
               </div>
-              <div id="passwordRule" className={`form-text text-white p-5`}>
-                密碼請至少輸入6個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。會再經過加密
+              <div id="Error_message" className={`form-text text-white p-5`}>
+              {errors.message && <div className="error">{errors.message}</div>}              
               </div>
               <button
                 onClick={() => {
@@ -142,6 +156,14 @@ export default function LogIn(props) {
           </form>
         </div>
       </div>
+      <style jsx>{`
+        .error {
+          color: red;
+          font-size: 16px;
+          margin-top: 0.25rem;
+        }
+      `}</style>
     </div>
+    
   )
 }

@@ -1,22 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
 const LoginPage = () => {
-  const [isFlipped, setIsFlipped] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false)
   const [formData, setFormData] = useState({
     email: '',
-    password: ''
-  });
+    password: '',
+  })
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     // 處理登入邏輯
-  };
+  }
 
   return (
     <div className="min-h-screen bg-slate-100 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* 筆記本外觀 */}
-        <div className={`bg-white rounded-lg shadow-xl overflow-hidden transform transition-all duration-500 ${isFlipped ? 'scale-105' : ''}`}>
+        <div
+          className={`bg-white rounded-lg shadow-xl overflow-hidden transform transition-all duration-500 ${
+            isFlipped ? 'scale-105' : ''
+          }`}
+        >
           {/* 筆記本上方裝飾 */}
           <div className="h-4 bg-pink-200 flex justify-between items-center px-4">
             <div className="flex space-x-1">
@@ -26,7 +30,7 @@ const LoginPage = () => {
             </div>
             <div className="text-xs text-pink-700">Login Notes</div>
           </div>
-          
+
           {/* 筆記內容區 */}
           <div className="p-8">
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -49,7 +53,9 @@ const LoginPage = () => {
                     onFocus={() => setIsFlipped(true)}
                     onBlur={() => setIsFlipped(false)}
                   />
-                  <span className="absolute right-3 top-3 text-gray-400">✉️</span>
+                  <span className="absolute right-3 top-3 text-gray-400">
+                    ✉️
+                  </span>
                 </div>
 
                 <div className="relative">
@@ -60,7 +66,9 @@ const LoginPage = () => {
                     onFocus={() => setIsFlipped(true)}
                     onBlur={() => setIsFlipped(false)}
                   />
-                  <span className="absolute right-3 top-3 text-gray-400">🔑</span>
+                  <span className="absolute right-3 top-3 text-gray-400">
+                    🔑
+                  </span>
                 </div>
               </div>
 
@@ -74,9 +82,14 @@ const LoginPage = () => {
 
               {/* 底部裝飾 */}
               <div className="text-center mt-4 text-sm text-gray-500">
-                <a href="#" className="text-pink-500 hover:text-pink-600">Forgot Password?</a>
+                <a href="#" className="text-pink-500 hover:text-pink-600">
+                  Forgot Password?
+                </a>
                 <div className="mt-2">
-                  Need an account? <a href="#" className="text-pink-500 hover:text-pink-600">Sign Up</a>
+                  Need an account?{' '}
+                  <a href="#" className="text-pink-500 hover:text-pink-600">
+                    Sign Up
+                  </a>
                 </div>
               </div>
             </form>
@@ -87,7 +100,7 @@ const LoginPage = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

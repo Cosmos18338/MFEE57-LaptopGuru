@@ -31,6 +31,7 @@ const AuthContext = createContext(null)
 // 只需要必要的資料即可，沒有要多個頁面或元件用的資料不需要加在這裡
 // !!注意JWT存取令牌中只有id, username, google_uid, line_uid在登入時可以得到
 export const initUserData = {
+  user_id: 0,
   name: '',
   password: '',
   gender: '',
@@ -46,7 +47,7 @@ export const initUserData = {
   remarks: '',
 }
 // 可以視為webtoken要押的資料
-
+// 承接登入以後用的
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuth: false,
@@ -78,57 +79,57 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter()
 
   // 登入頁路由
-  const loginRoute = '/test/user'
+  const loginRoute = '/member/login'
   // 隱私頁面路由，未登入時會，檢查後跳轉至登入頁
   const protectedRoutes = [
-    '/test/user/status',
+    '/dashboard/index',
     '/test/user/profile',
     '/test/user/profile-password',
+    '/dashboard',
   ]
-  const login =async(email, password)=>{
+  const login = async (email, password) => {
     try {
-      const response=await fetch('api/login',{
-        method:'POST',
-        body:JSON.stringify({email, password})
+      const response = await fetch('api/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
         // JSON.stringify是物件變JSON字串方式傳輸
       })
-      const result=await response.json()
-      if(result.status==="success"){
+      const result = await response.json()
+      if (result.status === 'success') {
         setAuth({
-          isAuth:true,
+          isAuth: true,
           user_id: result.data.user_id,
           name: result.data.name,
-          phone:result.data.phone,
-          created_at:result.data.created_at,
-          gender:result.data.gender,
-          country:result.data.country,
-          city:result.data.city,
-          district:result.data.district,
-          road_name:result.data.road_name,
-          detailed_address:result.data.detailed_address,
-          birthdate:result.data.birthdate,
-          remarks:result.data.remarks
+          phone: result.data.phone,
+          created_at: result.data.created_at,
+          gender: result.data.gender,
+          country: result.data.country,
+          city: result.data.city,
+          district: result.data.district,
+          road_name: result.data.road_name,
+          detailed_address: result.data.detailed_address,
+          birthdate: result.data.birthdate,
+          remarks: result.data.remarks,
         })
       }
-      console.log(response.json());
-    }catch(error){
-      console.error('登入失敗：',error)
+      console.log(response.json())
+    } catch (error) {
+      console.error('登入失敗：', error)
     }
-  
   }
-  const logout=()=>{
+  const logout = () => {
     setAuth({
       user_id: 0,
       name: '',
-      phone:'',
-      created_at:'',
-      gender:'',
-      country:'',
-      city:'',
-      district:'',
-      road_name:'',
-      detailed_address:'',
-      birthdate:'',
+      phone: '',
+      created_at: '',
+      gender: '',
+      country: '',
+      city: '',
+      district: '',
+      road_name: '',
+      detailed_address: '',
+      birthdate: '',
     })
   }
   // 檢查會員認証用
