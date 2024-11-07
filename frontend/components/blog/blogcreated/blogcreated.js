@@ -9,16 +9,14 @@ import BlogcreatedActionbuttons from '@/components/blog/blogcreated/blogcreated-
 export default function BlogCreated(props) {
   return (
     <>
-      <body>
-        <div class="BlogEditAlignAllItems">
-          <BlogcreatedCoverimageupload />
-          <BlogcreatedTitleinput />
-          <BlogcreatedCKEditor />
-          <BlogcreatedBrandselection />
-          <BlogcreatedCategoryselection />
-          <BlogcreatedActionbuttons />
-        </div>
-      </body>
+      <div className="BlogEditAlignAllItems">
+        <BlogcreatedCoverimageupload />
+        <BlogcreatedTitleinput />
+        <BlogcreatedCKEditor />
+        <BlogcreatedBrandselection />
+        <BlogcreatedCategoryselection />
+        <BlogcreatedActionbuttons />
+      </div>
     </>
   )
 }
