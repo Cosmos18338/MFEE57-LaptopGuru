@@ -5,6 +5,7 @@ import CardExample from '@/components/bootstrap/cards'
 import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
+import CouponQuery from '@/components/coupon/coupon-query-components'
 
 export default function CouponPage() {
   return (
@@ -69,7 +70,7 @@ export default function CouponPage() {
               {/* 優惠卷 */}
               <Tab.Pane eventKey="coupon-record">
                 <div className="container">
-                  <p>現有優惠卷</p>
+                  <CouponQuery />
                   <div className="row g-4">
                     {Array.from({ length: 10 }).map((_, index) => (
                       <div key={index} className="col-md-6">

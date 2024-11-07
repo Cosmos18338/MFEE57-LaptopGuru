@@ -28,7 +28,7 @@ router.get('/:coupon_id', async (req, res) => {
         coupon_discount,
         coupon_start_time,
         coupon_end_time,
-        valid
+        valid=1
       FROM coupon
       WHERE coupon_id = ?
     `, [coupon_id])
