@@ -4,9 +4,6 @@ import { useAuth } from '@/hooks/use-auth'
 import BuyCard from '@/components/cart/buy-card'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
-const MySwal = withReactContent(Swal)
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值

@@ -2,6 +2,9 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 export default function BuyCard(props) {
   const { item } = props
@@ -21,6 +24,12 @@ export default function BuyCard(props) {
 
     const data = await response.json()
     const message = data.message
+    MySwal.fire({
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+      timer: 1500,
+    })
   }
   return (
     <>
@@ -37,7 +46,7 @@ export default function BuyCard(props) {
           <div className="col-3">
             <div className="cart-photo">
               <Image
-                src={`/data/${item.product_img_path}`}
+                src={`/product/${item.product_img_path}`}
                 alt={item.model}
                 width={500}
                 height={500}
@@ -50,6 +59,10 @@ export default function BuyCard(props) {
               type="number"
               defaultValue={item.quantity}
               className="w-50"
+              onChange={(e) => {
+                item.quantity = e.target.value
+                handleUpdate()
+              }}
             />
           </div>
           <div className="col-2">{item.list_price * item.quantity}</div>
