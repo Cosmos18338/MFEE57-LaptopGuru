@@ -126,6 +126,7 @@ export default function UserProfile() {
     if (editableUser.city) {
       const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
       if (selectedArea && selectedArea.RoadList) {
+        console.log(selectedArea.RoadList)
         setRoads(selectedArea.RoadList)
         setIsRoadDisabled(false)
       } else {
@@ -156,6 +157,7 @@ export default function UserProfile() {
             image_path: userData.image_path || '',
             remarks: userData.remarks || ''
           })
+          console.log(editableUser)
           if (userData.image_path) {
             setProfilePic(userData.image_path)
           }
