@@ -47,6 +47,7 @@ router.put('/:user_id', async (req, res) => {
       country, city, district, road_name, detailed_address, image_path,remarks,
     ]
   )
+  return res.json({ status: 'success', data: { user: result[0] } })
 })
 
 // 會員資料停用(軟刪除)
