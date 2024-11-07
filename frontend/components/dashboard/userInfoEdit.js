@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/use-auth'
 
 export default function UserProfile() {
   const { auth } = useAuth()
+  const user_id = auth.user_id
   const [editableUser, setEditableUser] = useState({
     name: auth.userData?.name || '',
     password: auth.userData?.password || '******',

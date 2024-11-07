@@ -8,10 +8,27 @@ import db from '##/configs/mysql.js'
 
 // 這是dashboard的路由
 // 老師說用get id之後去寫我不確定怎麼寫 
-router.get('/:user_id', async function (req, res) {
+router.get('/all', async function (req, res) {
   try {
     const [users] = await db.query('SELECT * FROM users')
     return res.json({ status: 'success', data: { users } })
+
+  } catch (error) {
+    console.error('無法取得資料:', error)
+    return res.status(500).json({ status: 'error', message: '無法連接' })
+  }
+})
+
+router.get('/:user_id', async function (req, res) {
+  try {
+    const { user_id } = req.params
+    const [users] = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id])
+    
+    if (users.length === 0) {
+      return res.status(404).json({ status: 'error', message: '找不到該用戶' })
+    }
+    
+    return res.json({ status: 'success', data: { user: users[0] } })
   } catch (error) {
     console.error('無法取得資料:', error)
     return res.status(500).json({ status: 'error', message: '無法連接' })
