@@ -1,4 +1,4 @@
-.customBody{
+.customBody {
   width: 100%;
   box-sizing: border-box;
   padding: 0px;
@@ -11,15 +11,19 @@
     #402bb0 86.53%,
     #d0bcff 98.34%
   );
+  color: white;
 }
 .customContainer {
   max-width: 1440px;
   width: 100%;
   margin: 0 auto;
   overflow: hidden;
-  
 }
-
+.breadcrumb {
+  padding: 3.646vw 0 3.646vw;
+  font-size: 14px;
+  color: white;
+}
 .col1 {
   width: 100%;
   display: flex;
@@ -47,8 +51,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
-  width: 500px;
+
   border-radius: 20px;
   border: 1px solid #181728;
   background: #1e1937;
@@ -154,7 +157,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  max-width: 1200px;
+  width: 62.5vw;
   margin: 0 auto;
   padding: 0 20px;
 }
@@ -249,7 +252,9 @@
 }
 
 .quantityInput {
-  width: 40px;
+  width: 60px;
+  background: transparent;
+  color: white;
   text-align: center;
   border: none;
   font-size: 16px;
@@ -257,14 +262,13 @@
 }
 .quantityInput::-webkit-inner-spin-button,
 .quantityInput::-webkit-outer-spin-button {
-  -webkit-appearance: none;
   margin: 0;
 }
 
 .quantitySelector::before {
   content: '｜';
   font-size: 18px;
-  color: #000;
+  color: white;
   margin-right: 5px;
 }
 
@@ -284,6 +288,7 @@
   background-color: transparent;
   border-radius: 20px;
   font-size: var(--h7-font-size);
+  color: white;
 }
 .rentButton:hover {
   color: #ffffff;
@@ -307,6 +312,7 @@
   position: relative;
   cursor: pointer;
   padding-left: 25px;
+  color: white;
 }
 
 .articleCheckbox label::before {
@@ -316,7 +322,7 @@
   top: 0.2rem;
   width: 18px;
   height: 18px;
-  border: 1.5px solid rgb(0, 0, 0);
+  border: 1.5px solid white;
   transform: rotate(45deg);
 }
 

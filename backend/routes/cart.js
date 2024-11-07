@@ -9,9 +9,14 @@ const upload = multer()
 /* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
   const { user_id } = req.body
-  const [data] = await db.query('SELECT * FROM cart WHERE user_id = ?', [
-    user_id,
-  ])
+  // const [data] = await db.query(
+  //   'SELECT cart.id, cart.user_id, cart.product_id, cart.quantity, product.model, product.list_price, product_img.product_img_path FROM cart JOIN product AND product_img ON cart.product_id = product.id WHERE cart.user_id = ?',
+  //   [user_id]
+  // )
+  const [data] = await db.query(
+    'SELECT cart.id, cart.user_id, cart.product_id, cart.quantity, product.model, product.list_price, product_img.product_img_path FROM cart JOIN product ON cart.product_id = product.product_id JOIN product_img ON cart.product_id = product_img.img_product_id  WHERE cart.user_id = ?',
+    [user_id]
+  )
   if (data.length == 0) {
     return res.json({ status: 'error', message: '購物車目前沒有商品' })
   }

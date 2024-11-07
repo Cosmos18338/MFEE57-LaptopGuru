@@ -6,6 +6,9 @@ import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
 import { useAuth } from '@/hooks/use-auth'
 import { useRouter } from 'next/router'
+import EventManegement from '@/components/event/EventManagement'
+import GroupManagement from '@/components/group/GroupManagement'
+
 // 優惠卷
 import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
@@ -87,10 +90,15 @@ export default function Dashboard() {
           <Tab eventKey="activity-record" title="活動">
             <div>
               <h4>Link Tab Content</h4>
-              <p>這裡是活動。</p>
+              <EventManegement />
             </div>
           </Tab>
-          <Tab eventKey="group-record" title="揪團"></Tab>
+          <Tab eventKey="group-record" title="揪團">
+            <div>
+              <h4>Link Tab Content</h4>
+              <GroupManagement />
+            </div>
+          </Tab>
         </Tabs>
       </div>
     </div>
