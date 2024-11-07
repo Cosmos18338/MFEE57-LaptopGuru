@@ -12,16 +12,12 @@ import loginRouter from './routes/login.js'
 import signupRouter from './routes/signup.js'
 import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
-<<<<<<< HEAD
 import eventsRouter from './routes/events.js'
-=======
 import couponRouter from './routes/coupon.js'
-
 
 import couponUserRouter from './routes/coupon-user.js'
 import couponMerge from './routes/coupon-merge.js'
 import couponMergeRouter from './routes/coupon-merge.js'
->>>>>>> dev_kuma
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
