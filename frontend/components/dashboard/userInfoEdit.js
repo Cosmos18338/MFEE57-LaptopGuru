@@ -163,8 +163,25 @@ export default function UserProfile() {
             image_path: userData.image_path || '',
             remarks: userData.remarks || ''
           })
-          console.log(userData)
-          console.log(userData.district)
+
+          // 如果國家是台灣，啟用地址選擇
+          if (userData.country === '台灣') {
+            setIsDistrictDisabled(false)
+            
+            // 如果有城市數據，設置區域列表
+            const selectedCity = taiwanData.find(city => city.CityName === userData.city)
+            if (selectedCity) {
+              setDistricts(selectedCity.AreaList)
+              
+              // 如果有區域數據，設置路名列表
+              const selectedArea = selectedCity.AreaList.find(area => area.AreaName === userData.district)
+              if (selectedArea && selectedArea.RoadList) {
+                setRoads(selectedArea.RoadList)
+                setIsRoadDisabled(false)
+              }
+            }
+          }
+
           if (userData.image_path) {
             setProfilePic(userData.image_path)
           }
