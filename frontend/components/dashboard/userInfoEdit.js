@@ -28,7 +28,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`/api/dashboard/${user_id}`)
+        const response = await axios.get(`http://localhost:3005/api/dashboard/${user_id}`)
         if (response.data.status === 'success') {
           const userData = response.data.data.user
           setEditableUser({
@@ -121,18 +121,18 @@ export default function UserProfile() {
     
     try {
       if (!editableUser.name || !editableUser.email) {
-        Swal.fire('错误', '请填写必要栏位', 'error')
+        Swal.fire('錯誤', '請填寫必要欄位', 'error')
         return
       }
      
       const response = await axios.put(`/api/dashboard/${user_id}`, editableUser)
   
       if (response.data.status === 'success') {
-        Swal.fire('成功', '用户资料更新成功', 'success')
+        Swal.fire('成功', '用戶資料更新成功', 'success')
       }
     } catch (error) {
-      console.error('更新失败:', error)
-      Swal.fire('错误', error.response?.data?.message || '更新失败，请稍后再试', 'error')
+      console.error('更新失敗:', error)
+      Swal.fire('錯誤', error.response?.data?.message || '更新失敗，請稍後再試', 'error')
     }
   }
 
