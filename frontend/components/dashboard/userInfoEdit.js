@@ -9,7 +9,7 @@ import axios from 'axios'
 
 export default function UserProfile() {
   const { auth } = useAuth()
-  const user_id = auth.user_id
+  const user_id = auth.userData.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
     password: '******',
@@ -54,8 +54,11 @@ export default function UserProfile() {
         Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
       }
     }
-    if (user_id) {
+    if (auth.userData.user_id) {
       fetchData()
+    }
+    else {
+      console.error('user_id 不存在')
     }
   }, [user_id])
 
