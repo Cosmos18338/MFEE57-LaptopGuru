@@ -71,8 +71,7 @@ export default function UserProfile() {
       { CityName: '澎湖縣', CityEngName: 'Penghu County' },
     ],
   }
-
-  // 处理国家选择变化
+ 
   const handleCountryChange = (e) => {
     const { name, value } = e.target
     setEditableUser(prev => ({
@@ -84,6 +83,7 @@ export default function UserProfile() {
     }))
 
     if (value === '台灣') {
+      
       setIsDistrictDisabled(false)
     } else {
       setIsDistrictDisabled(true)
@@ -104,7 +104,7 @@ export default function UserProfile() {
 
     const selectedCity = taiwanData.find(city => city.CityName === value)
     if (selectedCity) {
-      setDistricts(selectedCity.AreaList)
+      setDistricts(selectedCity.AreaList || [])
       setIsDistrictDisabled(false)
     } else {
       setDistricts([])
@@ -431,7 +431,7 @@ export default function UserProfile() {
                               id="district" 
                               name="district" 
                               className="form-select" 
-                              disabled={isDistrictDisabled}
+                              disabled={isDistrictDisabled || !editableUser.city}
                               value={editableUser.district}
                               onChange={handleDistrictChange}
                             >
@@ -454,7 +454,7 @@ export default function UserProfile() {
                               id="roadList" 
                               name="road_name" 
                               className="form-select" 
-                              disabled={isRoadDisabled}
+                              disabled={isRoadDisabled || !editableUser.district}
                               value={editableUser.road_name}
                               onChange={handleInputChange}
                             >
