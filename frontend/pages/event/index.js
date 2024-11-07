@@ -6,7 +6,6 @@ import axios from 'axios'
 
 // 分頁標籤組件
 const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
-  // 新增「即將開始報名」到標籤列表
   const tabs = ['所有活動', '進行中', '即將開始報名', '報名中', '已結束']
 
   return (
@@ -14,10 +13,9 @@ const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
       <ul className="nav nav-underline justify-content-center gap-5">
         {tabs.map((tab) => (
           <li key={tab} className="nav-item">
+            
             <a
-              className={`nav-link event-nav-link ${
-                activeTab === tab ? 'active' : ''
-              }`}
+              className={`nav-link event-nav-link ${activeTab === tab ? 'active' : ''}`}
               href="#"
               onClick={(e) => {
                 e.preventDefault()
@@ -128,7 +126,7 @@ export default function Event() {
         params: {
           page,
           pageSize: 12,
-          status: status === '即將開始報名' ? 'upcoming' : status,
+          status: status === '所有活動' ? '' : status,
         },
       })
 
@@ -204,6 +202,7 @@ export default function Event() {
                     eventStartTime={event.eventStartTime}
                     maxPeople={event.maxPeople}
                     status={event.status}
+                    teamType={event.teamType}
                   />
                 ))}
               </div>
