@@ -49,6 +49,7 @@ export default function UserProfile() {
   const [selectedRoad, setSelectedRoad] = useState('')
   const [areaList, setAreaList] = useState([])
   const [roadList, setRoadList] = useState([])
+  const [selectedImg, setSelectedImg] = useState(null)//紀錄選擇的圖檔，初始值用null
 
   // useEffect(() => {
   //   const city = taiwanData.find(city => city.CityName === selectedCity);
@@ -68,17 +69,36 @@ export default function UserProfile() {
     }));
   }
 
-  const handleProfilePicChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (e.target && typeof e.target.result === 'string') {
-          setProfilePic(e.target.result)
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
+// 第一種方法較適合，因為可以直接把 File 物件傳給後端
+const handleImageChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    // 檢查檔案大小
+    if (file.size > 5 * 1024 * 1024) { // 例如限制5MB
+      alert('檔案太大')
+      return
     }
+    
+    // 檢查檔案類型
+    if (!file.type.startsWith('image/')) {
+      alert('請上傳圖片檔案')
+      return
+    }
+
+    setSelectedImg(file)
+    
+    // 使用 FormData 傳送到後端
+    const formData = new FormData()
+    formData.append('image', file)
+    
+    // 發送到後端
+    axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
+}
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -352,7 +372,8 @@ export default function UserProfile() {
                             accept="image/*"
                             className="d-none"
                             value={user.image_path}
-                            onChange={handleProfilePicChange}
+                            onChange={handleImageChange}
+
                           />
                         </div>
                         <button
