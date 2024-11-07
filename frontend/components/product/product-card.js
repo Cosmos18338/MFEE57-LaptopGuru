@@ -84,7 +84,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
           src={
             data
               ? `/product/${data.product_img_path}`
-              : '/images/product/product.png'
+              : ''
           }
           alt="Product"
           width={200}
