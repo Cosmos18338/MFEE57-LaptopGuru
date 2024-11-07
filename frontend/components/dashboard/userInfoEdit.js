@@ -241,7 +241,7 @@ export default function UserProfile() {
         return
       }
      
-      const response = await axios.put(`/api/dashboard/${user_id}`, editableUser)
+      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, editableUser)
   
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
@@ -275,9 +275,34 @@ export default function UserProfile() {
     }
   }
 
-  const handleProfilePicSubmit = (e) => {
+  const handleProfilePicSubmit = async (e) => {
     e.preventDefault()
-    setUploadStatus('頭像更新成功！')
+    
+    if (!selectedImg) {
+      Swal.fire('提示', '請先選擇要上傳的圖片', 'info')
+      return
+    }
+
+    try {
+      const formData = new FormData()
+      formData.append('image', selectedImg)
+      formData.append('user_id', user_id)
+
+      const response = await axios.post('http://localhost:3005/api/upload/profile', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+
+      if (response.data.status === 'success') {
+        setProfilePic(response.data.image_path)
+        setUploadStatus('頭像更新成功！')
+        Swal.fire('成功', '頭像更新成功', 'success')
+      }
+    } catch (error) {
+      console.error('上傳失敗:', error)
+      Swal.fire('錯誤', error.response?.data?.message || '上傳失敗，請稍後再試', 'error')
+    }
   }
 
   return (
