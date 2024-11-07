@@ -15,7 +15,7 @@ export default function UserInfo() {
     <>
       <UserSection titleCN="個人資訊" titleENG="Information">
         <div
-          className={`${styles.basicInformation} row d-flex justify-content-between`}
+          className={`${styles.basicInformation} row d-flex justify-content-center`}
         >
           <div className={`col-9 ${styles.textArea}`}>
             <div>
