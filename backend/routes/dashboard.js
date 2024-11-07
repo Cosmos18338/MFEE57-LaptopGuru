@@ -40,13 +40,13 @@ router.get('/:user_id', async function (req, res) {
 router.put('/:user_id', async (req, res) => {
   try {
     const { user_id } = req.params
-    const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks } = req.body
+    const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks ,valid} = req.body
     
     let [result] = await db.query(
-      'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=? WHERE user_id=?',
+      'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
       [
         name, password, birthdate, phone, email, gender,
-        country, city, district, road_name, detailed_address, image_path, remarks,
+        country, city, district, road_name, detailed_address, image_path, remarks, valid,
         user_id  // 加入 WHERE 條件的參數
       ]
     )
