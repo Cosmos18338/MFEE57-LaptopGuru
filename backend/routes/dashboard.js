@@ -74,16 +74,16 @@ router.put('/:user_id', async (req, res) => {
   }
 })
 
-// 會員資料停用(軟刪除)
-router.put('/', async function (req, res) {
-  const {user_id} =req.params
-  try {
-    const [users] = await db.query('UPDATE users SET valid = 0 WHERE user_id=?',[user_id] )
-    return res.json({ status: 'success', data: { users } })
-  } catch (error) {
-    console.error('無法取得資料:', error)
-    return res.status(500).json({ status: 'error', message: '無法連接' })
-  }
-})
+// // 會員資料停用(軟刪除)
+// router.put('/', async function (req, res) {
+//   const {user_id} =req.params
+//   try {
+//     const [users] = await db.query('UPDATE users SET valid = 0 WHERE user_id=?',[user_id] )
+//     return res.json({ status: 'success', data: { users } })
+//   } catch (error) {
+//     console.error('無法取得資料:', error)
+//     return res.status(500).json({ status: 'error', message: '無法連接' })
+//   }
+// })
 
 export default router

@@ -6,7 +6,7 @@ import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 export default function UserProfile() {
   const { auth } = useAuth()
-  const user_id = auth.userData.user_id
+  const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
     password: '******',
@@ -142,6 +142,7 @@ export default function UserProfile() {
   }
 
   useEffect(() => {
+    const user_id = auth?.userData?.user_id
     const fetchData = async () => {
       try {
         const response = await axios.get(`http://localhost:3005/api/dashboard/${user_id}`)
@@ -149,7 +150,7 @@ export default function UserProfile() {
           const userData = response.data.data.user
           setEditableUser({
             name: userData.name || '',
-            password: '******',
+            password: '******',//好吧
             gender: userData.gender || '',
             birthdate: userData.birthdate || '',
             phone: userData.phone || '',
@@ -190,7 +191,7 @@ export default function UserProfile() {
         Swal.fire('錯誤', '獲取用戶資料失敗', 'error')
       }
     }
-    if (auth.userData.user_id) {
+    if (auth.userData?.user_id) {
       fetchData()
     } else {
       console.error('user_id 不存在')
@@ -268,8 +269,7 @@ export default function UserProfile() {
       if (!isConfirmed.isConfirmed) {
         return
       }
-
-      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
+          const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
         ...editableUser,
         valid: 0
       })
