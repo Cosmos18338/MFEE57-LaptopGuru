@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
- import multer from 'multer'
+import { generateHash } from '../db-helpers/password-hash.js'
+import multer from 'multer'
 const router = express.Router()
 const upload = multer()
 // 不要直接用auth狀態,
@@ -41,15 +42,26 @@ router.put('/:user_id', async (req, res) => {
   try {
     const { user_id } = req.params
     const { name, gender, password, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks ,valid} = req.body
-    
-    let [result] = await db.query(
-      'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
-      [
-        name, password, birthdate, phone, email, gender,
-        country, city, district, road_name, detailed_address, image_path, remarks, valid,
-        user_id  // 加入 WHERE 條件的參數
-      ]
-    )
+    if (password === '******') { 
+      let [result] = await db.query(
+        'UPDATE users SET name=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
+        [
+          name, birthdate, phone, email, gender,
+          country, city, district, road_name, detailed_address, image_path, remarks, valid,
+          user_id  // 加入 WHERE 條件的參數
+        ]
+      )
+    }else{
+      const hashedPassword = await generateHash(password)
+      let [result] = await db.query(
+        'UPDATE users SET name=?, password=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
+        [
+          name, hashedPassword, birthdate, phone, email, gender,
+          country, city, district, road_name, detailed_address, image_path, remarks, valid,
+          user_id  // 加入 WHERE 條件的參數
+        ]
+      )
+    }
 
     if (result.affectedRows === 0) {
       return res.status(404).json({ status: 'error', message: '找不到該用戶' })
