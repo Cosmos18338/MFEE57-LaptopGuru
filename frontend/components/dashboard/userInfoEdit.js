@@ -218,8 +218,7 @@ export default function UserProfile() {
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
-
-      // 将文件转换为base64
+      
       const reader = new FileReader()
       reader.onloadend = () => {
         setSelectedImg(reader.result) // 存储base64字符串
