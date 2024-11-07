@@ -14,10 +14,8 @@ import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
 import eventsRouter from './routes/events.js'
 import couponRouter from './routes/coupon.js'
-
 import couponUserRouter from './routes/coupon-user.js'
-import couponMerge from './routes/coupon-merge.js'
-import couponMergeRouter from './routes/coupon-merge.js'
+import couponUserAddRouter from './routes/coupon-user-add.js'
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -75,9 +73,9 @@ app.use('/api/users', usersRouter)
 app.use('/api/events', eventsRouter)
 
 //優惠卷路由
-// app.use('/api/coupon', couponRouter)
-// app.use('/api/coupon-user', couponUserRouter)
-app.use('/api/coupon-merge', couponMergeRouter)
+app.use('/api/coupon', couponRouter)
+app.use('/api/coupon-user', couponUserRouter)
+app.use('/api/coupon-user', couponUserAddRouter)
 
 async function testConnection() {
   try {

@@ -1,17 +1,59 @@
 import React from 'react'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Link from 'next/link'
+import { FaPenFancy } from 'react-icons/fa'
 import { Nav, Tab } from 'react-bootstrap'
-import LeftAside from '@/components/dashboard/leftAside'
 import CardExample from '@/components/bootstrap/cards'
 import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
 import CouponQuery from '@/components/coupon/coupon-query-components'
+import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
-export default function CouponPage() {
+
+export default function CouponPageJquery() {
+  const router = useRouter()
+  const { id } = router.query
+
   return (
     <div className="container">
       <div className="row d-flex justify-content-center">
-        <LeftAside />
+        <div className="card col-2 border-0">
+          <div className=" text-center ">
+            <img
+              src="https://via.placeholder.com/70x70"
+              alt="Profile"
+              className="rounded-circle img-fluid mb-3"
+              style={{ width: '70px', height: '70px' }}
+            />
+            <h5 className="mb-2">萊歐斯·托登</h5>
+            <button
+              className="btn btn-outline-primary btn-sm mb-3"
+              style={{ color: '#805AF5', borderColor: '#805AF5' }}
+            >
+              <FaPenFancy />
+              編輯個人簡介
+            </button>
+          </div>
+          <div className="list-group list-group-flush">
+            <Link
+              href="coupon-jquery"
+              className="list-group-item list-group-item-action text-center"
+            >
+              領取優惠卷
+            </Link>
+            <Link
+              href={`/coupon/${id}`}
+              className="list-group-item list-group-item-action text-center"
+            >
+              優惠卷
+            </Link>
+          </div>
+        </div>
+
         <div className="col-md-9">
           <Tab.Container
             id="left-tabs-example"
@@ -72,11 +114,12 @@ export default function CouponPage() {
                 <div className="container">
                   <CouponQuery />
                   <div className="row g-4">
-                    {Array.from({ length: 10 }).map((_, index) => (
-                      <div key={index} className="col-md-6">
-                        <Coupon />
-                      </div>
-                    ))}
+                    <div
+                      className="col-md-6"
+                      style={{ cursor: 'pointer' }}
+                    >
+                      <Coupon />
+                    </div>
                   </div>
                   {/* 分頁 */}
                   <div className="pagination-section mt-4">
