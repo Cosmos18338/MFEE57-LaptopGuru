@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/product-card.module.scss'
 import Image from 'next/image'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function ProductCard({ onSendMessage, product_id }) {
   // 產品卡片的 key 值，用於比較功能的 checkbox
