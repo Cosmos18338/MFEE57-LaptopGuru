@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import axios from 'axios'
 import { useAuth } from '@/hooks/use-auth'
@@ -45,6 +44,7 @@ export default function UserProfile() {
     // Handle form submission here
     try {
       const response = await axios.put(`/api/dashboard/${userId}`, user)
+      // 這邊是把user傳送到伺服器的資料，
       if (response.data.status === 'success') {
         alert('更新成功！')
       }

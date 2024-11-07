@@ -32,18 +32,21 @@ export default function Header(props) {
                 </div>
               </Link>
               <Link href="/cart">
-                <div className="cart">
+                <div className="cart me-3">
                   <img src="/cart.svg" />
                 </div>
               </Link>
+              <button className="btn btn-primary text-white">登出</button>
             </>
           ) : (
             <>
               <Link href="/member/login">
-                <button className="btn btn-primary me-3">登入</button>
+                <button className="btn btn-primary text-white me-3">
+                  登入
+                </button>
               </Link>
               <Link href="/member/signup">
-                <button className="btn btn-primary">註冊</button>
+                <button className="btn btn-primary text-white">註冊</button>
               </Link>
             </>
           )}
