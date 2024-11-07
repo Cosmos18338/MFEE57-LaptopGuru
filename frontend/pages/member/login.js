@@ -12,14 +12,16 @@ export default function LogIn(props) {
   const { auth, login } = useAuth()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [errors, setErrors] = useState({ error: ' ' })
+
 
   // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
-
+    
     try {
-      const response = await fetch(`http://localhost:3005/api/auth/login`, {
+      const response = await fetch(`http://localhost:3005/api/login`, {
         method: 'POST',
         credentials: 'include',
         headers: {
@@ -37,12 +39,16 @@ export default function LogIn(props) {
         // 可以添加登入成功後的導向
 
         router.push('/dashboard')
-      } else {
+      }
+       else{
         // 處理錯誤情況
-        console.log(result.message)
+        setErrors({
+          message: result.message
+        })
       }
     } catch (error) {
       console.error('無法取得資料:', error)
+      alert('登入失敗')
     }
   }
 
@@ -129,8 +135,8 @@ export default function LogIn(props) {
                   style={{ color: '#E0B0FF' }}
                 />
               </div>
-              <div id="passwordRule" className={`form-text text-white p-5`}>
-                {/* ，我們會再經過加密處理！ */}
+              <div id="Error_message" className={`form-text text-white p-5`}>
+              {errors.message && <div className="error">{errors.message}</div>}              
               </div>
               <button
                 onClick={() => {
@@ -150,6 +156,14 @@ export default function LogIn(props) {
           </form>
         </div>
       </div>
+      <style jsx>{`
+        .error {
+          color: red;
+          font-size: 16px;
+          margin-top: 0.25rem;
+        }
+      `}</style>
     </div>
+    
   )
 }

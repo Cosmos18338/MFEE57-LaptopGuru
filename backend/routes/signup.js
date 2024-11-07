@@ -22,7 +22,6 @@ router.post('/', upload.none(), async (req, res, next) => {
     console.log('password 型別:', typeof password)
     console.log('password 長度:', password ? password.length : 'undefined')
 
-    // 如果有值就執行插入
     if (!password) {
       throw new Error('密碼未接收到')
     }
@@ -41,11 +40,11 @@ router.post('/', upload.none(), async (req, res, next) => {
     if (existingUsers.length > 0) {
       return res.json({
         status: 'error',
-        message: '電子郵件已被註冊',
+        message: '電子郵件已被註冊!!!請使用其他email',
       })
     }
-
-    // const hashedPassword = await generateHash(password)
+    // 確認
+    const hashedPassword = await generateHash(password)
 
     const sql = `
      INSERT INTO users (
@@ -60,8 +59,8 @@ router.post('/', upload.none(), async (req, res, next) => {
    `
     const params = [
       email,
-      password, // 使用加密後的密碼
-      phone,
+      hashedPassword, // 使用加密後的密碼
+      phone || null,
       birthdate || null,
       gender,
     ]
@@ -90,7 +89,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(400).json({
         status: 'error',
-        message: '此 email 已被註冊',
+        message: '此 email 已被註冊...',
       })
     }
 
