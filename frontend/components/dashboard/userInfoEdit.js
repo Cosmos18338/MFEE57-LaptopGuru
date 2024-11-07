@@ -1,23 +1,33 @@
 import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Swal from 'sweetalert2'
 import { taiwanData } from '@/components/dashboard/test-address'
 import AddressCompo from '@/components/dashboard/test-address'
+import { useAuth } from '@/hooks/use-auth'
+
 
 export default function UserProfile() {
+  const { auth } = useAuth()
+
   const [user, setUser] = useState({
     name: '',
     password: '******',
     gender: '男',
     birthdate: '',
     phone: '0900000000',
-    address: '100台北市中正區重慶南路一段122號',
-    email: 'LaiosTouden@gmail.com',
+    country: '',
+    city: '',
+    district: '',
+    road_name: '',
+    detailed_address: '',
+    email: '@gmail.com',
   })
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('<http://localhost:3005/dashboard>')
+        const response1 = await axios.get(`/api/dashboard/${user_id}`, user)
+
         const result = await response.json()
         if (result.status === 'success') {
           setData(result.users)
@@ -39,6 +49,7 @@ export default function UserProfile() {
   const [selectedRoad, setSelectedRoad] = useState('')
   const [areaList, setAreaList] = useState([])
   const [roadList, setRoadList] = useState([])
+  const [selectedImg, setSelectedImg] = useState(null)//紀錄選擇的圖檔，初始值用null
 
   // useEffect(() => {
   //   const city = taiwanData.find(city => city.CityName === selectedCity);
@@ -52,27 +63,97 @@ export default function UserProfile() {
   // }, [selectedArea, areaList]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target
-    setUser((prevUser) => ({ ...prevUser, [name]: value }))
+    setUser((prevUser) => ({
+      ...prevUser,
+      [e.target.name]: e.target.value,
+    }));
   }
 
-  const handleProfilePicChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const reader = new FileReader()
-      reader.onload = (e) => {
-        if (e.target && typeof e.target.result === 'string') {
-          setProfilePic(e.target.result)
-        }
-      }
-      reader.readAsDataURL(e.target.files[0])
+// 第一種方法較適合，因為可以直接把 File 物件傳給後端
+const handleImageChange = (e) => {
+  const file = e.target.files[0]
+  if (file) {
+    // 檢查檔案大小
+    if (file.size > 5 * 1024 * 1024) { // 例如限制5MB
+      alert('檔案太大')
+      return
     }
-  }
+    
+    // 檢查檔案類型
+    if (!file.type.startsWith('image/')) {
+      alert('請上傳圖片檔案')
+      return
+    }
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // Handle form submission here
-    console.log('Form submitted:', user)
+    setSelectedImg(file)
+    
+    // 使用 FormData 傳送到後端
+    const formData = new FormData()
+    formData.append('image', file)
+    
+    // 發送到後端
+    axios.post('/api/upload', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
   }
+}
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    try {
+      // 表單驗證
+      if (!user.name || !user.email) {
+        Swal.fire('請填寫必要欄位');
+        return;
+      }
+     
+      // 更新使用者
+      const response = await axios.put(`/api/users/${user.id}`, {
+        name: user.name,
+        email: user.email,
+        // 其他要更新的欄位...
+      });
+  
+      if (response.status === 200) {
+        Swal.fire('使用者資料更新成功');
+        // 可能需要更新本地狀態或重新導向
+        // setUser(response.data);
+        // router.push('/dashboard');
+      }
+    } catch (error) {
+      console.error('更新失敗:', error);
+      Swal.fire(error.response?.data?.message || '更新失敗，請稍後再試');
+    }
+  };
+  
+  const handleDeactivate = async () => {
+    try {
+      // 建議加入確認對話框
+      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號');
+      
+      if (!isConfirmed) {
+        return;
+      }
+  
+      // 軟刪除/停用使用者
+      const response = await axios.patch(`/api/users/${user.id}/deactivate`, {
+        isActive: false,
+        deactivatedAt: new Date().toISOString()
+      });
+  
+      if (response.status === 200) {
+        Swal.fire('使用者已停用');
+        // 可能需要更新使用者列表或重新導向
+        // router.push('/users');
+      }
+    } catch (error) {
+      console.error('停用失敗:', error);
+      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試');
+    }
+  };
 
   // const handleAddressUpdate = (e) => {
   //   const { name, value } = e.target;
@@ -121,7 +202,7 @@ export default function UserProfile() {
 
                       <div className="mb-3 row">
                         <label
-                          htmlFor="username"
+                          htmlFor="name"
                           className="col-sm-3 col-form-label"
                         >
                           使用者名稱
@@ -130,10 +211,13 @@ export default function UserProfile() {
                           <input
                             type="text"
                             className="form-control"
-                            id="username"
-                            name="username"
-                            value={user.name}
-                            onChange={handleInputChange}
+                            id="name"
+                            name="name"
+                            value={auth.userData.name}
+                            // value={userData.name}
+                            // onChange={(e) => {
+                            //   setAuth(e.target.value)
+                            // }}
                           />
                         </div>
                       </div>
@@ -146,12 +230,19 @@ export default function UserProfile() {
                         </label>
                         <div className="col-sm-9">
                           <input
-                            type="password"
+                            type={showpassword ? 'text' : 'password'}
                             className="form-control"
                             id="password"
                             name="password"
-                            value={user.password}
+                            value={auth.userData.password}
                             onChange={handleInputChange}
+                          />
+                          <input
+                            type="checkbox"
+                            id="showpassword"
+                            checked={showpassword}
+                            onChange={() => setShowpassword(!showpassword)}
+                            className="form-check-input"
                           />
                         </div>
                       </div>
@@ -168,7 +259,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="gender"
                             name="gender"
-                            value={user.gender}
+                            value={auth.userData.gender}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -186,7 +277,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="birthdate"
                             name="birthdate"
-                            value={user.birthdate}
+                            value={auth.userData.birthdate}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -204,7 +295,7 @@ export default function UserProfile() {
                             className="form-control"
                             id="phone"
                             name="phone"
-                            value={user.phone}
+                            value={auth.userData.phone}
                             onChange={handleInputChange}
                           />
                         </div>
@@ -226,21 +317,32 @@ export default function UserProfile() {
                             className="form-control"
                             id="email"
                             name="email"
-                            value={user.email}
+                            value={auth.userData.email}
                             onChange={handleInputChange}
                           />
                         </div>
                       </div>
-                      <div className="text-center">
+                      <div className="d-flex justify-content-between">
                         <button
-                          type="submit"
+                          type="button"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
                             borderColor: '#805AF5',
                           }}
                         >
-                          儲存
+                          更新
+                        </button>
+                        <button
+                          type="button"
+                          className="btn btn-primary"
+                          style={{
+                            backgroundColor: '#805AF5',
+                            borderColor: '#805AF5',
+                          }}
+                          onClick={handleDeactivate}
+                        >
+                          停用
                         </button>
                       </div>
                     </form>
@@ -270,19 +372,22 @@ export default function UserProfile() {
                             accept="image/*"
                             className="d-none"
                             value={user.image_path}
-                            onChange={handleProfilePicChange}
+                            onChange={handleImageChange}
+
                           />
                         </div>
                         <button
-                          type="submit"
+                          type="button"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
                             borderColor: '#805AF5',
                           }}
                         >
-                          更新大頭照
+                          更新
                         </button>
+
+                       
 
                         {/* 顯示上傳狀態 */}
                         {uploadStatus && (

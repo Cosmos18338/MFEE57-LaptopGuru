@@ -11,7 +11,6 @@ const db = mysql.createPool({
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
   dateStrings: true, // 轉換日期字串格式用
-  
 })
 // 測試連線
 db.getConnection()

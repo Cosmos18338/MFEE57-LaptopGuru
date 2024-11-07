@@ -4,6 +4,10 @@ import axios from 'axios'
 import Link from 'next/link'
 import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+
 export default function Signup() {
   const validatePassword = (password) => {
     // 密碼驗證規則
@@ -61,6 +65,8 @@ export default function Signup() {
       [name]: type === 'checkbox' ? checked : value,
     }))
     // Clear error when user starts typing
+    // // 這是一個使用state更新函數的例子
+    // prev 是前一個state的值（當前errors物件的所有內容）
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -68,7 +74,7 @@ export default function Signup() {
       }))
     }
   }
-
+  // 表單驗證
   const validateForm = () => {
     const newErrors = {}
 
@@ -114,53 +120,88 @@ export default function Signup() {
     return Object.keys(newErrors).length === 0
   }
 
+  // ...prev 是展開運算符，把前一個state的所有屬性複製過來
+  // password: passwordErrors[0] 是要更新的新屬性
+  // 整體來說就是「保留原本errors物件的所有內容，但更新password屬性的值」
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitError('')
-    const passwordErrors = validatePassword(user.password)
-    if (passwordErrors.length > 0) {
-      setErrors((prev) => ({
-        ...prev,
-        password: passwordErrors[0],
-      }))
-      return
-    }
-    if (!validateForm()) {
-      return
-    }
 
     try {
+      setSubmitError('')
+
+      // 驗證密碼
+      const passwordErrors = validatePassword(user.password)
+      if (passwordErrors.length > 0) {
+        setErrors((prev) => ({
+          ...prev,
+          password: passwordErrors[0],
+        }))
+        return
+      }
+
+      // 驗證表單
+      if (!validateForm()) {
+        return
+      }
+
+      // 發送註冊請求
       const response = await axios.post(
         'http://localhost:3005/api/signup',
         user
       )
+
+      // 檢查回應狀態
       if (response.data.status === 'success') {
-        // 可以導向登入頁或顯示成功訊息
-        if (response.data.status === 'success') {
-          // 清空表單
-          setUser({
-            email: '',
-            password: '',
-            phone: '',
-            birthdate: '',
-            gender: '',
-            agree: false,
-          })
+        // 清空表單
+        setUser({
+          email: '',
+          password: '',
+          phone: '',
+          birthdate: '',
+          gender: '',
+          agree: false,
+        })
 
-          // 清空錯誤訊息
-          setErrors({})
-          setSubmitError('')
+        // 清空錯誤訊息
+        setErrors({})
+        setSubmitError('')
 
-          // 顯示成功訊息（可選）
-          alert('註冊成功！')
-          router.push('/member/login') // 或你的登入頁面路徑
-        } else {
-          setSubmitError(response.data.message || '註冊失敗，請稍後再試')
-        }
+        // 成功訊息
+        await Swal.fire({
+          title: '註冊成功！',
+          text: '歡迎加入我們！',
+          icon: 'success',
+          confirmButtonText: '前往登入',
+          confirmButtonColor: '#3085d6',
+        })
+
+        router.push('/member/login')
+      } else {
+        // 處理錯誤狀態
+        await Swal.fire({
+          title: '註冊失敗',
+          text: response.data.message,
+          icon: 'error',
+          confirmButtonText: '確定',
+          confirmButtonColor: '#3085d6',
+        })
+        setSubmitError(response.data.message)
       }
     } catch (error) {
       console.error('註冊請求失敗:', error)
-      setSubmitError(error.response?.data?.message || '註冊過程中發生錯誤')
+
+      // 根據錯誤狀態顯示不同訊息
+      const errorMessage = error.response?.data?.message || '註冊過程中發生錯誤'
+
+      await Swal.fire({
+        title: '註冊失敗',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonText: '確定',
+        confirmButtonColor: '#3085d6',
+      })
+
+      setSubmitError(errorMessage)
     }
   }
 
@@ -177,7 +218,7 @@ export default function Signup() {
         <div className={`${styles.left} col-4`}>
           <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
           <h3 className={`text-white ${styles['guru-laptop']}`}>GURU Laptop</h3>
-          {/* 密碼請至少輸入6個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。 */}
+          {/* 密碼請至少輸入8個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。 */}
         </div>
         <div className={`${styles.right} col-sm-12 col-md-4`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>

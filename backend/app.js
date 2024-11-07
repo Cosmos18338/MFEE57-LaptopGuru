@@ -12,12 +12,16 @@ import loginRouter from './routes/login.js'
 import signupRouter from './routes/signup.js'
 import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
+<<<<<<< HEAD
+import eventsRouter from './routes/events.js'
+=======
 import couponRouter from './routes/coupon.js'
 
 
 import couponUserRouter from './routes/coupon-user.js'
 import couponMerge from './routes/coupon-merge.js'
 import couponMergeRouter from './routes/coupon-merge.js'
+>>>>>>> dev_kuma
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -72,6 +76,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/events', eventsRouter)
 
 //優惠卷路由
 // app.use('/api/coupon', couponRouter)
@@ -104,7 +109,7 @@ app.use(
     saveUninitialized: false,
   })
 )
-
+// 以上那個session-cookie 應該不是我們的
 // 載入routes中的各路由檔案，並套用api路由 START
 const apiPath = '/api' // 預設路由
 const routePath = path.join(__dirname, 'routes')
