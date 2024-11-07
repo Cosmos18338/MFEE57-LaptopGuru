@@ -4,7 +4,6 @@ import Swal from 'sweetalert2'
 import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
-
 export default function UserProfile() {
   const { auth } = useAuth()
   const user_id = auth.userData.user_id
@@ -123,7 +122,7 @@ export default function UserProfile() {
     }))
 
     const selectedCity = taiwanData.find(city => city.CityName === editableUser.city)
-    if (editableUser.city) {
+    if (selectedCity) {
       const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
       if (selectedArea && selectedArea.RoadList) {
         console.log(selectedArea.RoadList)
@@ -134,6 +133,14 @@ export default function UserProfile() {
         setIsRoadDisabled(true)
       }
     }
+  }
+
+  const handleRoadChange = (e) => {
+    const { name, value } = e.target
+    setEditableUser(prev => ({
+      ...prev,
+      [name]: value
+    }))
   }
 
   useEffect(() => {
@@ -450,7 +457,7 @@ export default function UserProfile() {
 
                         <div className="mb-3 row">
                           <label htmlFor="road_name" className="col-sm-3 col-form-label">
-                            路
+                            路名
                           </label>
                           <div className="col-sm-9">
                             <select 
@@ -459,7 +466,7 @@ export default function UserProfile() {
                               className="form-select" 
                               disabled={isRoadDisabled || !editableUser.district}
                               value={editableUser.road_name}
-                              onChange={handleInputChange}
+                              onChange={handleRoadChange}
                             >
                               <option value="">請選擇居住街道</option>
                               {roads.map(road => (
