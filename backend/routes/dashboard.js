@@ -26,19 +26,8 @@ router.put('/:user_id', async (req, res) => {
     'UPDATE users SET name=?, password=?,birthdate =?,phone=?,email=?,gender=?,country=?,city=?,district=?,road_name=?,detailed_address=?,image_path=?,remarks=?',
     // 這邊插入的值會去找req.body使用者input name裡面的名字的值對嗎
     [
-      name,
-      password,
-      birthdate,
-      phone,
-      email,
-      gender,
-      country,
-      city,
-      district,
-      road_name,
-      detailed_address,
-      image_path,
-      remarks,
+      name, password, birthdate, phone, email, gender,
+      country, city, district, road_name, detailed_address, image_path,remarks,
     ]
   )
 })
