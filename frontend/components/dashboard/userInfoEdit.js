@@ -210,25 +210,22 @@ export default function UserProfile() {
     const file = e.target.files[0]
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
-        alert('檔案太大')
+        Swal.fire('錯誤', '檔案不能超過5MB', 'error')
         return
       }
       
       if (!file.type.startsWith('image/')) {
-        alert('請上傳圖片檔案')
+        Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
 
-      setSelectedImg(file)
-      
-      const formData = new FormData()
-      formData.append('image', file)
-      
-      axios.post('/api/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
+      // 将文件转换为base64
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setSelectedImg(reader.result) // 存储base64字符串
+        setProfilePic(reader.result) // 预览图片
+      }
+      reader.readAsDataURL(file)
     }
   }
 
@@ -304,18 +301,13 @@ export default function UserProfile() {
     }
 
     try {
-      const formData = new FormData()
-      formData.append('image', selectedImg)
-      formData.append('user_id', user_id)
-
-      const response = await axios.post('http://localhost:3005/api/upload/profile', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      // 直接将base64图片数据作为image_path发送
+      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
+        ...editableUser,
+        image_path: selectedImg
       })
 
       if (response.data.status === 'success') {
-        setProfilePic(response.data.image_path)
         setUploadStatus('頭像更新成功！')
         Swal.fire('成功', '頭像更新成功', 'success')
       }
