@@ -4,8 +4,6 @@ import { useAuth } from '@/hooks/use-auth'
 import BuyCard from '@/components/cart/buy-card'
 import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
-import { data } from 'jquery'
-import { set } from 'lodash'
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值
@@ -58,10 +56,13 @@ export default function CartIndex() {
 
       <div className="row">
         <div className="col-8 cart h-100">
-          {cartdata.map((item) => {
-            item = { item }
-            return <BuyCard key={item.product_id} item={item} />
-          })}
+          {cartdata && cartdata.length > 0 ? (
+            cartdata.map((item) => (
+              <BuyCard key={item.product_id} item={item} />
+            ))
+          ) : (
+            <p>購物車是空的</p>
+          )}
         </div>
         <div className="col bill h-50">
           <div className="card p-3 border-primary">
