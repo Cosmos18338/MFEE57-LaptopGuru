@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { taiwanData } from '@/components/dashboard/test-address'
 import axios from 'axios'
 import { useAuth } from '@/hooks/use-auth'
