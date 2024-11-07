@@ -157,7 +157,8 @@ export default function UserProfile() {
             image_path: userData.image_path || '',
             remarks: userData.remarks || ''
           })
-          console.log(editableUser)
+          console.log(userData)
+          console.log(userData.district)
           if (userData.image_path) {
             setProfilePic(userData.image_path)
           }
