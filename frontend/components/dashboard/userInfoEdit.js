@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import Swal from 'sweetalert2'
-import { taiwanData } from '@/components/dashboard/test-address'
-import AddressCompo from '@/components/dashboard/test-address'
 import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
-
+import $ from 'jquery'
+import { taiwanData } from '@/data/address/data.js'
 
 export default function UserProfile() {
   const { auth } = useAuth()
@@ -23,8 +22,15 @@ export default function UserProfile() {
     road_name: '',
     detailed_address: '',
     image_path: '',
+    remarks: ''
   })
 
+  const [profilePic, setProfilePic] = useState('https://via.placeholder.com/220x220')
+  const [showpassword, setShowpassword] = useState(false)
+  const [uploadStatus, setUploadStatus] = useState('')
+  const [selectedImg, setSelectedImg] = useState(null)
+
+  // 获取用户数据
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -44,6 +50,7 @@ export default function UserProfile() {
             road_name: userData.road_name || '',
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
+            remarks: userData.remarks || ''
           })
           if (userData.image_path) {
             setProfilePic(userData.image_path)
@@ -56,35 +63,136 @@ export default function UserProfile() {
     }
     if (auth.userData.user_id) {
       fetchData()
-    }
-    else {
+    } else {
       console.error('user_id 不存在')
     }
   }, [user_id])
 
-  const [profilePic, setProfilePic] = useState(
-    'https://via.placeholder.com/220x220'
-  )
-  const [showpassword, setShowpassword] = useState(false)
-  const [uploadStatus, setUploadStatus] = useState('')
-  const [selectedCity, setSelectedCity] = useState('')
-  const [selectedArea, setSelectedArea] = useState('')
-  const [selectedRoad, setSelectedRoad] = useState('')
-  const [areaList, setAreaList] = useState([])
-  const [roadList, setRoadList] = useState([])
-  const [selectedImg, setSelectedImg] = useState(null)
+  // 地址选择相关逻辑
+  useEffect(() => {
+    const citySelect = $('#city')
+    const districtSelect = $('#district')
+    const roadSelect = $('#roadList')
 
-  // useEffect(() => {
-  //   const city = taiwanData.find(city => city.CityName === selectedCity);
-  //   setAreaList(city ? city.AreaList : []);
-  //   setRoadList([]);
-  // }, [selectedCity]);
+    // 按區域分組的縣市數據
+    const groupedCities = {
+      北部區域: [
+        { CityName: '台北市', CityEngName: 'Taipei City' },
+        { CityName: '新北市', CityEngName: 'New Taipei City' },
+        { CityName: '基隆市', CityEngName: 'Keelung City' },
+        { CityName: '新竹市', CityEngName: 'Hsinchu City' },
+        { CityName: '桃園市', CityEngName: 'Taoyuan City' },
+        { CityName: '新竹縣', CityEngName: 'Hsinchu County' },
+      ],
+      中部區域: [
+        { CityName: '台中市', CityEngName: 'Taichung City' },
+        { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
+        { CityName: '彰化縣', CityEngName: 'Changhua County' },
+        { CityName: '南投縣', CityEngName: 'Nantou County' },
+        { CityName: '雲林縣', CityEngName: 'Yunlin County' },
+      ],
+      南部區域: [
+        { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
+        { CityName: '台南市', CityEngName: 'Tainan City' },
+        { CityName: '嘉義市', CityEngName: 'Chiayi City' },
+        { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
+        { CityName: '屏東縣', CityEngName: 'Pingtung County' },
+      ],
+      東部區域: [
+        { CityName: '宜蘭縣', CityEngName: 'Yilan County' },
+        { CityName: '花蓮縣', CityEngName: 'Hualien County' },
+        { CityName: '台東縣', CityEngName: 'Taitung County' },
+      ],
+      離島區域: [
+        { CityName: '金門縣', CityEngName: 'Kinmen County' },
+        { CityName: '連江縣', CityEngName: 'Lienchiang County' },
+        { CityName: '澎湖縣', CityEngName: 'Penghu County' },
+      ],
+    }
 
-  // useEffect(() => {
-  //   const area = areaList.find(area => area.AreaName === selectedArea);
-  //   setRoadList(area ? area.RoadList : []);
-  // }, [selectedArea, areaList]);
+    // 動態載入分組的縣市
+    for (const group in groupedCities) {
+      const optgroup = $('<optgroup>').attr('label', group)
+      groupedCities[group].forEach((city) => {
+        optgroup.append(
+          $('<option>')
+            .val(city.CityName)
+            .text(`${city.CityName} (${city.CityEngName})`)
+        )
+      })
+      citySelect.append(optgroup)
+    }
 
+    // 當選擇國家時，啟用縣市選擇
+    $('#country').on('change', function () {
+      const selectedCountry = $(this).val()
+      if (selectedCountry === '台灣') {
+        citySelect.prop('disabled', false)
+      } else {
+        citySelect
+          .prop('disabled', true)
+          .empty()
+          .append('<option value="">請選擇縣市</option>')
+        districtSelect
+          .prop('disabled', true)
+          .empty()
+          .append('<option value="">請選擇鄉鎮市區</option>')
+        roadSelect
+          .prop('disabled', true)
+          .empty()
+          .append('<option value="">請選擇居住街道</option>')
+      }
+    })
+
+    // 當選擇縣市時，動態載入鄉鎮市區
+    citySelect.on('change', function () {
+      const selectedCity = $(this).val()
+      districtSelect
+        .prop('disabled', false)
+        .empty()
+        .append('<option value="">請選擇鄉鎮市區</option>')
+      roadSelect
+        .prop('disabled', true)
+        .empty()
+        .append('<option value="">請選擇居住街道</option>')
+
+      const city = taiwanData.find((city) => city.CityName === selectedCity)
+      if (city) {
+        city.AreaList.forEach((area) => {
+          districtSelect.append(
+            $('<option>')
+              .val(area.AreaName)
+              .text(`${area.AreaName} (${area.ZipCode})`)
+          )
+        })
+      }
+    })
+
+    // 當選擇鄉鎮市區時，動態載入對應的道路
+    districtSelect.on('change', function () {
+      const selectedArea = $(this).val()
+      roadSelect
+        .prop('disabled', false)
+        .empty()
+        .append('<option value="">請選擇居住街道</option>')
+
+      const selectedCity = citySelect.val()
+      const city = taiwanData.find((city) => city.CityName === selectedCity)
+
+      if (city) {
+        const area = city.AreaList.find((area) => area.AreaName === selectedArea)
+        if (area && area.RoadList) {
+          area.RoadList.forEach((road) => {
+            roadSelect.append(
+              $('<option>').val(road.RoadName).text(road.RoadName)
+            )
+          })
+        }
+      }
+    })
+  }, [])
+
+  // 处理输入变化
   const handleInputChange = (e) => {
     const { name, value } = e.target
     setEditableUser((prev) => ({
@@ -93,6 +201,7 @@ export default function UserProfile() {
     }))
   }
 
+  // 处理图片上传
   const handleImageChange = (e) => {
     const file = e.target.files[0]
     if (file) {
@@ -119,6 +228,7 @@ export default function UserProfile() {
     }
   }
 
+  // 处理表单提交
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -139,27 +249,28 @@ export default function UserProfile() {
     }
   }
 
+  // 处理账号停用
   const handleDeactivate = async () => {
     try {
-      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號');
+      const isConfirmed = window.confirm('確定要停用此使用者嗎？請至聯繫克服以重新使用帳號')
       
       if (!isConfirmed) {
-        return;
+        return
       }
   
       const response = await axios.patch(`/api/users/${user_id}/deactivate`, {
         isActive: false,
         deactivatedAt: new Date().toISOString()
-      });
+      })
   
       if (response.status === 200) {
-        Swal.fire('使用者已停用');
+        Swal.fire('使用者已停用')
       }
     } catch (error) {
-      console.error('停用失敗:', error);
-      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試');
+      console.error('停用失敗:', error)
+      Swal.fire(error.response?.data?.message || '停用失敗，請稍後再試')
     }
-  };
+  }
 
   const handleProfilePicSubmit = (e) => {
     e.preventDefault()
@@ -170,13 +281,7 @@ export default function UserProfile() {
     <>
       <div className="container">
         <div className="row d-flex justify-content-center">
-          {/* LeftAside 左邊側欄 */}
-            {/* <div className="col-md-2"></div> */}
-
-
-          {/* Main Content (User Profile) */}
-          <div className="">{/* <div className="col-md-9"></div> */}
-
+          <div className="">
             <div className="card">
               <div
                 className="card-header d-flex align-items-center"
@@ -198,13 +303,9 @@ export default function UserProfile() {
                   {/* Form Section */}
                   <div className="col-md-8">
                     <form onSubmit={handleSubmit}>
-                      {/* 使用者資料 */}
-
+                      {/* 基本資料 */}
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="name"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="name" className="col-sm-3 col-form-label">
                           使用者名稱
                         </label>
                         <div className="col-sm-9">
@@ -218,11 +319,9 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
+
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="password"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="password" className="col-sm-3 col-form-label">
                           密碼修改
                         </label>
                         <div className="col-sm-9">
@@ -243,11 +342,9 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
+
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="gender"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="gender" className="col-sm-3 col-form-label">
                           性別
                         </label>
                         <div className="col-sm-9">
@@ -264,11 +361,9 @@ export default function UserProfile() {
                           </select>
                         </div>
                       </div>
+
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="birthdate"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="birthdate" className="col-sm-3 col-form-label">
                           生日
                         </label>
                         <div className="col-sm-9">
@@ -282,11 +377,9 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
+
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="phone"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="phone" className="col-sm-3 col-form-label">
                           手機號碼
                         </label>
                         <div className="col-sm-9">
@@ -300,15 +393,129 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
+
                       {/* 地址選擇 */}
-                      <AddressCompo />
-                      {/* 新的地址onChange沒有handleinput change */}
+                      <div className="address-section">
+                        <div className="mb-3 row">
+                          <label htmlFor="country" className="col-sm-3 col-form-label">
+                            國家
+                          </label>
+                          <div className="col-sm-9">
+                            <select 
+                              id="country" 
+                              className="form-select" 
+                              name="country"
+                              value={editableUser.country}
+                              onChange={handleInputChange}
+                            >
+                              <option value="">請選擇國家</option>
+                              <option value="台灣">台灣</option>
+                              <option value="美國">美國</option>
+                              <option value="加拿大">加拿大</option>
+                              <option value="日本">日本</option>
+                              <option value="韓國">韓國</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 row">
+                          <label htmlFor="city" className="col-sm-3 col-form-label">
+                            縣市
+                          </label>
+                          <div className="col-sm-9">
+                            <select 
+                              id="city" 
+                              name="city" 
+                              className="form-select" 
+                              disabled
+                              value={editableUser.city}
+                              onChange={handleInputChange}
+                            >
+                              <option value="">請選擇縣市</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 row">
+                          <label htmlFor="district" className="col-sm-3 col-form-label">
+                            鄉鎮市區
+                          </label>
+                          <div className="col-sm-9">
+                            <select 
+                              id="district" 
+                              name="district" 
+                              className="form-select" 
+                              disabled
+                              value={editableUser.district}
+                              onChange={handleInputChange}
+                            >
+                              <option value="">請選擇鄉鎮市區</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 row">
+                          <label htmlFor="road_name" className="col-sm-3 col-form-label">
+                            路
+                          </label>
+                          <div className="col-sm-9">
+                            <select 
+                              id="roadList" 
+                              name="road_name" 
+                              className="form-select" 
+                              disabled
+                              value={editableUser.road_name}
+                              onChange={handleInputChange}
+                            >
+                              <option value="">請選擇居住街道</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 row">
+                          <label htmlFor="detailed_address" className="col-sm-3 col-form-label">
+                            詳細地址
+                          </label>
+                          <div className="col-sm-9">
+                            <input
+                              type="text"
+                              id="detailed_address"
+                              name="detailed_address"
+                              className="form-control"
+                              placeholder="巷弄門牌"
+                              value={editableUser.detailed_address}
+                              onChange={handleInputChange}
+                            />
+                            <div className="form-text">
+                              請輸入詳細地址（例如：1號、2樓、A棟）
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="mb-3 row">
+                          <label htmlFor="remarks" className="col-sm-3 col-form-label">
+                            備註
+                          </label>
+                          <div className="col-sm-9">
+                            <textarea
+                              id="remarks"
+                              name="remarks"
+                              className="form-control"
+                              rows={3}
+                              placeholder="輸入備註"
+                              value={editableUser.remarks}
+                              onChange={handleInputChange}
+                            />
+                            <div className="form-text">
+                              地址假如都不在以上選單的話，請填寫於備註
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                       {/* 電子郵件 */}
                       <div className="mb-3 row">
-                        <label
-                          htmlFor="email"
-                          className="col-sm-3 col-form-label"
-                        >
+                        <label htmlFor="email" className="col-sm-3 col-form-label">
                           電子郵件
                         </label>
                         <div className="col-sm-9">
@@ -322,9 +529,10 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
+
                       <div className="d-flex justify-content-between">
                         <button
-                          type="button"
+                          type="submit"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
@@ -371,13 +579,11 @@ export default function UserProfile() {
                             type="file"
                             accept="image/*"
                             className="d-none"
-                            value={editableUser.image_path}
                             onChange={handleImageChange}
-
                           />
                         </div>
                         <button
-                          type="button"
+                          type="submit"
                           className="btn btn-primary"
                           style={{
                             backgroundColor: '#805AF5',
@@ -387,9 +593,6 @@ export default function UserProfile() {
                           更新
                         </button>
 
-                       
-
-                        {/* 顯示上傳狀態 */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
