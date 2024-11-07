@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/product-card.module.scss'
 import Image from 'next/image'
-import 'bootstrap/dist/css/bootstrap.min.css'
 
 export default function ProductCard({ onSendMessage, product_id }) {
   // 產品卡片的 key 值，用於比較功能的 checkbox
@@ -81,11 +80,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
         </label>
         <span className={styles.product_compare_text}>比較</span>
         <Image
-          src={
-            data
-              ? `/product/${data.product_img_path}`
-              : ''
-          }
+          src={data ? `/product/${data.product_img_path}` : ''}
           alt="Product"
           width={200}
           height={200}
