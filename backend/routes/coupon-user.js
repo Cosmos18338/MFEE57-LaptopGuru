@@ -65,7 +65,7 @@ const router = express.Router()
 const upload = multer()
 
 // 新增優惠券
-router.post('/', upload.none(), async (req, res, next) => {
+router.post('/add', upload.none(), async (req, res, next) => {
   try {
     console.log('請求體:', req.body)
 
@@ -185,7 +185,7 @@ router.get('/:user_id', async (req, res) => {
 
 // 修改
 // 更新優惠券使用狀態
-router.put('/', async (req, res) => {
+router.put('/update', async (req, res) => {
   try {
     const { user_id, coupon_id, valid } = req.body
 
