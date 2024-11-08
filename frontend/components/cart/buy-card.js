@@ -93,7 +93,8 @@ export default function BuyCard({ item, onDataChange }) {
               type="number"
               defaultValue={item.quantity}
               className="w-50"
-              onChange={(e) => {
+              onBlur={(e) => {
+                if (e.target.value == item.quantity) return
                 item.quantity = Number(e.target.value)
                 handleUpdate()
                 let productCount = item.list_price * e.target.value

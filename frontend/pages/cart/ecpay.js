@@ -180,7 +180,7 @@ export default function ECPayIndex() {
       <button
         onClick={goECPay}
         // 限制有orderId產生後才能點按
-        disabled={!order.orderId}
+        // disabled={!order.orderId}
       >
         前往付款
       </button>

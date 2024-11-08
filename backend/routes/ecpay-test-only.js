@@ -4,6 +4,7 @@ import * as crypto from 'crypto'
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  const orderId = req.query.orderId
   const amount = req.query.amount
   //綠界全方位金流技術文件：
   // https://developers.ecpay.com.tw/?p=2856
@@ -17,11 +18,11 @@ router.get('/', function (req, res, next) {
   let isStage = true // 測試環境： true；正式環境：false
 
   //二、輸入參數
-  const TotalAmount = amount
+  const TotalAmount = 1000
   const TradeDesc = '商店線上付款'
-  const ItemName = 'xx商店購買一批'
+  const ItemName = `訂單付款`
   const ReturnURL = 'https://www.ecpay.com.tw'
-  const OrderResultURL = 'http://localhost:3000/payment/callback' //前端成功頁面
+  const OrderResultURL = `http://localhost:3000/cart/checkout?order_id=${orderId}&amount=${amount}` //前端成功頁面
   const ChoosePayment = 'ALL'
 
   ////////////////////////以下參數不用改////////////////////////
@@ -121,47 +122,47 @@ router.get('/', function (req, res, next) {
   const AllParams = { ...ParamsBeforeCMV, CheckMacValue }
   const inputs = Object.entries(AllParams)
     .map(function (param) {
-      return `<input name=${param[0]} value="${param[1].toString()}" style="display:none"><br/>`
+      return `<input name=${param[0]} value="${param[1].toString()}" style=""><br/>`
     })
     .join('')
 
   // 六、製作送出畫面
-  // const htmlContent = `
-  // <!DOCTYPE html>
-  // <html>
-  // <head>
-  //     <title>全方位金流-測試</title>
-  // </head>
-  // <body>
-  //     <form method="post" action="${APIURL}">
-  // ${inputs}
-  // <input type ="submit" value = "送出參數">
-  //     </form>
-  // </body>
-  // </html>
-  // `
-
-  // res.send(htmlContent)
-
   const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title></title>
-    </head>
-    <body>
-        <form method="post" action="${APIURL}" style="display:none">
-    ${inputs}
-    <input type="submit" value="送出參數" style="display:none">
-        </form>
-    <script>
-      document.forms[0].submit();
-    </script>
-    </body>
-    </html>
-    `
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <title>全方位金流-測試</title>
+  </head>
+  <body>
+      <form method="post" action="${APIURL}">
+  ${inputs}
+  <input type ="submit" value = "送出參數">
+      </form>
+  </body>
+  </html>
+  `
 
   res.send(htmlContent)
+
+  // const htmlContent = `
+  //   <!DOCTYPE html>
+  //   <html>
+  //   <head>
+  //       <title></title>
+  //   </head>
+  //   <body>
+  //       <form method="post" action="${APIURL}" style="display:none">
+  //   ${inputs}
+  //   <input type="submit" value="送出參數" style="display:none">
+  //       </form>
+  //   <script>
+  //     document.forms[0].submit();
+  //   </script>
+  //   </body>
+  //   </html>
+  //   `
+
+  // res.send(htmlContent)
 
   // 叫react送form的作法
   //res.json({ htmlContent })
