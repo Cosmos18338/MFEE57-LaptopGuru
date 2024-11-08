@@ -121,7 +121,8 @@ export default function CartIndex() {
     })
 
     const data = await result.json()
-    let order_id = data.order_id
+    const order_id = data.order_id
+    // const id = data.id
     if (data.status === 'success') {
       setOrder({ order_id: order_id, amount: total })
       setCartdata([])
@@ -129,7 +130,7 @@ export default function CartIndex() {
       localStorage.removeItem('store711')
       if (window.confirm('確認要導向至ECPay進行付款?')) {
         // 先連到node伺服器後，導向至ECPay付款頁面
-        window.location.href = `http://localhost:3005/api/ecpay-test-only?orderId=${order_id}&amount=${total}`
+        window.location.href = `http://localhost:3005/api/ecpay-test-only?orderId=${order_id}`
       }
     }
   }
