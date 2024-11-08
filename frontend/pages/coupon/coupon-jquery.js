@@ -8,11 +8,11 @@ import Coupon from '@/components/coupon'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
 import CouponQuery from '@/components/coupon/coupon-query-components'
+import CouponList from '@/components/coupon/coupon-list-components'
 import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
-
 
 export default function CouponPageJquery() {
   const router = useRouter()
@@ -112,14 +112,7 @@ export default function CouponPageJquery() {
               <Tab.Pane eventKey="coupon-record">
                 <div className="container">
                   <CouponQuery />
-                  <div className="row g-4">
-                    <div
-                      className="col-md-6"
-                      style={{ cursor: 'pointer' }}
-                    >
-                      <Coupon />
-                    </div>
-                  </div>
+                  <CouponList />
                   {/* 分頁 */}
                   <div className="pagination-section mt-4">
                     <Paginationcomponent />

@@ -12,14 +12,12 @@ const router = express.Router()
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination:
-      'C:/Users/iii_student/Desktop/laptopGuru/backend/data/blog/blog-images', // 您的本機路徑
+    destination: './uploads/blog-images', // 改用相對路徑，確保資料夾存在
     filename: (req, file, cb) => {
       cb(null, file.originalname)
     },
   }),
 })
-
 // 查詢後得到的變數是 responseData
 console.log('有進來 blog.js 而已，下一步路由沒有進去，檢查分個路由')
 

@@ -48,7 +48,6 @@
 .store-name {
   font-size: 12px; /* 從 12px 放大到 16px */
   color: #2D3748;
-  margin-bottom: 15px; /* 從 10px 放大到 13px */
 }
 
 .offer-text {
@@ -63,8 +62,14 @@
   padding: 8px 13px; /* 從 6px 10px 放大到 8px 13px */
   border-radius: 5px; /* 從 4px 放大到 5px */
   font-size: 12px; /* 從 8px 放大到 11px */
-  margin-bottom: 13px; /* 從 10px 放大到 13px */
+  margin-bottom: 5px; /* 從 10px 放大到 13px */
   text-align: center;
+}
+
+.coupon_discount{
+  font-size: 12px; /* 從 8px 放大到 11px */
+  color: #6B46C1;
+  margin-bottom: 13px;
 }
 
 .expiry-date {
