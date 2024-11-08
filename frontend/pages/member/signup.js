@@ -179,6 +179,9 @@ export default function Signup() {
           objectFit="cover"
           quality={100}
         />
+        <div className="container">
+
+        
         <div className="row d-flex justify-content-center align-items-center">
           <div className={`${styles.left} col`}>
             <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
@@ -344,6 +347,7 @@ export default function Signup() {
             </form>
           </div>
         </div>
+      </div>
       </div>
       <MyFooter />
 
