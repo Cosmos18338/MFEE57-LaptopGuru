@@ -52,4 +52,40 @@ router.get('/:product_id', async (req, res) => {
   }
 })
 
+// 取得相關產品
+router.get('/related/:product_id', async (req, res) => {
+  try {
+    const [rows] = await db.query(
+      'SELECT product_name,affordance,product_brand FROM product WHERE product_id = ?',
+      req.params.product_id
+    )
+    const product_detail = rows[0]
+    if (!product_detail) {
+      return res.json({ status: 'error', message: '找不到產品' })
+    }
+    const fuzzyName = `%${product_detail.product_name}%`
+    const [related_products] = await db.query(
+      'SELECT product_id FROM product WHERE  (product_name LIKE ? OR product_brand LIKE ? OR affordance LIKE ?) AND product_id != ? ',
+      [
+        fuzzyName,
+        product_detail.product_brand,
+        product_detail.affordance,
+        req.params.product_id,
+      ]
+    )
+    if (!related_products.length) {
+      return res.json({ status: 'error', message: '找不到相關產品' })
+    } else {
+      // 隨機取得相關產品
+      const randomRelatedProducts = related_products
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 4)
+
+      return res.json({ status: 'success', data: { randomRelatedProducts } })
+    }
+  } catch (error) {
+    console.error('取得相關產品失敗:', error)
+    return res.json({ status: 'error', message: '取得相關產品失敗' })
+  }
+})
 export default router

@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 export default function UserProfile() {
-  const { auth } = useAuth()
+  const { auth, setAuth } = useAuth()
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
@@ -245,6 +245,9 @@ export default function UserProfile() {
   
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
+        setAuth({isAuth:auth.isAuth, userData:{...editableUser}})
+        console.log({...editableUser});
+        // 改變的結果是輸入的狀態的物件
       }
     } catch (error) {
       console.error('更新失敗:', error)
@@ -373,6 +376,8 @@ export default function UserProfile() {
                             value={editableUser.password}
                             onChange={handleInputChange}
                           />
+                          要先輸入密碼正確，才讓使用者編輯密碼
+                          
                           <input
                             type="checkbox"
                             id="showpassword"
@@ -380,9 +385,9 @@ export default function UserProfile() {
                             onChange={() => setShowpassword(!showpassword)}
                             className="form-check-input"
                           />
+                          顯示密碼
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label htmlFor="gender" className="col-sm-3 col-form-label">
                           性別
@@ -578,14 +583,15 @@ export default function UserProfile() {
                           電子郵件
                         </label>
                         <div className="col-sm-9">
-                          <input
+                          {/* <input
                             type="email"
                             className="form-control"
                             id="email"
                             name="email"
                             value={editableUser.email}
                             onChange={handleInputChange}
-                          />
+                          /> */} 
+                          {editableUser.email}
                         </div>
                       </div>
 
@@ -597,6 +603,7 @@ export default function UserProfile() {
                             backgroundColor: '#805AF5',
                             borderColor: '#805AF5',
                           }}
+                          onChange={handleSubmit}
                         >
                           更新
                         </button>
@@ -631,7 +638,7 @@ export default function UserProfile() {
                             className="btn btn-outline-primary"
                             style={{ color: '#805AF5', borderColor: '#805AF5' }}
                           >
-                            大頭照
+                            大頭照預覽
                           </label>
                           <input
                             id="profile-pic-upload"

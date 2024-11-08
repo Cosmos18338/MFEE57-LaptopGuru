@@ -17,7 +17,9 @@ export default function Header(props) {
             <Link className="text-light me-3" href="/">
               首頁
             </Link>
-            <a className="text-light me-3">商品</a>
+            <Link className="text-light me-3" href="/product">
+              商品
+            </Link>
             <a className="text-light me-3">比較</a>
             <a className="text-light me-3">租賃</a>
             <a className="text-light me-3">活動</a>
@@ -37,7 +39,12 @@ export default function Header(props) {
                 </div>
               </Link>
               <Link href="/">
-                <button className="header-logout" onClick={logout}>登出</button>
+                <button
+                  className="btn btn-primary header-logout"
+                  onClick={logout}
+                >
+                  登出
+                </button>
               </Link>
             </>
           ) : (
@@ -50,7 +57,6 @@ export default function Header(props) {
               <Link href="/member/signup">
                 <button className="btn btn-primary text-white">註冊</button>
               </Link>
-
             </>
           )}
         </div>
