@@ -237,4 +237,38 @@ router.put('/update', async (req, res) => {
     })
   }
 })
+
+// // 更新優惠券使用狀態
+// router.put('/update', async (req, res) => {
+//   try {
+//     const { user_id, coupon_id } = req.body
+
+//     // 更新使用者優惠券狀態為已使用
+//     const [result] = await db.query(
+//       `
+//       UPDATE coupon_user
+//       SET valid = 0
+//       WHERE user_id = ? AND coupon_id = ?
+//       `,
+//       [user_id, coupon_id]
+//     )
+
+//     if (result.affectedRows === 0) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: '更新失敗，找不到符合條件的優惠券'
+//       })
+//     }
+
+//     res.json({
+//       status: 'success',
+//       message: '優惠券已標記為已使用'
+//     })
+//   } catch (error) {
+//     res.status(500).json({
+//       status: 'error',
+//       message: '系統錯誤'
+//     })
+//   }
+// })
 export default router
