@@ -376,6 +376,7 @@ export default function UserProfile() {
                             value={editableUser.password}
                             onChange={handleInputChange}
                           />
+                          要先輸入密碼正確，才讓使用者編輯密碼
                           
                           <input
                             type="checkbox"
@@ -387,7 +388,6 @@ export default function UserProfile() {
                           顯示密碼
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label htmlFor="gender" className="col-sm-3 col-form-label">
                           性別
