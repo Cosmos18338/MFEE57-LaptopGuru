@@ -104,7 +104,7 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
 //     const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
 
 //     const sql = `
-//     INSERT INTO blogoverview 
+//     INSERT INTO blogoverview
 //     ( blog_type,
 //       blog_title,
 //       blog_content,
@@ -112,7 +112,7 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
 //       blog_brand_model,
 //       blog_keyword,
 //       blog_valid_value,
-//       blog_created_date, blog_image) 
+//       blog_created_date, blog_image)
 //     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
 //     `
 //     const values = [
@@ -257,45 +257,45 @@ router.get('/blogcard', upload.none(), async (req, res, next) => {
 //     })
 //   }
 
-  try {
-    // 插入部落格文章的資料
-    const [result] = await db.query(
-      'INSERT INTO blogoverview (blog_user_id, blog_title, blog_content, blog_created_date, blog_brand, blog_brand_model, blog_type) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [
-        blog_user_id,
-        blog_title,
-        blog_content,
-        blog_created_date,
-        blog_brand,
-        blog_brand_model,
-        blog_type,
-      ]
-    )
-    // 得到新的 blog_id，創建後回傳的
-    const blog_id = result.insertId
+//   try {
+//     // 插入部落格文章的資料
+//     const [result] = await db.query(
+//       'INSERT INTO blogoverview (blog_user_id, blog_title, blog_content, blog_created_date, blog_brand, blog_brand_model, blog_type) VALUES (?, ?, ?, ?, ?, ?, ?)',
+//       [
+//         blog_user_id,
+//         blog_title,
+//         blog_content,
+//         blog_created_date,
+//         blog_brand,
+//         blog_brand_model,
+//         blog_type,
+//       ]
+//     )
+//     // 得到新的 blog_id，創建後回傳的
+//     const blog_id = result.insertId
 
-    if (blog_images && blog_images.length > 0) {
-      const imageInsertPromises = blog_images.map((image) => {
-        return db.query(
-          'INSERT INTO blogimage (blog_id, blog_image) VALUES (?, ?)',
-          [blog_id, image]
-        )
-      })
+//     if (blog_images && blog_images.length > 0) {
+//       const imageInsertPromises = blog_images.map((image) => {
+//         return db.query(
+//           'INSERT INTO blogimage (blog_id, blog_image) VALUES (?, ?)',
+//           [blog_id, image]
+//         )
+//       })
 
-      // 等待所有的插入操作完成
-      await Promise.all(imageInsertPromises)
-    }
+//       // 等待所有的插入操作完成
+//       await Promise.all(imageInsertPromises)
+//     }
 
-    res.status(201).json({
-      status: 'success',
-      message: '部落格文章已成功創建',
-      blog_id: blog_id, // 回傳新創建的 blog_id
-    })
-  } catch (error) {
-    console.error('Error creating blog:', error)
-    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
-  }
-})
+//     res.status(201).json({
+//       status: 'success',
+//       message: '部落格文章已成功創建',
+//       blog_id: blog_id, // 回傳新創建的 blog_id
+//     })
+//   } catch (error) {
+//     console.error('Error creating blog:', error)
+//     res.status(500).json({ status: 'error', message: '伺服器錯誤' })
+//   }
+// })
 
 router.patch('/blog-delete/:blog_id', async (req, res) => {
   const { blog_id } = req.params
