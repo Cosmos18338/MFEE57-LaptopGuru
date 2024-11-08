@@ -37,7 +37,7 @@ export default function Header(props) {
                 </div>
               </Link>
               <Link href="/">
-                <button className="header-logout" onClick={logout}>登出</button>
+                <button className="btn btn-primary header-logout" onClick={logout}>登出</button>
               </Link>
             </>
           ) : (

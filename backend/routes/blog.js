@@ -10,15 +10,15 @@ const router = express.Router()
 // 有撈到了啦 json http://localhost:3005/api/article/1
 // 動態路由記得寫
 
-const upload = multer({
-  storage: multer.diskStorage({
-    destination:
-      'C:/Users/iii_student/Desktop/laptopGuru/backend/data/blog/blog-images', // 您的本機路徑
-    filename: (req, file, cb) => {
-      cb(null, file.originalname)
-    },
-  }),
-})
+// const upload = multer({
+//   storage: multer.diskStorage({
+//     destination:
+//       'C:/Users/iii_student/Desktop/laptopGuru/backend/data/blog/blog-images', // 您的本機路徑
+//     filename: (req, file, cb) => {
+//       cb(null, file.originalname)
+//     },
+//   }),
+// })
 
 // 查詢後得到的變數是 responseData
 console.log('有進來 blog.js 而已，下一步路由沒有進去，檢查分個路由')
@@ -79,63 +79,63 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
 })
 
 // 加入 upload.single('blog_image') 中間件
-router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
-  console.log(req.body.blog_valid_value)
+// router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
+//   console.log(req.body.blog_valid_value)
 
-  try {
-    const {
-      blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date,
-    } = req.body
+//   try {
+//     const {
+//       blog_type,
+//       blog_title,
+//       blog_content,
+//       blog_brand,
+//       blog_brand_model,
+//       blog_keyword,
+//       blog_valid_value,
+//       blog_created_date,
+//     } = req.body
 
-    // 獲取上傳的圖片路徑
-    const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
+//     // 獲取上傳的圖片路徑
+//     const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
 
-    const sql = `
-    INSERT INTO blogoverview 
-    ( blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date, blog_image) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
-    const values = [
-      blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date,
-      blog_image,
-    ]
+//     const sql = `
+//     INSERT INTO blogoverview 
+//     ( blog_type,
+//       blog_title,
+//       blog_content,
+//       blog_brand,
+//       blog_brand_model,
+//       blog_keyword,
+//       blog_valid_value,
+//       blog_created_date, blog_image) 
+//     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+//     `
+//     const values = [
+//       blog_type,
+//       blog_title,
+//       blog_content,
+//       blog_brand,
+//       blog_brand_model,
+//       blog_keyword,
+//       blog_valid_value,
+//       blog_created_date,
+//       blog_image,
+//     ]
 
-    const [result] = await db.query(sql, values)
+//     const [result] = await db.query(sql, values)
 
-    res.json({
-      success: true,
-      message: '新增成功',
-      id: result.insertId,
-    })
-  } catch (error) {
-    console.error('資料庫錯誤:', error)
-    res.status(500).json({
-      success: false,
-      message: '新增失敗，請稍後再試',
-    })
-  }
-})
+//     res.json({
+//       success: true,
+//       message: '新增成功',
+//       id: result.insertId,
+//     })
+//   } catch (error) {
+//     console.error('資料庫錯誤:', error)
+//     res.status(500).json({
+//       success: false,
+//       message: '新增失敗，請稍後再試',
+//     })
+//   }
+// })
 
 router.get('/blog_detail/:blog_id', async (req, res) => {
   try {
@@ -231,25 +231,25 @@ router.get('/blogcard', upload.none(), async (req, res, next) => {
   }
 })
 
-router.post('/blog-created', upload.none(), async (req, res) => {
-  const {
-    blog_user_id,
-    blog_title,
-    blog_content,
-    blog_created_date,
-    blog_brand,
-    blog_brand_model,
-    blog_type,
-    blog_images, // 假設圖片以陣列形式傳遞
-  } = req.body // 從 req.body 獲取所有必填欄位
+// router.post('/blog-created', upload.none(), async (req, res) => {
+//   const {
+//     blog_user_id,
+//     blog_title,
+//     blog_content,
+//     blog_created_date,
+//     blog_brand,
+//     blog_brand_model,
+//     blog_type,
+//     blog_images, // 假設圖片以陣列形式傳遞
+//   } = req.body // 從 req.body 獲取所有必填欄位
 
-  // 檢查必要的欄位是否存在
-  if (!blog_user_id || !blog_title || !blog_content) {
-    return res.status(400).json({
-      status: 'error',
-      message: '必填欄位喔!',
-    })
-  }
+//   // 檢查必要的欄位是否存在
+//   if (!blog_user_id || !blog_title || !blog_content) {
+//     return res.status(400).json({
+//       status: 'error',
+//       message: '必填欄位喔!',
+//     })
+//   }
 
   try {
     // 插入部落格文章的資料

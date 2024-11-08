@@ -1,18 +1,15 @@
 .gradient-bg {
   position: relative;
   background-image: url(../assets/signup_login/andras-vas-Bd7gNnWJBkU-unsplash.jpg);
-  // background: linear-gradient(135deg, #3c007a, #000);
-  background-repeat: repeat;
-  background-size: cover;
-  margin-inline: auto;
+  background: linear-gradient(135deg, #3c007a, #000);
+  background-repeat: no-repeat;
+  background-size: cover ;  /* 改用 cover */
+  background-position: center bottom;  
+  display: flex;
+  flex-direction: column;
 }
 
-.gradient-bg .row{
-  // height: 100%;
-  padding-top: 80px;
-  padding-bottom: 200px;
-  position: relative; /* 添加這一行以固定blur */
-}
+
 .blur {
   /* background: rgba(255, 255, 255, 0.626);*/
   /* width: 400px; 固定寬度 */
@@ -44,7 +41,7 @@
 }
 .left {
   // position: relative;
-  z-index: 1;  /* 確保在其他元素上方 */
+  z-index: 20;  /* 確保在其他元素上方 */
   // min-width: 200px;  /* 給予最小寬度 */
   padding: 20px;    /* 給予一些內邊距 */
 }
@@ -169,4 +166,13 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
 .signup-right{
   margin-block: 40px;
   margin-right:40px;
+}
+
+// .row{
+//   height: calc(100vh - 396px);
+// }
+
+.content-row {
+  height: calc(100vh - 385px);
+
 }
