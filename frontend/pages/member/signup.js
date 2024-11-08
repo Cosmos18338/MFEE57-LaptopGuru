@@ -6,7 +6,6 @@ import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-const MySwal = withReactContent(Swal)
 
 export default function Signup() {
   const validatePassword = (password) => {
@@ -16,7 +15,7 @@ export default function Signup() {
       hasUpperCase: /[A-Z]/.test(password),
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
-      hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+      // hasSpecialChar: /[!@#$%^&*(),.?":{}|<>]/.test(password),
     }
 
     // 檢查所有規則
@@ -25,7 +24,7 @@ export default function Signup() {
       hasUpperCase: '需要包含大寫字母',
       hasLowerCase: '需要包含小寫字母',
       hasNumber: '需要包含數字',
-      hasSpecialChar: '需要包含特殊符號',
+      // hasSpecialChar: '需要包含特殊符號',
     }
 
     // 回傳未通過的規則訊息
@@ -39,8 +38,8 @@ export default function Signup() {
     email: '',
     password: '',
     confirmpassword: '',
-    phone: '',
-    birthdate: '',
+    // phone: '',
+    // birthdate: '',
     gender: '',
     agree: false,
   })
@@ -49,7 +48,8 @@ export default function Signup() {
     email: '',
     password: '',
     confirmpassword: '',
-    phone: '',
+    // phone: '',
+    // birthdate: '',
     gender: '',
     agree: '',
   })
@@ -100,11 +100,11 @@ export default function Signup() {
     }
 
     // Phone validation
-    if (!user.phone) {
-      newErrors.phone = '手機號碼為必填'
-    } else if (!/^\d{10}$/.test(user.phone)) {
-      newErrors.phone = '請輸入有效的手機號碼'
-    }
+    // if (!user.phone) {
+    //   newErrors.phone = '手機號碼為必填'
+    // } else if (!/^\d{10}$/.test(user.phone)) {
+    //   newErrors.phone = '請輸入有效的手機號碼'
+    // }
 
     // Gender validation
     // if (!user.gender) {
@@ -214,27 +214,21 @@ export default function Signup() {
         objectFit="cover"
         quality={100}
       />
-      <div className="row d-flex justify-content-center align-items-center gx-5">
-        <div className={`${styles.left} col-4`}>
+      <div className="row d-flex justify-content-center align-items-center ">
+        <div className={`${styles.left} col`}>
           <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
           <h3 className={`text-white ${styles['guru-laptop']}`}>GURU Laptop</h3>
-          {/* 密碼請至少輸入8個字元、最多20字元，需要包含大寫字母、需要包含小寫字母、需要包含數字、需要包含特殊符號。 */}
         </div>
-        <div className={`${styles.right} col-sm-12 col-md-4`}>
+        <div className={`${styles.right} align-item-center col ${styles['signup-right']}`}>
           <div className={`${styles.tabs} d-flex justify-content-between`}>
-            <span className={`${styles.white} ${styles.hover}`}>
-              <Link className="text-decoration-none" href="/member/login">
+              <Link className={` ${styles.hover} text-decoration-none text-white`} href="/member/login">
                 登入Log in
               </Link>
-            </span>
-            <span className={styles.white}>|</span>
-            <span className={`${styles.white} ${styles.hover}`}>
-              <Link className="text-decoration-none" href="/member/signup">
+            <span className="text-white">|</span>    
+              <Link className={`${styles.hover} text-decoration-none text-white`} href="/member/signup">
                 註冊Sign Up
-              </Link>
-            </span>
+              </Link>       
           </div>
-
           {submitError && (
             <div className="alert alert-danger" role="alert">
               {submitError}
@@ -268,9 +262,8 @@ export default function Signup() {
                   name="password"
                   className={`form-control ${styles.inputs}`}
                   value={user.password}
-                  onChange={handleFieldChange}
-                  minLength={6}
-                  maxLength={48}
+                  onChange={handleFieldChange}   
+                  maxLength={62}
                 />
                 <div className="form-check">
                   <input
@@ -282,7 +275,7 @@ export default function Signup() {
                   />
                   <label
                     htmlFor="showpassword"
-                    className={`${styles.white} form-check-label`}
+                    className={`text-white form-check-label`}
                   >
                     顯示密碼
                   </label>
@@ -316,7 +309,7 @@ export default function Signup() {
                   />
                   <label
                     htmlFor="showConfirmpassword"
-                    className={`${styles.white} form-check-label`}
+                    className={`text-white form-check-label`}
                   >
                     顯示密碼
                   </label>
@@ -338,7 +331,7 @@ export default function Signup() {
                   value={user.phone}
                   onChange={handleFieldChange}
                 />
-                {errors.phone && <div className="error">{errors.phone}</div>}
+                {/* {errors.phone && <div className="error">{errors.phone}</div>} */}
               </div>
 
               <div className="mb-3">
@@ -371,7 +364,7 @@ export default function Signup() {
                   <option value="男">男</option>
                   <option value="不透漏">不透漏</option>
                 </select>
-                {errors.gender && <div className="error">{errors.gender}</div>}
+                {/* {errors.gender && <div className="error">{errors.gender}</div>} */}
               </div>
 
               <div className="mb-3">
@@ -386,7 +379,7 @@ export default function Signup() {
                   />
                   <label
                     htmlFor="agree"
-                    className={`${styles.white} form-check-label`}
+                    className={`text-white form-check-label`}
                   >
                     我同意網站會員註冊條款
                   </label>
