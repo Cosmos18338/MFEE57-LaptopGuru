@@ -28,7 +28,7 @@ router.get('/:product_id', async (req, res) => {
         'SELECT * FROM product WHERE product_id = ?',
         req.params.product_id
       )
-    )[0]
+    )[0][0]
     const product_img = (
       await db.query(
         'SELECT product_img_path FROM product_img WHERE img_product_id = ?',

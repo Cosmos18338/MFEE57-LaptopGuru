@@ -13,7 +13,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
       //偵測使用者是否登入
       const token = localStorage.getItem('jwt')
     }
-    async function fetchProduct() {
+    async function fetchProduct(product_id) {
       if (product_id) {
         try {
           const response = await fetch(
@@ -26,7 +26,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
         }
       }
     }
-    fetchProduct()
+    fetchProduct(product_id)
   }, [product_id]) // 加入依賴陣列，確保在 product_id 改變時重新執行
 
   //比較按鈕的狀態
