@@ -106,7 +106,6 @@ export default function CouponPageJquery() {
               <Tab.Pane eventKey="lease-record">
                 <div>
                   <h4>租賃清單</h4>
-                  {/* 添加租賃清單內容 */}
                 </div>
               </Tab.Pane>
               {/* 優惠卷 */}
