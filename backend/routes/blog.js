@@ -138,6 +138,91 @@ router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
   }
 })
 
+// 獲取單筆部落格資料
+router.get('api/blog/edit/:blog_id', async (req, res) => {
+  try {
+    console.log('收到的 blog_id:', req.params.blog_id) // 檢查收到的 id
+
+    const [rows] = await db.query(
+      'SELECT * FROM blogoverview WHERE blog_id = ? AND blog_valid_value = 1',
+      [req.params.blog_id]
+    )
+
+    console.log('查詢結果:', rows) // 檢查查詢結果
+
+    // 加入錯誤處理
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ error: '找不到此篇部落格' })
+    }
+
+    // 確保資料存在再回傳
+    res.json(rows[0])
+  } catch (error) {
+    console.error('資料庫錯誤:', error) // 記錄具體錯誤
+    res.status(500).json({ error: '資料獲取失敗' })
+  }
+})
+
+// 更新部落格資料
+router.put(
+  '/blog/edit/:blog_id',
+  upload.single('blog_image'),
+  async (req, res) => {
+    try {
+      const {
+        blog_type,
+        blog_title,
+        blog_content,
+        blog_brand,
+        blog_brand_model,
+        blog_keyword,
+        blog_valid_value,
+      } = req.body
+
+      const blog_image = req.file
+        ? `/blog-images/${req.file.originalname}`
+        : null
+
+      const sql = `
+      UPDATE blogoverview 
+      SET blog_type=?, blog_title=?, blog_content=?, 
+          blog_brand=?, blog_brand_model=?, blog_keyword=?, 
+          blog_valid_value=?, blog_image=?
+      WHERE blog_id=?
+    `
+
+      await db.query(sql, [
+        blog_type,
+        blog_title,
+        blog_content,
+        blog_brand,
+        blog_brand_model,
+        blog_keyword,
+        blog_valid_value,
+        blog_image,
+        req.params.blog_id,
+      ])
+
+      res.json({ success: true })
+    } catch (error) {
+      res.status(500).json({ error: '更新失敗' })
+    }
+  }
+)
+
+// 軟刪除部落格（把valid設為0）
+router.put('/blog/delete/:blog_id', async (req, res) => {
+  try {
+    await db.query(
+      'UPDATE blogoverview SET blog_valid_value = 0 WHERE blog_id = ?',
+      [req.params.blog_id]
+    )
+    res.json({ success: true })
+  } catch (error) {
+    res.status(500).json({ error: '刪除失敗' })
+  }
+})
+
 router.get('/blog_detail/:blog_id', async (req, res) => {
   try {
     const [blogDetail] = await db.query(
@@ -153,36 +238,6 @@ router.get('/blog_detail/:blog_id', async (req, res) => {
   } catch (error) {
     console.error('部落格查詢錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })
-  }
-})
-
-router.patch('/blog-delete/:blog_id', async (req, res) => {
-  const { blog_id } = req.params
-
-  if (!blog_id) {
-    return res.status(400).json({ status: 'error', message: '缺少 blog_id' })
-  }
-
-  try {
-    const [result] = await db.query(
-      'UPDATE blogoverview SET blog_valid_value = 0 WHERE blog_id = ?',
-      [blog_id]
-    )
-
-    if (result.affectedRows === 0) {
-      return res
-        .status(404)
-        .json({ status: 'error', message: '查無此部落格文章，無法標記為刪除' })
-    }
-
-    res.status(200).json({
-      status: 'success',
-      message: '部落格文章已成功標記為刪除',
-    })
-  } catch (error) {
-    console.error('Error marking blog as deleted:', error)
-
-    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
   }
 })
 
