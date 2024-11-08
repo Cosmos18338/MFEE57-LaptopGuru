@@ -10,15 +10,21 @@ const router = express.Router()
 // 有撈到了啦 json http://localhost:3005/api/article/1
 // 動態路由記得寫
 
-// const upload = multer({
-//   storage: multer.diskStorage({
-//     destination:
-//       'C:/Users/iii_student/Desktop/laptopGuru/backend/data/blog/blog-images', // 您的本機路徑
-//     filename: (req, file, cb) => {
-//       cb(null, file.originalname)
-//     },
-//   }),
-// })
+// 把假圖片全部儲存在後端統一路徑
+// 後端儲存路徑：public/blog-images
+// 後端完整儲存路徑 (不要用)：\laptopGuru\backend\public\blog-images\
+// 前端獲取資料路徑：http://localhost:3005/blog-image/
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: 'public/blog-images', // 您的本機路徑
+    // @
+    //
+    filename: (req, file, cb) => {
+      cb(null, file.originalname)
+    },
+  }),
+})
 
 // 查詢後得到的變數是 responseData
 console.log('有進來 blog.js 而已，下一步路由沒有進去，檢查分個路由')
