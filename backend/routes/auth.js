@@ -110,9 +110,9 @@ router.post('/login', async (req, res) => {
       'SELECT * FROM users WHERE email = ? AND password = ?',
       [loginUser.email, loginUser.password]
     )
-
+// 有雜湊碼的情況
     if (rows.length === 0) {
-      return res.json({ status: 'error', message: '帳號或密碼錯誤' })
+      return res.json({ status: 'error', message: '老師的帳號或密碼錯誤' })
     }
 
     const user = rows[0]
@@ -134,7 +134,8 @@ router.post('/login', async (req, res) => {
 
     return res.json({
       status: 'success',
-      data: { accessToken },
+      data: { accessToken ,   message: '老師版本的登入成功'  
+      },
     })
   } catch (error) {
     console.error('登入失敗:', error)

@@ -3,7 +3,7 @@ import db from '##/configs/mysql.js'
 import multer from 'multer'
 const upload = multer()
 const router = express.Router()
-// import { generateHash } from '#db-helpers/password-hash.js'
+import { generateHash } from '#db-helpers/password-hash.js'
 
 router.post('/', upload.none(), async (req, res, next) => {
   try {
@@ -22,7 +22,6 @@ router.post('/', upload.none(), async (req, res, next) => {
     console.log('password 型別:', typeof password)
     console.log('password 長度:', password ? password.length : 'undefined')
 
-    // 如果有值就執行插入
     if (!password) {
       throw new Error('密碼未接收到')
     }
@@ -36,15 +35,16 @@ router.post('/', upload.none(), async (req, res, next) => {
       'SELECT * FROM users WHERE email = ?',
       [email]
     )
+    // 為什麼這邊是SELECT 1?在這個查詢中,使用SELECT 1而不是SELECT *是一種常見的優化技巧。它的目的是檢查是否存在符合條件的記錄,而不關心記錄的具體內容。
 
     if (existingUsers.length > 0) {
       return res.json({
         status: 'error',
-        message: '電子郵件已被註冊',
+        message: '電子郵件已被註冊!!!請使用其他email',
       })
     }
-
-    // const hashedPassword = await generateHash(password)
+    // 確認
+    const hashedPassword = await generateHash(password)
 
     const sql = `
      INSERT INTO users (
@@ -59,8 +59,8 @@ router.post('/', upload.none(), async (req, res, next) => {
    `
     const params = [
       email,
-      password, // 使用加密後的密碼
-      phone,
+      hashedPassword, // 使用加密後的密碼
+      phone || null,
       birthdate || null,
       gender,
     ]
@@ -89,7 +89,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.status(400).json({
         status: 'error',
-        message: '此 email 已被註冊',
+        message: '此 email 已被註冊...',
       })
     }
 

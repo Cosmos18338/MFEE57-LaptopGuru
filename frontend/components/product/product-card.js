@@ -1,9 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/product-card.module.scss'
+import Image from 'next/image'
+import { useAuth } from '@/hooks/use-auth'
 
-export default function ProductCard({ product_id = 1 }) {
+export default function ProductCard({ onSendMessage, product_id }) {
+  // 產品卡片的 key 值，用於比較功能的 checkbox
+  const key = Math.random()
   // 從後端撈取資料
   const [data, setData] = useState(null)
+
+  const { auth } = useAuth() // 獲取 auth 對象
+  const { isAuth } = auth // 獲取 isAuth
+  const { userData } = auth // 獲取 userdata
+
+  const [isChecked, setIsChecked] = useState(false) // 用來控制 checkbox 狀態
+
+  // 初始化
+  const init = async () => {
+    const response = await fetch(
+      `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`
+    )
+    const result = await response.json()
+    if (result.status === 'success') {
+      setIsChecked(true)
+    }
+  }
+  // 初始化
+  init()
 
   useEffect(() => {
     async function fetchProduct() {
@@ -22,14 +45,103 @@ export default function ProductCard({ product_id = 1 }) {
     fetchProduct()
   }, [product_id]) // 加入依賴陣列，確保在 product_id 改變時重新執行
 
-  // 切換收藏狀態的範例函數
-  const toggleHeart = () => {
-    console.log('Heart icon toggled')
+  //比較按鈕的狀態
+  const [isCompared, setIsCompared] = useState(false)
+  const toggleCompare = () => {
+    // 點擊按鈕時傳送訊息到父元件
+    if (isCompared) {
+      onSendMessage('取消比較！')
+      setIsCompared(false)
+    } else {
+      onSendMessage('加入比較！')
+      setIsCompared(true)
+    }
   }
 
-  // 加入購物車的範例函數
-  const showCartAlert = () => {
-    alert('Added to cart')
+  //收藏按鈕的狀態
+  const toggleHeart = async () => {
+    if (isAuth) {
+      // 點擊按鈕時傳送訊息到父元件
+      if (isChecked) {
+        //刪除favorite_management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          if (response.ok) {
+            // 收藏成功
+            onSendMessage('取消收藏！')
+            setIsChecked(false)
+          } else {
+            onSendMessage('取消收藏失敗！')
+          }
+        } catch (error) {
+          onSendMessage('取消收藏失敗！')
+        }
+      } else {
+        //寫入favorite management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          if (response.ok) {
+            // 收藏成功
+            onSendMessage('收藏成功！')
+            setIsChecked(true)
+          } else {
+            onSendMessage('收藏失敗！')
+          }
+        } catch (error) {
+          onSendMessage('收藏失敗！')
+        }
+      }
+    } else {
+      window.location.href = 'http://localhost:3000/member/login'
+    }
+  }
+
+  // 加入購物車
+  const addToCart = async () => {
+    if (isAuth) {
+      // 加入購物車資料庫
+      try {
+        const response = await fetch(`http://localhost:3005/api/cart/add`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            user_id: userData.user_id,
+            product_id: product_id,
+            quantity: 1,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const result = await response.json()
+        if (result.status == 'success') {
+          onSendMessage('加入購物車成功！')
+        } else {
+          onSendMessage('加入購物車失敗，請再試一次！')
+        }
+      } catch (error) {
+        onSendMessage('加入購物車失敗，請洽管理員！')
+      }
+    } else {
+      window.location.href = 'http://localhost:3000/member/login'
+    }
   }
 
   return (
@@ -37,32 +149,39 @@ export default function ProductCard({ product_id = 1 }) {
       <div className={styles.product_card_img}>
         <input
           type="checkbox"
-          id="productCompareCheck"
+          id={`productCompareCheck_${key}`}
+          onClick={toggleCompare}
+          checked={isCompared}
           className={styles.product_compare_checkbox}
         />
         <label
-          htmlFor="productCompareCheck"
+          htmlFor={`productCompareCheck_${key}`}
           className={styles.product_compare_label}
-        ></label>
+        >
+          {''}
+        </label>
         <span className={styles.product_compare_text}>比較</span>
-        <img
-          src={
-            data
-              ? `/data/${data.product_img_path}`
-              : '/images/product/product.png'
-          }
+        <Image
+          src={data ? `/product/${data.product_img_path}` : ''}
           alt="Product"
+          width={200}
+          height={200}
         />
       </div>
       <div className={styles.product_card_content}>
-        <div className={styles.product_text}>
-          <div>{data ? data.product_name : 'Loading...'}</div>
-          <div>{data ? data.model : ''}</div>
+        <div className={`${styles.product_text} `}>
+          <div className={styles.product_ellipsis}>
+            {data ? data.product_name : 'Loading...'}
+          </div>
+          <div className={styles.product_ellipsis}>
+            {data ? data.model : ''}
+          </div>
         </div>
         <div className={styles.product_icons}>
           <input
             type="checkbox"
             id="heartCheckbox"
+            checked={isChecked}
             className={styles.product_collection_checkbox}
           />
           <svg
@@ -84,10 +203,12 @@ export default function ProductCard({ product_id = 1 }) {
               strokeLinejoin="round"
             />
           </svg>
-          <img
-            onClick={showCartAlert}
+          <Image
+            onClick={addToCart}
             src="/images/product/cart.svg"
             alt="cart"
+            width={20}
+            height={20}
           />
         </div>
       </div>
@@ -95,7 +216,22 @@ export default function ProductCard({ product_id = 1 }) {
         <span className={styles.price}>
           {data ? `$${data.list_price}` : '$0'}
         </span>
-        <span className={styles.arrow}>→</span>
+        <span
+          onClick={() =>
+            (window.location.href = `http://localhost:3000/product/${product_id}`)
+          }
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              window.location.href = `http://localhost:3000/product/${product_id}`
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          className={styles.arrow}
+          style={{ cursor: 'pointer' }}
+        >
+          →
+        </span>
       </div>
     </div>
   )

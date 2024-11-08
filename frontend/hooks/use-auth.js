@@ -31,6 +31,7 @@ const AuthContext = createContext(null)
 // 只需要必要的資料即可，沒有要多個頁面或元件用的資料不需要加在這裡
 // !!注意JWT存取令牌中只有id, username, google_uid, line_uid在登入時可以得到
 export const initUserData = {
+  user_id: 0,
   name: '',
   password: '',
   gender: '',
@@ -46,7 +47,7 @@ export const initUserData = {
   remarks: '',
 }
 // 可以視為webtoken要押的資料
-
+// 承接登入以後用的
 export const AuthProvider = ({ children }) => {
   const [auth, setAuth] = useState({
     isAuth: false,
@@ -81,7 +82,7 @@ export const AuthProvider = ({ children }) => {
   const loginRoute = '/member/login'
   // 隱私頁面路由，未登入時會，檢查後跳轉至登入頁
   const protectedRoutes = [
-    '/test/user/status',
+    '/dashboard/index',
     '/test/user/profile',
     '/test/user/profile-password',
     '/dashboard',
@@ -116,21 +117,49 @@ export const AuthProvider = ({ children }) => {
       console.error('登入失敗：', error)
     }
   }
-  const logout = () => {
-    setAuth({
-      user_id: 0,
-      name: '',
-      phone: '',
-      created_at: '',
-      gender: '',
-      country: '',
-      city: '',
-      district: '',
-      road_name: '',
-      detailed_address: '',
-      birthdate: '',
-    })
-  }
+  const logout = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+  
+      if (!response.ok) {
+        throw new Error('登出失敗');
+      }
+  
+      const result = await response.json();
+      
+      if (result.status === 'success') {
+        // 清除本地的 auth 狀態
+        setAuth({
+          isAuth: false,
+          user_id: 0,
+          name: '',
+          phone: '',
+          created_at: '',
+          gender: '',
+          country: '',
+          city: '',
+          district: '',
+          road_name: '',
+          detailed_address: '',
+          birthdate: '',
+          
+        })
+        router.push('/');  // 導向首頁
+      }
+  
+    } catch (error) {
+      console.error('登出錯誤:', error);
+      // 處理錯誤
+    }
+  };
+
+  
   // 檢查會員認証用
   // 每次重新到網站中，或重新整理，都會執行這個函式，用於向伺服器查詢取回原本登入會員的資料
   const handleCheckAuth = async () => {

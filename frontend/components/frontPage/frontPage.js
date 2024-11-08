@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import BackToTop from '../BackToTop/BackToTop'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
 
 export default function FrontPage(props) {
   return (
     <>
+        <div className="position-relative" style={{ zIndex: 1 }}>
+        <Header />
+        </div>
+
       <div className="blob-outer-container">
         <div className="blob-inner-container">
           <div className="blob"></div>
@@ -28,7 +34,7 @@ export default function FrontPage(props) {
             <div className="home-two">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>02</span>
+                  <span>01</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
@@ -38,7 +44,7 @@ export default function FrontPage(props) {
             <div className="home-three">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>03</span>
+                  <span>02</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
@@ -48,16 +54,16 @@ export default function FrontPage(props) {
             <div className="home-four">
               <div className="home-item">
                 <div className="home-circle">
-                  <span>04</span>
+                  <span>03</span>
                 </div>
                 <div className="home-item2">
                   <span>ITEM</span>
                 </div>
               </div>
             </div>
-            <button className="home-btn">
+            {/* <button className="home-btn">
               <img src="/images/index/arrow.svg" alt />
-            </button>
+            </button> */}
           </div>
         </div>
         <div className="home-section2">
@@ -504,6 +510,10 @@ export default function FrontPage(props) {
             </div>
           </div>
         </div>
+        <div className="position-relative mt-5">
+        <MyFooter />
+        </div>
+
         <BackToTop />
       </div>
     </>

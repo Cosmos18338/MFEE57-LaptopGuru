@@ -16,24 +16,24 @@ router.post('/', upload.none(), async (req, res, next) => {
     const { email, password } = req.body
 
     const [row] = await db.query(
-      'SELECT * FROM users WHERE email = ? AND password =?',
-      [email, password]
+      'SELECT user_id, email, password FROM users WHERE email = ?',
+      [email]
     )
     // 這邊實際上是帳號錯誤
-    if (row.length == 0) {
+    if (row.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤' })
     }
 
     const user = row[0]
     // compareHash比對輸入與資料庫中的密碼~
-    //  const passwordMatch = await compareHash(password, user.password)
+    const passwordMatch = await compareHash(password, user.password)
     //  這邊實際上是密碼錯誤
-    //  if (!passwordMatch) {
-    //    return res.json({
-    //      status: 'error',
-    //      message: '帳號或密碼錯誤'
-    //    })
-    //  }
+    if (!passwordMatch) {
+      return res.json({
+        status: 'error',
+        message: '帳號或密碼錯誤',
+      })
+    }
     // 之後想改這邊邏輯，因為帳號密碼應該只能有比對出一組，如果email一樣不予註冊才對。
     const token = jsonwebtoken.sign(
       {
@@ -49,13 +49,6 @@ router.post('/', upload.none(), async (req, res, next) => {
       accessTokenSecret,
       { expiresIn: '2d' }
     )
-
-    // if (!passwordMatch) {
-    //   return res.json({
-    //     status: 'error',
-    //     message: '帳號或密碼錯誤',
-    //   })
-    // }
 
     res.cookie('accessToken', token)
 

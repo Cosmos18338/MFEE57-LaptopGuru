@@ -12,6 +12,9 @@ import loginRouter from './routes/login.js'
 import signupRouter from './routes/signup.js'
 import dashboardRouter from './routes/dashboard.js'
 import usersRouter from './routes/users.js'
+import eventsRouter from './routes/events.js'
+import couponRouter from './routes/coupon.js'
+import couponUserRouter from './routes/coupon-user.js'
 
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
@@ -55,8 +58,8 @@ app.set('view engine', 'pug')
 // 記錄HTTP要求
 app.use(logger('dev'))
 // 剖析 POST 與 PUT 要求的JSON格式資料
-app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
+app.use(express.json({ limit: '20mb' }))
+app.use(express.urlencoded({ extended: false, limit: '20mb' }))
 // 剖折 Cookie 標頭與增加至 req.cookies
 app.use(cookieParser())
 // 在 public 的目錄，提供影像、CSS 等靜態檔案
@@ -66,6 +69,12 @@ app.use('/api/login', loginRouter)
 app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/events', eventsRouter)
+
+//優惠卷路由
+app.use('/api/coupon', couponRouter)
+app.use('/api/coupon-user', couponUserRouter)
+
 async function testConnection() {
   try {
     const connection = await db.getConnection()
@@ -92,7 +101,7 @@ app.use(
     saveUninitialized: false,
   })
 )
-
+// 以上那個session-cookie 應該不是我們的
 // 載入routes中的各路由檔案，並套用api路由 START
 const apiPath = '/api' // 預設路由
 const routePath = path.join(__dirname, 'routes')
