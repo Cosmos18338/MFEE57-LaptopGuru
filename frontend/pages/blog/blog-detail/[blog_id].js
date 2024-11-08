@@ -6,7 +6,6 @@ export default function BlogId() {
   const router = useRouter()
   const { blog_id } = router.query // 動態獲取 blog_id
   const [blogData, setBlogData] = useState(null)
-
   console.log(blogData)
 
   useEffect(() => {
@@ -24,6 +23,9 @@ export default function BlogId() {
   if (!blogData) {
     return <p>Loading...</p> // 當資料還沒載入時顯示 loading
   }
+  // 確認一下圖片路徑
+  console.log(`確認一下圖片路徑`)
+  console.log(`http://localhost:3005${blogData.blog_image}`)
 
   return (
     <>
@@ -46,7 +48,11 @@ export default function BlogId() {
         </div> */}
       <section className="BlogDetailSectionContentArea">
         <div className="d-flex align-items-center justify-content-center mb-5">
-          <img className="w-50 h-50 ratio" src={blogData.blog_image} alt />
+          <img
+            className="w-50 h-50 ratio"
+            src={`http://localhost:3005${blogData.blog_image}`}
+            alt
+          />
         </div>
         <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
           {blogData.blog_title}

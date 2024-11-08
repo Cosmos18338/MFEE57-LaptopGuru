@@ -4,7 +4,6 @@ import multer from 'multer'
 
 const router = express.Router()
 // 指定router變成變數，router是一個方法，處理路由
-
 // 解析傳來的請求，目前我是用 fetch()
 
 // 有撈到了啦 json http://localhost:3005/api/article/1
@@ -17,17 +16,31 @@ const router = express.Router()
 
 const upload = multer({
   storage: multer.diskStorage({
-    destination: 'public/blog-images', // 您的本機路徑
-    // @
-    //
+    destination: 'public/blog-images',
     filename: (req, file, cb) => {
-      cb(null, file.originalname)
+      cb(null, `${file.originalname}`)
     },
   }),
 })
 
-// 查詢後得到的變數是 responseData
-console.log('有進來 blog.js 而已，下一步路由沒有進去，檢查分個路由')
+// -------------------------------時間戳記製作-------------------------------
+function getFormattedDateTime() {
+  return new Date()
+    .toLocaleString('zh-TW', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    })
+    .replace(/\//g, '-')
+    .replace(/\s/g, '_')
+}
+// console.log(
+//   `\x1b[1m\x1b[31m blog.js時間戳記檢查 ${getFormattedDateTime()}\x1b[0m`
+// )
 
 router.get('/blog-detail/:blog_id', async (req, res) => {
   try {
@@ -84,10 +97,7 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
   }
 })
 
-// 加入 upload.single('blog_image') 中間件
 router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
-  console.log(req.body.blog_valid_value)
-
   try {
     const {
       blog_type,
@@ -101,7 +111,9 @@ router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
     } = req.body
 
     // 獲取上傳的圖片路徑
-    const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
+    const blog_image = req.file
+      ? `/blog-images/${req.file.filename}` // 直接使用 multer 產生的檔名
+      : `/blog-images/nolaptopupload.jpeg`
 
     const sql = `
     INSERT INTO blogoverview 
@@ -112,7 +124,8 @@ router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
       blog_brand_model,
       blog_keyword,
       blog_valid_value,
-      blog_created_date, blog_image) 
+      blog_created_date,
+      blog_image) 
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
     const values = [
@@ -145,33 +158,18 @@ router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
 
 router.get('/blog_detail/:blog_id', async (req, res) => {
   try {
-    const [overview] = await db.query(
+    const [blogDetail] = await db.query(
       'SELECT * FROM blogoverview WHERE blog_id = ?',
       [req.params.blog_id]
     )
 
-    const [comments] = await db.query(
-      'SELECT * FROM blogcomment WHERE blog_id = ?',
-      [req.params.blog_id]
-    )
+    if (!blogDetail) {
+      return res.status(404).json({ message: '找不到該文章' })
+    }
 
-    const [images] = await db.query(
-      'SELECT blog_image FROM blogimage WHERE blog_id = ?',
-      [req.params.blog_id]
-    )
-
-    const [keywords] = await db.query(
-      'SELECT blog_keyword FROM blogkeyword WHERE blog_id = ?',
-      [req.params.blog_id]
-    )
-
-    res.json({
-      overview,
-      comments,
-      images,
-      keywords,
-    })
+    res.json(blogDetail)
   } catch (error) {
+    console.error('部落格查詢錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
@@ -233,66 +231,6 @@ router.get('/blogcard', upload.none(), async (req, res, next) => {
     res.json({ status: 'success', data: blogWithImages })
   } catch (error) {
     console.error('Error fetching blog data:', error)
-    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
-  }
-})
-
-router.post('/blog-created', upload.none(), async (req, res) => {
-  const {
-    blog_user_id,
-    blog_title,
-    blog_content,
-    blog_created_date,
-    blog_brand,
-    blog_brand_model,
-    blog_type,
-    blog_images, // 假設圖片以陣列形式傳遞
-  } = req.body // 從 req.body 獲取所有必填欄位
-
-  // 檢查必要的欄位是否存在
-  if (!blog_user_id || !blog_title || !blog_content) {
-    return res.status(400).json({
-      status: 'error',
-      message: '必填欄位喔!',
-    })
-  }
-
-  try {
-    // 插入部落格文章的資料
-    const [result] = await db.query(
-      'INSERT INTO blogoverview (blog_user_id, blog_title, blog_content, blog_created_date, blog_brand, blog_brand_model, blog_type) VALUES (?, ?, ?, ?, ?, ?, ?)',
-      [
-        blog_user_id,
-        blog_title,
-        blog_content,
-        blog_created_date,
-        blog_brand,
-        blog_brand_model,
-        blog_type,
-      ]
-    )
-    // 得到新的 blog_id，創建後回傳的
-    const blog_id = result.insertId
-
-    if (blog_images && blog_images.length > 0) {
-      const imageInsertPromises = blog_images.map((image) => {
-        return db.query(
-          'INSERT INTO blogimage (blog_id, blog_image) VALUES (?, ?)',
-          [blog_id, image]
-        )
-      })
-
-      // 等待所有的插入操作完成
-      await Promise.all(imageInsertPromises)
-    }
-
-    res.status(201).json({
-      status: 'success',
-      message: '部落格文章已成功創建',
-      blog_id: blog_id, // 回傳新創建的 blog_id
-    })
-  } catch (error) {
-    console.error('Error creating blog:', error)
     res.status(500).json({ status: 'error', message: '伺服器錯誤' })
   }
 })

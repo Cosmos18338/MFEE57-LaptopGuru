@@ -51,12 +51,12 @@ export default function Blogcreated(props) {
           body: formData,
         }
       )
+      console.log('成功連結')
 
       const result = await response.json()
 
       if (response.ok) {
         alert('部落格新增成功')
-        // window.location.href = 'http://localhost:3000/blog/BlogList'
       } else {
         alert(`發生錯誤: ${result.message}`)
       }
@@ -64,29 +64,6 @@ export default function Blogcreated(props) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
     }
-  }
-
-  const handleBrandClick = (brand) => {
-    // 先移除所有元素的 'focus' 類
-    const brandElements = document.querySelectorAll('.BlogEditBrandSelected')
-    brandElements.forEach((el) => el.classList.remove('focus'))
-
-    // 給點擊的元素添加 'focus' 類
-    const clickedElement = document.querySelector(
-      `.BlogEditBrandSelected:contains(${brand})`
-    )
-    clickedElement.classList.add('focus')
-
-    const formData = new FormData()
-    formData.append('blog_type', blog_type)
-    formData.append('blog_title', blog_title)
-    formData.append('blog_content', blog_content)
-    formData.append('blog_brand', blog_brand)
-    formData.append('blog_brand_model', blog_brand_model)
-    formData.append('blog_keyword', blog_keyword)
-    formData.append('blog_valid_value', '1')
-    formData.append('blog_created_date', getTimestamp())
-    formData.append('blog_image', blog_image)
   }
 
   return (
