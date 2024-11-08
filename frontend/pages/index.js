@@ -225,7 +225,7 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 export default function Home() {
   return (
     <>
-    <FrontPage/>
+      <FrontPage />
     </>
   )
 }

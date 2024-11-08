@@ -180,174 +180,199 @@ export default function Signup() {
           quality={100}
         />
         <div className="container">
-
-        
-        <div className="row d-flex justify-content-center align-items-center">
-          <div className={`${styles.left} col`}>
-            <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
-            <h3 className={`text-white ${styles['guru-laptop']}`}>GURU Laptop</h3>
-          </div>
-          <div className={`${styles.right} align-item-center col ${styles['signup-right']}`}>
-            <div className={`${styles.tabs} d-flex justify-content-between`}>
-              <Link className={`${styles.hover} text-decoration-none text-white`} href="/member/login">
-                登入Log in
-              </Link>
-              <span className="text-white">|</span>    
-              <Link className={`${styles.hover} text-decoration-none text-white`} href="/member/signup">
-                註冊Sign Up
-              </Link>       
+          <div className="row d-flex justify-content-center align-items-center">
+            <div className={`${styles.left} col`}>
+              <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
+              <h3 className={`text-white ${styles['guru-laptop']}`}>
+                GURU Laptop
+              </h3>
             </div>
-            {submitError && (
-              <div className="alert alert-danger" role="alert">
-                {submitError}
+            <div
+              className={`${styles.right} align-item-center col ${styles['signup-right']}`}
+            >
+              <div className={`${styles.tabs} d-flex justify-content-between`}>
+                <Link
+                  className={`${styles.hover} text-decoration-none text-white`}
+                  href="/member/login"
+                >
+                  登入Log in
+                </Link>
+                <span className="text-white">|</span>
+                <Link
+                  className={`${styles.hover} text-decoration-none text-white`}
+                  href="/member/signup"
+                >
+                  註冊Sign Up
+                </Link>
               </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="mt-3">
-              <div className={styles['inputs-group']}>
-                <div className="mb-3">
-                  <label htmlFor="email" className={styles.white}>
-                    帳號(信箱)
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    className={`form-control ${styles.inputs}`}
-                    value={user.email}
-                    onChange={handleFieldChange}
-                  />
-                  {errors.email && <div className="error">{errors.email}</div>}
+              {submitError && (
+                <div className="alert alert-danger" role="alert">
+                  {submitError}
                 </div>
+              )}
 
-                <div className="mb-3">
-                  <label htmlFor="password" className={styles.white}>
-                    密碼
-                  </label>
-                  <input
-                    type={showpassword ? 'text' : 'password'}
-                    id="password"
-                    name="password"
-                    className={`form-control ${styles.inputs}`}
-                    value={user.password}
-                    onChange={handleFieldChange}   
-                    maxLength={62}
-                  />
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      id="showpassword"
-                      checked={showpassword}
-                      onChange={() => setShowpassword(!showpassword)}
-                      className="form-check-input"
-                    />
-                    <label htmlFor="showpassword" className="text-white form-check-label">
-                      顯示密碼
+              <form onSubmit={handleSubmit} className="mt-3">
+                <div className={styles['inputs-group']}>
+                  <div className="mb-3">
+                    <label htmlFor="email" className={styles.white}>
+                      帳號(信箱)
                     </label>
-                  </div>
-                  {errors.password && <div className="error">{errors.password}</div>}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="confirmpassword" className={styles.white}>
-                    確認密碼
-                  </label>
-                  <input
-                    type={showConfirmpassword ? 'text' : 'password'}
-                    id="confirmpassword"
-                    name="confirmpassword"
-                    className={`form-control ${styles.inputs}`}
-                    value={user.confirmpassword}
-                    onChange={handleFieldChange}
-                  />
-                  <div className="form-check">
                     <input
-                      type="checkbox"
-                      id="showConfirmpassword"
-                      checked={showConfirmpassword}
-                      onChange={() => setShowConfirmpassword(!showConfirmpassword)}
-                      className="form-check-input"
-                    />
-                    <label htmlFor="showConfirmpassword" className="text-white form-check-label">
-                      顯示密碼
-                    </label>
-                  </div>
-                  {errors.confirmpassword && (
-                    <div className="error">{errors.confirmpassword}</div>
-                  )}
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="phone" className={styles.white}>
-                    手機
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    className={`form-control ${styles.inputs}`}
-                    value={user.phone}
-                    onChange={handleFieldChange}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="birthdate" className={styles.white}>
-                    生日
-                  </label>
-                  <input
-                    type="date"
-                    id="birthdate"
-                    name="birthdate"
-                    className={`form-control ${styles.inputs}`}
-                    value={user.birthdate}
-                    onChange={handleFieldChange}
-                  />
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="gender" className={styles.white}>
-                    性別
-                  </label>
-                  <select
-                    id="gender"
-                    name="gender"
-                    className={`form-select ${styles.inputs}`}
-                    value={user.gender}
-                    onChange={handleFieldChange}
-                  >
-                    <option value="">請選擇</option>
-                    <option value="女">女</option>
-                    <option value="男">男</option>
-                    <option value="不透漏">不透漏</option>
-                  </select>
-                </div>
-
-                <div className="mb-3">
-                  <div className="form-check">
-                    <input
-                      type="checkbox"
-                      id="agree"
-                      name="agree"
-                      checked={user.agree}
+                      type="email"
+                      id="email"
+                      name="email"
+                      className={`form-control ${styles.inputs}`}
+                      value={user.email}
                       onChange={handleFieldChange}
-                      className="form-check-input"
                     />
-                    <label htmlFor="agree" className="text-white form-check-label">
-                      我同意網站會員註冊條款
-                    </label>
+                    {errors.email && (
+                      <div className="error">{errors.email}</div>
+                    )}
                   </div>
-                  {errors.agree && <div className="error">{errors.agree}</div>}
-                </div>
 
-                <button type="submit" className="btn btn-primary w-100">
-                  送出
-                </button>
-              </div>
-            </form>
+                  <div className="mb-3">
+                    <label htmlFor="password" className={styles.white}>
+                      密碼
+                    </label>
+                    <input
+                      type={showpassword ? 'text' : 'password'}
+                      id="password"
+                      name="password"
+                      className={`form-control ${styles.inputs}`}
+                      value={user.password}
+                      onChange={handleFieldChange}
+                      maxLength={62}
+                    />
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        id="showpassword"
+                        checked={showpassword}
+                        onChange={() => setShowpassword(!showpassword)}
+                        className="form-check-input"
+                      />
+                      <label
+                        htmlFor="showpassword"
+                        className="text-white form-check-label"
+                      >
+                        顯示密碼
+                      </label>
+                    </div>
+                    {errors.password && (
+                      <div className="error">{errors.password}</div>
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="confirmpassword" className={styles.white}>
+                      確認密碼
+                    </label>
+                    <input
+                      type={showConfirmpassword ? 'text' : 'password'}
+                      id="confirmpassword"
+                      name="confirmpassword"
+                      className={`form-control ${styles.inputs}`}
+                      value={user.confirmpassword}
+                      onChange={handleFieldChange}
+                    />
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        id="showConfirmpassword"
+                        checked={showConfirmpassword}
+                        onChange={() =>
+                          setShowConfirmpassword(!showConfirmpassword)
+                        }
+                        className="form-check-input"
+                      />
+                      <label
+                        htmlFor="showConfirmpassword"
+                        className="text-white form-check-label"
+                      >
+                        顯示密碼
+                      </label>
+                    </div>
+                    {errors.confirmpassword && (
+                      <div className="error">{errors.confirmpassword}</div>
+                    )}
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="phone" className={styles.white}>
+                      手機
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      className={`form-control ${styles.inputs}`}
+                      value={user.phone}
+                      onChange={handleFieldChange}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="birthdate" className={styles.white}>
+                      生日
+                    </label>
+                    <input
+                      type="date"
+                      id="birthdate"
+                      name="birthdate"
+                      className={`form-control ${styles.inputs}`}
+                      value={user.birthdate}
+                      onChange={handleFieldChange}
+                    />
+                  </div>
+
+                  <div className="mb-3">
+                    <label htmlFor="gender" className={styles.white}>
+                      性別
+                    </label>
+                    <select
+                      id="gender"
+                      name="gender"
+                      className={`form-select ${styles.inputs}`}
+                      value={user.gender}
+                      onChange={handleFieldChange}
+                    >
+                      <option value="">請選擇</option>
+                      <option value="女">女</option>
+                      <option value="男">男</option>
+                      <option value="不透漏">不透漏</option>
+                    </select>
+                  </div>
+
+                  <div className="mb-3">
+                    <div className="form-check">
+                      <input
+                        type="checkbox"
+                        id="agree"
+                        name="agree"
+                        checked={user.agree}
+                        onChange={handleFieldChange}
+                        className="form-check-input"
+                      />
+                      <label
+                        htmlFor="agree"
+                        className="text-white form-check-label"
+                      >
+                        我同意網站會員註冊條款
+                      </label>
+                    </div>
+                    {errors.agree && (
+                      <div className="error">{errors.agree}</div>
+                    )}
+                  </div>
+
+                  <button type="submit" className="btn btn-primary w-100">
+                    送出
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
-      </div>
       </div>
       <MyFooter />
 
