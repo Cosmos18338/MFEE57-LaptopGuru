@@ -174,67 +174,6 @@ router.get('/blog_detail/:blog_id', async (req, res) => {
   }
 })
 
-router.get('/blogcard', upload.none(), async (req, res, next) => {
-  try {
-    // 從 query 參數中接收 blog_id
-    const blogId = req.query.blog_id
-
-    // 從 blogoverview 表中撈取符合條件的資料，根據 blog_id
-    const [blogData] = await db.query(
-      `
-      SELECT 
-        blog_user_id,
-        blog_type,
-        blog_title,
-        blog_content,
-        blog_created_date,
-        blog_brand,
-        blog_image,
-        blog_views,
-        blog_keyword,
-        blog_valid_value,
-        blog_url
-      FROM blogoverview
-      WHERE blog_valid_value = 1 AND blog_id = ?
-    `,
-      [blogId]
-    )
-
-    // 檢查是否有撈到資料
-    if (blogData.length === 0) {
-      return res.json({ status: 'error', message: '查無相關部落格資料' })
-    }
-
-    // 2. 根據 blog_id 從 blogimage 表中撈取對應的圖片
-    const [imagesData] = await db.query(
-      `
-      SELECT blog_id, blog_image
-      FROM blogimage
-      WHERE blog_id = ?
-      ORDER BY blog_id DESC
-    `,
-      [blogId]
-    )
-
-    // 把圖片資料加入每篇文章
-    const blogWithImages = blogData.map((blog) => {
-      const images = imagesData
-        .filter((image) => image.blog_id === blog.blog_id)
-        .map((image) => image.blog_image)
-      return {
-        ...blog,
-        images: images,
-      }
-    })
-
-    // 回傳資料
-    res.json({ status: 'success', data: blogWithImages })
-  } catch (error) {
-    console.error('Error fetching blog data:', error)
-    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
-  }
-})
-
 router.patch('/blog-delete/:blog_id', async (req, res) => {
   const { blog_id } = req.params
 
