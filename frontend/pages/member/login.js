@@ -65,10 +65,13 @@ export default function LogIn(props) {
       <Header />
       <div className={`${styles['gradient-bg']} ${styles['login-bg']}`}>
       <Image
-        src="/bgi/signup_bgi.png"
+        src="/bgi/signup_bgi.png" 
         alt="background"
+        // alt 確實是為了無障礙設計（給螢幕閱讀器和搜尋引擎用的）
         layout="fill"
+        // layout="fill" 是關鍵，它會讓 Image 組件填滿其父容器
         objectFit="cover"
+        // objectFit="cover" 讓它填滿整個容器
         quality={100}
       />
       <div className='container'>
@@ -177,9 +180,8 @@ export default function LogIn(props) {
         </div>
       </div>
 
-      </div>
+      </div> {/*  */}
       
-       
       <MyFooter />
 
       <style jsx>
