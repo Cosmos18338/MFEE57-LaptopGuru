@@ -361,3 +361,4 @@ export default function Signup() {
     </>
   )
 }
+Signup.getLayout = (page) => page

@@ -3,6 +3,7 @@ import Swal from 'sweetalert2'
 import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
+import styles from '@/styles/dashboard.module.scss'
 export default function UserProfile() {
   const { auth, setAuth } = useAuth()
   const user_id = auth?.userData?.user_id
@@ -146,10 +147,11 @@ export default function UserProfile() {
       try {
         const response = await axios.get(`http://localhost:3005/api/dashboard/${user_id}`)
         if (response.data.status === 'success') {
+          // 原本是鉤子拿的 覆蓋掉了，從資料庫拿的
           const userData = response.data.data.user
           setEditableUser({
             name: userData.name || '',
-            password: '******',//好吧
+            password: userData.password ||' ',
             gender: userData.gender || '',
             birthdate: userData.birthdate || '',
             phone: userData.phone || '',
@@ -231,7 +233,7 @@ export default function UserProfile() {
       reader.readAsDataURL(file)
     }
   }
-
+  // 更新使用者資料
   const handleSubmit = async (e) => {
     e.preventDefault()
     
@@ -374,6 +376,10 @@ export default function UserProfile() {
                             id="password"
                             name="password"
                             value={editableUser.password}
+                            // 這是用於編輯表單的狀態，是可以被用戶修改的數據
+                  //  userData.password 
+                  // 這是從後端獲取到的原始數據，是目前儲存在數據庫的密碼
+
                             onChange={handleInputChange}
                           />
                           要先輸入密碼正確，才讓使用者編輯密碼
@@ -583,37 +589,21 @@ export default function UserProfile() {
                           電子郵件
                         </label>
                         <div className="col-sm-9">
-                          {/* <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            value={editableUser.email}
-                            onChange={handleInputChange}
-                          /> */} 
-                          {editableUser.email}
+                          {auth.userData.email}
                         </div>
                       </div>
 
                       <div className="d-flex justify-content-between">
                         <button
                           type="submit"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                           onChange={handleSubmit}
                         >
                           更新
                         </button>
                         <button
                           type="button"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                           onClick={handleDeactivate}
                         >
                           停用
@@ -635,8 +625,7 @@ export default function UserProfile() {
                         <div className="mb-3">
                           <label
                             htmlFor="profile-pic-upload"
-                            className="btn btn-outline-primary"
-                            style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                            className={`btn btn-outline-primary ${styles['profile-button']}`}
                           >
                             大頭照預覽
                           </label>
@@ -650,11 +639,7 @@ export default function UserProfile() {
                         </div>
                         <button
                           type="submit"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                         >
                           更新
                         </button>
