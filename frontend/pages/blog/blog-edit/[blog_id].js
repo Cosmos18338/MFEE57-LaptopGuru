@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
-import { useParams, useNavigate } from 'next/navigation'
 import { useRouter } from 'next/router'
 
 export default function Blogedit() {
@@ -19,28 +18,26 @@ export default function Blogedit() {
     blog_valid_value: '1',
   })
 
-  // 獲取原始數據
   useEffect(() => {
-    console.log('router.query:', router.query) // 檢查整個 query 物件
+    console.log('1. blog_id:', blog_id) // 檢查 blog_id
+
     if (blog_id) {
-      fetch(`http://localhost:3005/api/blog/edit/${blog_id}`)
+      fetch(`http://localhost:3005/api/blog/blog-edit/${blog_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
         .then((r) => r.json())
         .then((data) => {
-          console.log('從後端獲取的資料:', data)
-          setFormData({
-            blog_type: data.blog_type || '',
-            blog_title: data.blog_title || '',
-            blog_content: data.blog_content || '',
-            blog_brand: data.blog_brand || '',
-            blog_brand_model: data.blog_brand_model || '',
-            blog_keyword: data.blog_keyword || '',
-            blog_valid_value: data.blog_valid_value || '1',
-            blog_image: data.blog_image || null,
-          })
+          setFormData(data)
         })
-        .catch(console.error)
+        .catch((error) => console.log('3. 錯誤:', error)) // 檢查錯誤
     }
   }, [blog_id])
+
+  // 如果要檢查 formData 的變化，可以加一個新的 useEffect
+  useEffect(() => {}, [formData])
 
   // 統一的表單處理函數
   const handleChange = (name, value) => {
@@ -50,25 +47,39 @@ export default function Blogedit() {
     }))
   }
 
-  // 處理表單提交
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
+      // 創建 FormData 物件
+      const formDataToSend = new FormData()
+
+      // 加入所有欄位
+      formDataToSend.append('blog_type', formData.blog_type)
+      formDataToSend.append('blog_title', formData.blog_title)
+      formDataToSend.append('blog_content', formData.blog_content)
+      formDataToSend.append('blog_brand', formData.blog_brand)
+      formDataToSend.append('blog_brand_model', formData.blog_brand_model)
+      formDataToSend.append('blog_keyword', formData.blog_keyword)
+
+      // 如果有新圖片才加入
+      if (formData.blog_image instanceof File) {
+        formDataToSend.append('blog_image', formData.blog_image)
+      }
+
       const response = await fetch(
-        `http://localhost:3005/api/blog/edit/${blog_id}`,
+        `http://localhost:3005/api/blog/blog-edit/${blog_id}`,
         {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+          // 移除 Content-Type header，讓瀏覽器自動設定
+          body: formDataToSend,
         }
       )
+
       if (response.ok) {
-        navigate('/blogs') // 假設成功後導向部落格列表
+        router.push(`/blog/blog-detail/${blog_id}`)
       }
     } catch (error) {
-      console.error(error)
+      console.error('錯誤:', error)
     }
   }
 
@@ -221,7 +232,9 @@ export default function Blogedit() {
             {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((v) => (
               <div
                 key={v}
-                className="BlogEditTypeSelected d-flex justify-content-center align-items-center"
+                className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                  v === formData.blog_type ? 'BlogEditTypeSelectedActive' : ''
+                }`}
                 onClick={() => handleChange('blog_type', v)}
               >
                 <p>{v}</p>
@@ -257,16 +270,21 @@ export default function Blogedit() {
             className="BlogEditButtonDelete"
             type="button"
             onClick={async () => {
-              try {
-                const res = await fetch(`/api/blog/delete/${blog_id}`, {
-                  method: 'PUT',
-                })
-                if (res.ok) {
-                  // 可以導向到列表頁或其他頁面
-                  router.push('/blogs')
+              // 加入確認視窗
+              if (window.confirm('確定要刪除這篇文章嗎？')) {
+                try {
+                  const res = await fetch(
+                    `http://localhost:3005/api/blog/blog-delete/${blog_id}`,
+                    {
+                      method: 'PUT',
+                    }
+                  )
+                  if (res.ok) {
+                    router.push('/blog/blog-delete-success')
+                  }
+                } catch (error) {
+                  console.error('刪除失敗:', error)
                 }
-              } catch (error) {
-                console.error('刪除失敗:', error)
               }
             }}
           >

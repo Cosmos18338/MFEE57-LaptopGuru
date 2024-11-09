@@ -33,7 +33,7 @@ router.get('/blog-detail/:blog_id', async (req, res) => {
     const [blogData] = await db.query(
       `
       SELECT 
-        blog_user_id,
+        user_id,
         blog_type,
         blog_title,
         blog_content,
@@ -138,37 +138,26 @@ router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
   }
 })
 
-// 獲取單筆部落格資料
-router.get('api/blog/edit/:blog_id', async (req, res) => {
+router.get('/blog-edit/:blog_id', async (req, res) => {
   try {
-    console.log('收到的 blog_id:', req.params.blog_id) // 檢查收到的 id
-
     const [rows] = await db.query(
-      'SELECT * FROM blogoverview WHERE blog_id = ? AND blog_valid_value = 1',
+      'SELECT * FROM blogoverview WHERE blog_id = ?',
       [req.params.blog_id]
     )
-
-    console.log('查詢結果:', rows) // 檢查查詢結果
-
-    // 加入錯誤處理
-    if (!rows || rows.length === 0) {
-      return res.status(404).json({ error: '找不到此篇部落格' })
-    }
-
-    // 確保資料存在再回傳
     res.json(rows[0])
   } catch (error) {
-    console.error('資料庫錯誤:', error) // 記錄具體錯誤
-    res.status(500).json({ error: '資料獲取失敗' })
+    res.status(500).json({ error: '獲取失敗' })
   }
 })
 
-// 更新部落格資料
 router.put(
-  '/blog/edit/:blog_id',
+  '/blog-edit/:blog_id',
   upload.single('blog_image'),
   async (req, res) => {
     try {
+      console.log('收到的資料:', req.body)
+      console.log('收到的檔案:', req.file)
+
       const {
         blog_type,
         blog_title,
@@ -176,20 +165,25 @@ router.put(
         blog_brand,
         blog_brand_model,
         blog_keyword,
-        blog_valid_value,
       } = req.body
 
-      const blog_image = req.file
-        ? `/blog-images/${req.file.originalname}`
-        : null
+      // 修改圖片處理邏輯
+      let blog_image = null
+      if (req.file) {
+        // 有新上傳的圖片
+        blog_image = `/blog-images/${req.file.originalname}`
+      } else if (req.body.blog_image) {
+        // 沒有新圖片，但有舊圖片路徑
+        blog_image = req.body.blog_image
+      }
 
       const sql = `
-      UPDATE blogoverview 
-      SET blog_type=?, blog_title=?, blog_content=?, 
-          blog_brand=?, blog_brand_model=?, blog_keyword=?, 
-          blog_valid_value=?, blog_image=?
-      WHERE blog_id=?
-    `
+        UPDATE blogoverview 
+        SET blog_type=?, blog_title=?, blog_content=?, 
+            blog_brand=?, blog_brand_model=?, blog_keyword=?, 
+            blog_image=?
+        WHERE blog_id=?
+      `
 
       await db.query(sql, [
         blog_type,
@@ -198,20 +192,20 @@ router.put(
         blog_brand,
         blog_brand_model,
         blog_keyword,
-        blog_valid_value,
         blog_image,
         req.params.blog_id,
       ])
 
       res.json({ success: true })
     } catch (error) {
+      console.error('更新錯誤:', error)
       res.status(500).json({ error: '更新失敗' })
     }
   }
 )
 
 // 軟刪除部落格（把valid設為0）
-router.put('/blog/delete/:blog_id', async (req, res) => {
+router.put('/blog-delete/:blog_id', async (req, res) => {
   try {
     await db.query(
       'UPDATE blogoverview SET blog_valid_value = 0 WHERE blog_id = ?',
@@ -235,6 +229,30 @@ router.get('/blog_detail/:blog_id', async (req, res) => {
     }
 
     res.json(blogDetail)
+  } catch (error) {
+    console.error('部落格查詢錯誤:', error)
+    res.status(500).json({ message: '伺服器錯誤' })
+  }
+})
+
+router.get('/blog_user_overview/:user_id', async (req, res) => {
+  try {
+    // 不要解構第一個元素，直接取得整個結果
+    const [rows] = await db.query(
+      'SELECT * FROM blogoverview WHERE user_id = ? AND blog_valid_value = 1 ORDER BY blog_created_date DESC',
+      [req.params.user_id]
+    )
+
+    console.log('查詢結果:', rows) // 檢查查詢結果
+    console.log('查詢到的資料筆數:', rows.length) // 檢查資料筆數
+
+    // 檢查是否有資料
+    if (!rows || rows.length === 0) {
+      return res.status(404).json({ message: '找不到該文章' })
+    }
+
+    // 回傳整個陣列
+    res.json(rows)
   } catch (error) {
     console.error('部落格查詢錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })

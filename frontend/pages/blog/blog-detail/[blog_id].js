@@ -46,7 +46,7 @@ export default function BlogId() {
             />
           </div>
         </div> */}
-      <section className="BlogDetailSectionContentArea">
+      <section className="BlogDetailSectionContentArea mt-5">
         <div className="d-flex align-items-center justify-content-center mb-5">
           <img
             className="w-50 h-50 ratio"
@@ -54,11 +54,15 @@ export default function BlogId() {
             alt
           />
         </div>
-        <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
+        <p className="display-5 BlogDetailSectionContentAreaTitle">
+          部落格標題
+        </p>
+        <p className="display-5 fw-bold BlogDetailSectionContentAreaTitle">
           {blogData.blog_title}
         </p>
+        <p className="display-5 BlogDetailText">部落格內文</p>
         <p className="BlogDetailText">{blogData.blog_content}</p>
-        <p className="BlogDetailText">要不要刪除阿</p>
+        {/* <p className="BlogDetailText">要不要刪除阿</p> */}
       </section>
     </>
   )
