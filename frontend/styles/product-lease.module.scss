@@ -476,7 +476,7 @@
 }
 
 .col3 {
-  display: flex;
+  display: block;
   width: 100%;
   margin-bottom: 100px;
   padding: 0 20px;
@@ -491,7 +491,12 @@
   max-width: 1200px;
   margin: 0 auto;
 }
-
+.relatedProductsList {
+  display: flex;
+  overflow-x: auto;
+  padding: 20px 0;
+  flex-wrap: wrap;
+}
 .diamond {
   font-size: 24px;
   color: #805af5;

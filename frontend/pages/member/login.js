@@ -64,124 +64,129 @@ export default function LogIn(props) {
     <>
       <Header />
       <div className={`${styles['gradient-bg']} ${styles['login-bg']}`}>
-      <Image
-        src="/bgi/signup_bgi.png" 
-        alt="background"
-        // alt 確實是為了無障礙設計（給螢幕閱讀器和搜尋引擎用的）
-        layout="fill"
-        // layout="fill" 是關鍵，它會讓 Image 組件填滿其父容器
-        objectFit="cover"
-        // objectFit="cover" 讓它填滿整個容器
-        quality={100}
-      />
-      <div className='container'>
-      <div className={`row ${styles['content-row']} d-flex justify-content-center align-items-center `}>
-          <div className={`${styles.left} col`}>
-            <h4 className={styles.white}>
-              {renderJumpingText('Welcome to', 'welcome-text')}
-            </h4>
-            <br />
-            <h3 className={`text-white ${styles['guru-laptop']}`}>
-              {renderJumpingText('Laptop Guru', 'company-name')}
-            </h3>
-          </div>
-          <div className={`${styles.right} col`}>
-            <div className={`${styles.tabs} d-flex justify-content-between`}>
-              <Link
-                className={` ${styles.hover} text-decoration-none text-white`}
-                href="/member/login"
-              >
-                登入Log in
-              </Link>
-              <span className="text-white">|</span>
-              <Link
-                className={`${styles.hover} text-decoration-none text-white`}
-                href="/member/signup"
-              >
-                註冊Sign Up
-              </Link>
+        <Image
+          src="/bgi/signup_bgi.png"
+          alt="background"
+          layout="fill"
+          objectFit="cover"
+          quality={100}
+        />
+        <div className="container">
+          <div
+            className={`row ${styles['content-row']} d-flex justify-content-center align-items-center `}
+          >
+            <div className={`${styles.left} col`}>
+              <h4 className={styles.white}>
+                {renderJumpingText('Welcome to', 'welcome-text')}
+              </h4>
+              <br />
+              <h3 className={`text-white ${styles['guru-laptop']}`}>
+                {renderJumpingText('Laptop Guru', 'company-name')}
+              </h3>
             </div>
-            <form
-              className="mt-5 position-relative d-flex justify-content-center align-items-center"
-              onSubmit={handleSubmit}
-            >
-              <div className="inputs position-relative">
-                <div className="position-relative">
-                  <label htmlFor="email" className={`form-label text-white`}>
-                    帳號(信箱)
-                  </label>
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value)
-                    }}
-                    className={`form-control ${styles.inputs}`}
-                    name="email"
-                    required // 添加必填
-                  />
-                  <MdOutlineEmail
-                    className={`${styles['input-icon']}`}
-                    size={22}
-                    style={{ color: '#E0B0FF' }} // 使用淺粉紫色
-                  />
-                </div>
-
-                <div className="position-relative">
-                  <label htmlFor="password" className={`form-label text-white`}>
-                    密碼
-                  </label>
-                  <input
-                    type={showpassword ? 'text' : 'password'}
-                    value={password}
-                    autocomplete="new-password"
-                    onChange={(e) => {
-                      setPassword(e.target.value)
-                    }}
-                    onClick={() => {
-                      setShowpassword((prev) => {
-                        console.log('changing showpassword to:', !prev) // 檢查狀態更新
-                        return !prev
-                      })
-                    }}
-                    id="password"
-                    name="password" // 添加 name
-                    className={`form-control ${styles.inputs}`}
-                    required // 添加必填
-                  />
-                  <MdLockOutline
-                    className={`${styles['input-icon']}`}
-                    size={22}
-                    style={{ color: '#E0B0FF', cursor: 'pointer' }}
-                  />
-                </div>
-                <div id="Error_message" className={`form-text text-white p-5`}>
-                  {errors.message && (
-                    <div className="error">{errors.message}</div>
-                  )}
-                </div>
-                <button
-                  onClick={() => {
-                    login
-                  }}
-                  className={`text-white ${styles.button} ${styles.hover}`}
-                  type="submit"
+            <div className={`${styles.right} col`}>
+              <div className={`${styles.tabs} d-flex justify-content-between`}>
+                <Link
+                  className={` ${styles.hover} text-decoration-none text-white`}
+                  href="/member/login"
                 >
-                  送出
-                  <MdArrowForward
-                    size={20}
-                    className={styles['button-icon']}
-                    style={{ marginLeft: '8px' }}
-                  />
-                </button>
+                  登入Log in
+                </Link>
+                <span className="text-white">|</span>
+                <Link
+                  className={`${styles.hover} text-decoration-none text-white`}
+                  href="/member/signup"
+                >
+                  註冊Sign Up
+                </Link>
               </div>
-            </form>.
+              <form
+                className="mt-5 position-relative d-flex justify-content-center align-items-center"
+                onSubmit={handleSubmit}
+              >
+                <div className="inputs position-relative">
+                  <div className="position-relative">
+                    <label htmlFor="email" className={`form-label text-white`}>
+                      帳號(信箱)
+                    </label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value)
+                      }}
+                      className={`form-control ${styles.inputs}`}
+                      name="email"
+                      required // 添加必填
+                    />
+                    <MdOutlineEmail
+                      className={`${styles['input-icon']}`}
+                      size={22}
+                      style={{ color: '#E0B0FF' }} // 使用淺粉紫色
+                    />
+                  </div>
+
+                  <div className="position-relative">
+                    <label
+                      htmlFor="password"
+                      className={`form-label text-white`}
+                    >
+                      密碼
+                    </label>
+                    <input
+                      type={showpassword ? 'text' : 'password'}
+                      value={password}
+                      autocomplete="new-password"
+                      onChange={(e) => {
+                        setPassword(e.target.value)
+                      }}
+                      onClick={() => {
+                        setShowpassword((prev) => {
+                          console.log('changing showpassword to:', !prev) // 檢查狀態更新
+                          return !prev
+                        })
+                      }}
+                      id="password"
+                      name="password" // 添加 name
+                      className={`form-control ${styles.inputs}`}
+                      required // 添加必填
+                    />
+                    <MdLockOutline
+                      className={`${styles['input-icon']}`}
+                      size={22}
+                      style={{ color: '#E0B0FF', cursor: 'pointer' }}
+                    />
+                  </div>
+                  <div
+                    id="Error_message"
+                    className={`form-text text-white p-5`}
+                  >
+                    {errors.message && (
+                      <div className="error">{errors.message}</div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => {
+                      login
+                    }}
+                    className={`text-white ${styles.button} ${styles.hover}`}
+                    type="submit"
+                  >
+                    送出
+                    <MdArrowForward
+                      size={20}
+                      className={styles['button-icon']}
+                      style={{ marginLeft: '8px' }}
+                    />
+                  </button>
+                </div>
+              </form>
+              .
+            </div>
           </div>
         </div>
       </div>
 
-      </div> {/*  */}
-      
       <MyFooter />
 
       <style jsx>

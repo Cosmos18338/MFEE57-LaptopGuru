@@ -456,7 +456,7 @@ export default function List() {
                 <ProductCard
                   onSendMessage={handleShowMessage}
                   key={i}
-                  product_id={275}
+                  product_id={274}
                 />
               ))
             }

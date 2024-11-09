@@ -121,7 +121,8 @@ export default function CartIndex() {
     })
 
     const data = await result.json()
-    let order_id = data.order_id
+    const order_id = data.order_id
+    // const id = data.id
     if (data.status === 'success') {
       setOrder({ order_id: order_id, amount: total })
       setCartdata([])
@@ -129,7 +130,7 @@ export default function CartIndex() {
       localStorage.removeItem('store711')
       if (window.confirm('確認要導向至ECPay進行付款?')) {
         // 先連到node伺服器後，導向至ECPay付款頁面
-        window.location.href = `http://localhost:3005/api/ecpay-test-only?orderId=${order_id}&amount=${total}`
+        window.location.href = `http://localhost:3005/api/ecpay-test-only?orderId=${order_id}`
       }
     }
   }
@@ -188,7 +189,7 @@ export default function CartIndex() {
       </div>
 
       <div className="row">
-        <div className="col-8 cart h-100">
+        <div className="col-9 cart h-100">
           {cartdata && cartdata.length > 0 ? (
             cartdata.map((item) => (
               <BuyCard
@@ -220,13 +221,14 @@ export default function CartIndex() {
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="row">
                 <div className="col">商品總計</div>
-                <div className="col-auto">{total}</div>
+                <div className="col-auto">{total}元</div>
               </div>
               <div className="row">
                 <div className="col">運費總計</div>
                 <div className="col-auto">
+                  {ship == '' && '0'}
                   {ship == '7-11' && '60'}
-                  {ship == '宅配' && '200'}
+                  {ship == '宅配' && '200'}元
                 </div>
               </div>
             </div>
@@ -315,11 +317,11 @@ export default function CartIndex() {
             <div>
               <div className="discount row w-100 mb-2">
                 <div className="col">折價</div>
-                <div className="col-auto">$200</div>
+                <div className="col-auto">200元</div>
               </div>
               <div className="total row w-100 mb-2">
                 <div className="col">總計</div>
-                <div className="col-auto">{total}</div>
+                <div className="col-auto">{total}元</div>
               </div>
               <div className="d-flex justify-content-center">
                 <button
