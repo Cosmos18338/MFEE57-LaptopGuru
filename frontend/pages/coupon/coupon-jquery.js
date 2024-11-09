@@ -40,16 +40,16 @@ export default function CouponPageJquery() {
           </div>
           <div className="list-group list-group-flush">
             <Link
-              href="coupon-jquery"
-              className="list-group-item list-group-item-action text-center"
-            >
-              領取優惠卷
-            </Link>
-            <Link
               href={`/coupon/${id}`}
               className="list-group-item list-group-item-action text-center"
             >
               優惠卷
+            </Link>
+            <Link
+              href="coupon-jquery"
+              className="list-group-item list-group-item-action text-center"
+            >
+              領取優惠卷
             </Link>
           </div>
         </div>
@@ -114,9 +114,9 @@ export default function CouponPageJquery() {
                   <CouponQuery />
                   <CouponList />
                   {/* 分頁 */}
-                  <div className="pagination-section mt-4">
+                  {/* <div className="pagination-section mt-4">
                     <Paginationcomponent />
-                  </div>
+                  </div> */}
                 </div>
               </Tab.Pane>
 
