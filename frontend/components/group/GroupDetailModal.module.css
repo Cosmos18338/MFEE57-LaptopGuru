@@ -168,7 +168,11 @@
   display: block; /* 讓按鈕可以接受 margin: auto */
   width: 40%;
   padding: 10px;
-  background: linear-gradient(to right, rgba(147, 197, 253, 0.5), rgba(121, 64, 254, 0.8));
+  background: linear-gradient(
+    to right,
+    rgba(147, 197, 253, 0.5),
+    rgba(121, 64, 254, 0.8)
+  );
   color: white;
   border: none;
   border-radius: 6px;
@@ -179,7 +183,11 @@
 }
 
 .joinButton:hover {
-  background: linear-gradient(to right, rgba(147, 197, 253, 0.9), rgba(139, 92, 246, 0.9));
+  background: linear-gradient(
+    to right,
+    rgba(147, 197, 253, 0.9),
+    rgba(139, 92, 246, 0.9)
+  );
   box-shadow: 0 2px 8px rgba(147, 197, 253, 0.3);
 }
 
@@ -191,4 +199,79 @@
   background: rgba(107, 114, 128, 0.5);
   cursor: not-allowed;
   transform: none;
+}
+
+/* 頭像 */
+.userAvatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.userAvatarWrapper {
+  position: relative;
+  margin: 0 5px;
+}
+
+.userNameTooltip {
+  position: absolute;
+  bottom: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.2s;
+  pointer-events: none;
+}
+
+.userAvatarWrapper:hover .userNameTooltip {
+  opacity: 1;
+}
+
+.usersSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 20px 0;
+  gap: 10px;
+}
+
+.usersContainer {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  padding: 10px;
+  max-width: 300px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.usersContainer::-webkit-scrollbar {
+  display: none;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.navButton:hover {
+  opacity: 1;
 }
