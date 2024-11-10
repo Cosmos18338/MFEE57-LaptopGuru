@@ -45,7 +45,7 @@ export default function Blogcreated(props) {
 
     try {
       const response = await fetch(
-        'http://localhost:3005/api/blog/blogcreated',
+        'http://localhost:3005/api/blog/blog-created',
         {
           method: 'POST',
           body: formData,

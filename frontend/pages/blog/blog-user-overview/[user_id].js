@@ -37,7 +37,7 @@ export default function BlogUserOverview() {
       {blogData.map((blog) => (
         <Link
           key={blog.blog_id}
-          href={`/blog/blog-detail/${blog.blog_id}`}
+          href={`/blog/blog-user-detail/${blog.blog_id}`}
           style={{ textDecoration: 'none', cursor: 'pointer' }}
         >
           <div

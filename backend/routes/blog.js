@@ -25,7 +25,49 @@ const upload = multer({
 
 // -------------------------------時間戳記製作-------------------------------
 
+router.get('/blog-user-detail/:blog_id', async (req, res) => {
+  console.log('apple')
+
+  try {
+    const blogId = req.params.blog_id // 從 URL 參數中獲取 blog_id
+
+    // 從 blogoverview 表中撈取符合條件的資料
+    const [blogData] = await db.query(
+      `
+      SELECT 
+        user_id,
+        blog_type,
+        blog_title,
+        blog_content,
+        blog_created_date,
+        blog_brand,
+        blog_image,
+        blog_views,
+        blog_keyword,
+        blog_valid_value,
+        blog_url
+      FROM blogoverview
+      WHERE blog_valid_value = 1 AND blog_id = ?
+    `,
+      [blogId]
+    )
+
+    // 檢查是否有撈到資料
+    if (blogData.length === 0) {
+      return res.json({ status: 'error', message: '查無相關部落格資料' })
+    }
+
+    // 回傳資料
+    res.json({ status: 'success', data: blogData[0] })
+  } catch (error) {
+    console.error('Error fetching blog data:', error)
+    res.status(500).json({ status: 'error', message: '伺服器錯誤' })
+  }
+})
+
 router.get('/blog-detail/:blog_id', async (req, res) => {
+  console.log('apple')
+
   try {
     const blogId = req.params.blog_id // 從 URL 參數中獲取 blog_id
 
@@ -80,7 +122,7 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
   }
 })
 
-router.post('/blogcreated', upload.single('blog_image'), async (req, res) => {
+router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
   console.log(req.body.blog_valid_value)
 
   try {
@@ -256,6 +298,48 @@ router.get('/blog_user_overview/:user_id', async (req, res) => {
   } catch (error) {
     console.error('部落格查詢錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })
+  }
+})
+
+router.get('/blog-comment/:blog_id', async (req, res) => {
+  try {
+    const [blogComment] = await db.query(
+      'SELECT * FROM blogcomment WHERE blog_id = ?',
+      [req.params.blog_id]
+    )
+
+    if (!blogComment) {
+      return res.status(404).json({ message: '找不到該文章' })
+    }
+
+    res.json(blogComment)
+  } catch (error) {
+    console.error('部落格查詢錯誤:', error)
+    res.status(500).json({ message: '伺服器錯誤' })
+  }
+})
+
+router.post('/blog-comment/:blog_id', async (req, res) => {
+  const { blog_id } = req.params
+  const { user_id, blog_content, blog_created_date } = req.body
+
+  const sql = `
+    INSERT INTO blogcomment 
+    (blog_id, user_id, blog_content, blog_created_date) 
+    VALUES (?, ?, ?, ?)
+  `
+
+  try {
+    const [result] = await db.execute(sql, [
+      blog_id,
+      user_id,
+      blog_content,
+      blog_created_date,
+    ])
+
+    res.json({ success: true, comment_id: result.insertId })
+  } catch (error) {
+    res.status(500).json({ error: 'Error posting comment' })
   }
 })
 

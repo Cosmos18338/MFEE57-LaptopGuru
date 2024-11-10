@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 import Link from 'next/link'
-import BlogComment from '@/components/blog/blogdetail/blog-comment'
 
 export default function BlogId() {
   const router = useRouter()
@@ -12,7 +11,7 @@ export default function BlogId() {
 
   useEffect(() => {
     if (blog_id) {
-      fetch(`http://localhost:3005/api/blog/blog-detail/${blog_id}`) // 這裡替換為你實際的 API 路徑
+      fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`) // 這裡替換為你實際的 API 路徑
         .then((response) => response.json())
         .then((data) => {
           setBlogData(data.data) // 設定資料
@@ -67,8 +66,13 @@ export default function BlogId() {
         <p className="display-5 BlogDetailText">部落格內文</p>
         <p className="BlogDetailText">{blogData.blog_content}</p>
         {/* <p className="BlogDetailText">要不要刪除阿</p> */}
+
+        <Link href={`/blog/blog-user-edit/${blogData.blog_id}`}>
+          <button className="BlogEditButtonDelete" type="button">
+            前往編輯！
+          </button>
+        </Link>
       </section>
-      <BlogComment blog_id={blog_id} />
     </>
   )
 }
