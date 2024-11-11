@@ -2,7 +2,9 @@ import React, { useEffect, useState } from 'react'
 import styles from './GroupDetailModal.module.css'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 
-// 確保這是一個有效的 React 組件並正確導出
+// 修改預設頭像路徑
+const DEFAULT_AVATAR = '/images/group/default-avatar.png'
+
 const GroupDetailModal = ({ onClose, groupData, onJoin }) => {
   const [loading, setLoading] = useState(true)
   const [members, setMembers] = useState([])
@@ -32,37 +34,30 @@ const GroupDetailModal = ({ onClose, groupData, onJoin }) => {
 
   const getImageUrl = (imagePath) => {
     if (!imagePath) {
-      return 'https://via.placeholder.com/70x70'
+      return DEFAULT_AVATAR
     }
 
     try {
-      // 移除引號和空白
       const cleanPath = imagePath.replace(/['"]/g, '').trim()
 
-      // 檢查是否已經是完整的 data:image 格式
       if (cleanPath.startsWith('data:image')) {
-        // 提取 base64 部分
         const base64Part = cleanPath.split(',')[1]
         return `data:image/png;base64,${base64Part}`
       }
 
-      // 檢查是否包含 "base64," 但格式不完整
       if (cleanPath.includes('base64,')) {
         const base64Content = cleanPath.split('base64,')[1]
         return `data:image/png;base64,${base64Content}`
       }
 
-      // 如果是純 base64 內容
       if (/^[A-Za-z0-9+/=]+$/.test(cleanPath)) {
         return `data:image/png;base64,${cleanPath}`
       }
 
-      // 如果是 HTTP URL
       if (cleanPath.startsWith('http')) {
         return cleanPath
       }
 
-      // 如果是相對路徑
       return `http://localhost:3005${
         cleanPath.startsWith('/') ? '' : '/'
       }${cleanPath}`
@@ -71,7 +66,7 @@ const GroupDetailModal = ({ onClose, groupData, onJoin }) => {
         error,
         originalPath: imagePath,
       })
-      return 'https://via.placeholder.com/70x70'
+      return DEFAULT_AVATAR
     }
   }
 
@@ -81,7 +76,7 @@ const GroupDetailModal = ({ onClose, groupData, onJoin }) => {
       imagePath: member.image_path,
       processedUrl: e.target.src,
     })
-    e.target.src = 'https://via.placeholder.com/70x70'
+    e.target.src = DEFAULT_AVATAR
     e.target.onerror = null
   }
 
@@ -190,5 +185,4 @@ const GroupDetailModal = ({ onClose, groupData, onJoin }) => {
   )
 }
 
-// 確保使用預設導出
 export default GroupDetailModal
