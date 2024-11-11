@@ -187,10 +187,10 @@ router.put('/update', async (req, res) => {
     const [result] = await db.query(
       `
       UPDATE coupon 
-      SET valid = 0 
+      SET valid = ? 
       WHERE coupon_id = ?
       `,
-      [coupon_id]
+      [0, coupon_id]
     )
 
     console.log('更新結果:', result)

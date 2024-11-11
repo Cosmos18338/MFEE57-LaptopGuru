@@ -42,7 +42,7 @@ const CouponQuery = ({ onSearch }) => {
           </Form.Group>
         </div>
 
-        <div className="col-md-3">
+        {/* <div className="col-md-3">
           <Form.Group>
             <Form.Label>起始日期</Form.Label>
             <Form.Control
@@ -52,7 +52,7 @@ const CouponQuery = ({ onSearch }) => {
               onChange={handleInputChange}
             />
           </Form.Group>
-        </div>
+        </div> */}
 
         <div className="col-md-3 d-flex align-items-end">
           <Button
