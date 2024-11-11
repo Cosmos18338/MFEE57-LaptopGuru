@@ -28,8 +28,6 @@ export default function BlogId() {
   // 確認一下圖片路徑
   console.log(`確認一下圖片路徑`)
   console.log(`http://localhost:3005${blogData.blog_image}`)
-  console.log(blogData)
-  console.log('blogData裡面沒有 blog_id，這點等之後完全綁使用者後解決')
 
   return (
     <>

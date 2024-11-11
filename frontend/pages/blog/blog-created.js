@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/router' // 加入這行
 
 export default function Blogcreated(props) {
+  const router = useRouter() // 加入 router
   // 建立一個可重用的時間函數
   function getTimestamp() {
     const now = new Date()
@@ -57,6 +59,10 @@ export default function Blogcreated(props) {
 
       if (response.ok) {
         alert('部落格新增成功')
+        if (result.blog_id) {
+          // 導航到新建立的文章頁面
+          router.push(`/blog/blog-user-detail/${result.blog_id}`)
+        }
       } else {
         alert(`發生錯誤: ${result.message}`)
       }

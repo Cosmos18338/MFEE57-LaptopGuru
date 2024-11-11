@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
 export default function BlogComment({ blog_id }) {
   const [blogComment, setBlogComment] = useState([])
   const [newComment, setNewComment] = useState('') // 新增评论的状态
+  const router = useRouter()
 
   // 获取时间戳的函数
   function getTimestamp() {
@@ -64,6 +66,7 @@ export default function BlogComment({ blog_id }) {
         setBlogComment([...blogComment, newData])
         setNewComment('') // 清空输入框
         alert('留言成功！')
+        router.reload()
       } else {
         alert('留言失敗，請稍後再試')
       }

@@ -33,6 +33,8 @@ export default function BlogId() {
   return (
     <>
       <ArticleDetailMainArea />
+
+      <p>返回user-overview的按鈕</p>
       {/* <div>
         <div className="mt-5">
           <div className="mb-5">
@@ -67,7 +69,7 @@ export default function BlogId() {
         <p className="BlogDetailText">{blogData.blog_content}</p>
         {/* <p className="BlogDetailText">要不要刪除阿</p> */}
 
-        <Link href={`/blog/blog-user-edit/${blogData.blog_id}`}>
+        <Link href={`/blog/blog-user-edit/${blog_id}`}>
           <button className="BlogEditButtonDelete" type="button">
             前往編輯！
           </button>

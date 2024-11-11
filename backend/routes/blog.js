@@ -25,6 +25,60 @@ const upload = multer({
 
 // -------------------------------時間戳記製作-------------------------------
 
+// 後端路由
+router.get('/test', async (req, res) => {
+  console.log('apple') // 這會在伺服器控制台顯示 'apple'
+  res.send('Test endpoint is working') // 回應 Postman 字串
+})
+
+router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
+  try {
+    const {
+      blog_type,
+      blog_title,
+      blog_content,
+      blog_brand,
+      blog_brand_model,
+      blog_keyword,
+      blog_valid_value,
+      blog_created_date,
+    } = req.body
+
+    // 獲取上傳的圖片路徑
+    const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
+
+    // 創建要插入的資料物件
+    const blogData = {
+      blog_type,
+      blog_title,
+      blog_content,
+      blog_brand,
+      blog_brand_model,
+      blog_keyword,
+      blog_valid_value,
+      blog_created_date,
+      blog_image,
+    }
+
+    // 執行插入操作
+    const [result] = await db.query('INSERT INTO blogoverview SET ?', [
+      blogData,
+    ])
+
+    res.json({
+      success: true,
+      message: '新增成功',
+      blog_id: result.insertId, // 返回新插入的 ID
+    })
+  } catch (error) {
+    console.error('資料庫錯誤:', error)
+    res.status(500).json({
+      success: false,
+      message: '新增失敗，請稍後再試',
+    })
+  }
+})
+
 router.get('/blog-user-detail/:blog_id', async (req, res) => {
   console.log('apple')
 
@@ -119,64 +173,6 @@ router.get('/bloguseroverview/:blog_id', async (req, res) => {
     res.json({ status: 'success', data: blogData[0] })
   } catch (error) {
     res.status(500).json({ message: '伺服器錯誤' })
-  }
-})
-
-router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
-  console.log(req.body.blog_valid_value)
-
-  try {
-    const {
-      blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date,
-    } = req.body
-
-    // 獲取上傳的圖片路徑
-    const blog_image = req.file ? `/blog-images/${req.file.originalname}` : null
-
-    const sql = `
-    INSERT INTO blogoverview
-    ( blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date, blog_image)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `
-    const values = [
-      blog_type,
-      blog_title,
-      blog_content,
-      blog_brand,
-      blog_brand_model,
-      blog_keyword,
-      blog_valid_value,
-      blog_created_date,
-      blog_image,
-    ]
-
-    const [result] = await db.query(sql, values)
-
-    res.json({
-      success: true,
-      message: '新增成功',
-      id: result.insertId,
-    })
-  } catch (error) {
-    console.error('資料庫錯誤:', error)
-    res.status(500).json({
-      success: false,
-      message: '新增失敗，請稍後再試',
-    })
   }
 })
 
@@ -285,9 +281,6 @@ router.get('/blog_user_overview/:user_id', async (req, res) => {
       [req.params.user_id]
     )
 
-    console.log('查詢結果:', rows) // 檢查查詢結果
-    console.log('查詢到的資料筆數:', rows.length) // 檢查資料筆數
-
     // 檢查是否有資料
     if (!rows || rows.length === 0) {
       return res.status(404).json({ message: '找不到該文章' })
@@ -340,6 +333,102 @@ router.post('/blog-comment/:blog_id', async (req, res) => {
     res.json({ success: true, comment_id: result.insertId })
   } catch (error) {
     res.status(500).json({ error: 'Error posting comment' })
+  }
+})
+router.get('/latest', async (req, res) => {
+  const { page = 1, limit = 6 } = req.query
+  const offset = (page - 1) * limit
+
+  try {
+    const [[{ total }]] = await db.query(
+      'SELECT COUNT(*) as total FROM blogoverview WHERE blog_valid_value = 1'
+    )
+
+    const [blogs] = await db.query(
+      `SELECT * FROM blogoverview 
+       WHERE blog_valid_value = 1
+       ORDER BY blog_created_date DESC 
+       LIMIT ? OFFSET ?`,
+      [Number(limit), offset]
+    )
+
+    res.json({ blogs, total })
+  } catch (error) {
+    console.error('Latest blogs error:', error)
+    res.status(500).json({ message: '伺服器錯誤' })
+  }
+})
+// 後端修改 - blog.js router
+router.get('/search', async (req, res) => {
+  const {
+    page = 1,
+    limit = 6,
+    search = '',
+    types = '',
+    brands = '',
+  } = req.query
+  const offset = (page - 1) * limit
+
+  try {
+    let whereConditions = ['blog_valid_value = 1']
+    let params = []
+
+    if (search) {
+      whereConditions.push('(blog_content LIKE ? OR blog_title LIKE ?)')
+      params.push(`%${search}%`, `%${search}%`)
+    }
+
+    if (types) {
+      const typeArray = types.split(',').filter(Boolean)
+      if (typeArray.length) {
+        whereConditions.push(
+          `blog_type IN (${typeArray.map(() => '?').join(',')})`
+        )
+        params.push(...typeArray)
+      }
+    }
+
+    if (brands) {
+      const brandArray = brands.split(',').filter(Boolean)
+      if (brandArray.length) {
+        whereConditions.push(
+          `blog_brand IN (${brandArray.map(() => '?').join(',')})`
+        )
+        params.push(...brandArray)
+      }
+    }
+
+    const whereClause = whereConditions.length
+      ? `WHERE ${whereConditions.join(' AND ')}`
+      : ''
+
+    const query = `
+      SELECT * FROM blogoverview 
+      ${whereClause}
+      ORDER BY blog_created_date DESC
+      LIMIT ? OFFSET ?
+    `
+
+    const countQuery = `
+      SELECT COUNT(*) as total 
+      FROM blogoverview 
+      ${whereClause}
+    `
+
+    const [countResult, blogsResult] = await Promise.all([
+      db.query(countQuery, params),
+      db.query(query, [...params, parseInt(limit), parseInt(offset)]),
+    ])
+
+    res.json({
+      blogs: blogsResult[0],
+      total: countResult[0][0].total,
+      currentPage: parseInt(page),
+      totalPages: Math.ceil(countResult[0][0].total / parseInt(limit)),
+    })
+  } catch (error) {
+    console.error('Search error:', error)
+    res.status(500).json({ message: '伺服器錯誤' })
   }
 })
 

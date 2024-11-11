@@ -6,6 +6,12 @@ import { useRouter } from 'next/router'
 export default function Blogedit() {
   const router = useRouter()
   const { blog_id } = router.query
+
+  const brands = [
+    ['ROG', 'DELL', 'Acer', 'Raser'],
+    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
+  ]
+
   // 使用同一個表單管理功能，把 const blog_type = useState('') 都全部去除
   const [formData, setFormData] = useState({
     blog_type: '',
@@ -173,31 +179,24 @@ export default function Blogedit() {
               </p>
             </div>
           </div>
-          <div className="d-flex flex-row gap-5 col-6">
-            <div className="d-flex flex-column gap-5">
-              {[
-                'ROG',
-                'DELL',
-                'Acer',
-                'Raser',
-                'GIGABYTE',
-                'MSI',
-                'HP',
-                'ASUS',
-              ].map((v) => (
-                <div
-                  key={v}
-                  className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
-                    v === formData.blog_brand
-                      ? 'BlogEditBrandSelectedActive'
-                      : ''
-                  }`}
-                  onClick={() => handleChange('blog_brand', v)}
-                >
-                  <p>{v}</p>
-                </div>
-              ))}
-            </div>
+          <div className="d-flex flex-row gap-5 justify-content-center">
+            {brands.map((column, columnIndex) => (
+              <div key={columnIndex} className="d-flex flex-column gap-5">
+                {column.map((brand) => (
+                  <div
+                    key={brand}
+                    className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                      brand === formData.blog_brand
+                        ? 'BlogEditBrandSelectedActive'
+                        : ''
+                    }`}
+                    onClick={() => handleChange('blog_brand', brand)}
+                  >
+                    <p className="m-0">{brand}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
