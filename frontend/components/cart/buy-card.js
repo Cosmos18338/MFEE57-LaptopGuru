@@ -66,11 +66,11 @@ export default function BuyCard({ item, onDataChange }) {
     <>
       <div className="card p-3 border-primary mb-3">
         <div className="row align-items-center mb-2">
-          <div className="col-6 text-primary">
+          <div className="col-5 text-primary">
             <img src="diamond.svg" alt />
             購買資訊
           </div>
-          <div className="col-1 ">單價</div>
+          <div className="col-2 ">單價</div>
           <div className="col-2">數量</div>
           <div className="col-2 ">小計</div>
           <div className="col-1 mb-2"></div>
@@ -86,8 +86,8 @@ export default function BuyCard({ item, onDataChange }) {
               />
             </div>
           </div>
-          <div className="col-4">{item.model}</div>
-          <div className="col-1">{item.list_price}</div>
+          <div className="col-3">{item.model}</div>
+          <div className="col-2">{item.list_price}元</div>
           <div className="col-2">
             <input
               type="number"
@@ -104,7 +104,7 @@ export default function BuyCard({ item, onDataChange }) {
               }}
             />
           </div>
-          <div className="col-2">{price}</div>
+          <div className="col-2">{price}元</div>
           <div className="col-1">
             <button
               className={`btn btn-light`}

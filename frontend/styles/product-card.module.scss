@@ -64,7 +64,12 @@
   color: white;
   font-size: 16px;
 }
-
+.product_ellipsis {
+  white-space: nowrap; /* 不換行 */
+  overflow: hidden; /* 隱藏超出容器的文字 */
+  text-overflow: ellipsis; /* 使用省略號 */
+  width: 180px; /* 設置容器的寬度 */
+}
 /* 名稱、型號、收藏、加入購物車icon */
 
 .product_card_content {

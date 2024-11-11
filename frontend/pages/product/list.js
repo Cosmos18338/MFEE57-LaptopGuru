@@ -7,6 +7,7 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import Image from 'next/image'
 import BackToTop from '@/components/BackToTop/BackToTop'
 export default function List() {
+  
   // 小尺寸時的側邊欄開關
   const [isChecked, setIsChecked] = useState(false)
   const handleToggle = (event) => {
@@ -456,7 +457,7 @@ export default function List() {
                 <ProductCard
                   onSendMessage={handleShowMessage}
                   key={i}
-                  product_id={275}
+                  product_id={274}
                 />
               ))
             }
