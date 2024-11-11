@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import EventButton from '@/components/event/EventButton'
 import GroupBanner from '@/components/group/GroupBanner'
@@ -8,16 +8,57 @@ import GroupJoin from '@/components/group/GroupJoin'
 const Group = () => {
   // 分頁狀態
   const [currentPage, setCurrentPage] = useState(1)
-  const totalPages = 30
+  const [totalPages, setTotalPages] = useState(30)
+  const [groups, setGroups] = useState([])
+  const [loading, setLoading] = useState(true)
 
   // Modal 狀態
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
   const [selectedGroup, setSelectedGroup] = useState(null)
 
+  useEffect(() => {
+    fetchGroups()
+  }, [currentPage])
+
+  const fetchGroups = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/api/group/all', {
+        credentials: 'include', // 加入這行以發送 cookies
+      })
+      const data = await response.json()
+
+      if (data.status === 'success') {
+        setGroups(data.data.groups || []) // 添加空數組作為fallback
+        // 假設每頁8筆資料
+        setTotalPages(Math.ceil((data.data.groups?.length || 0) / 8))
+      } else {
+        console.error('獲取群組失敗:', data.message)
+        setGroups([])
+        setTotalPages(1)
+      }
+    } catch (error) {
+      console.error('獲取群組失敗:', error)
+      setGroups([])
+      setTotalPages(1)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // 詳情 Modal 控制函數
   const handleOpenModal = (groupData) => {
-    setSelectedGroup(groupData)
+    setSelectedGroup({
+      id: groupData.group_id,
+      title: groupData.group_name,
+      description: groupData.description,
+      date: groupData.creat_time,
+      currentMembers: groupData.member_count || 0,
+      maxMembers: groupData.max_members,
+      creator_name: groupData.creator_name,
+      creator_id: groupData.creator_id,
+      users: groupData.members || [],
+    })
     setIsModalOpen(true)
     document.body.style.overflow = 'hidden'
   }
@@ -30,7 +71,6 @@ const Group = () => {
 
   // 申請 Modal 控制函數
   const handleOpenJoinModal = (groupData) => {
-    // 如果是從詳情 Modal 來的，groupData 已經設置過了
     if (!groupData) {
       setIsModalOpen(false)
     } else {
@@ -81,20 +121,15 @@ const Group = () => {
     }
   }
 
-  // 模擬群組數據
-  const mockGroups = Array.from({ length: 8 }, (_, index) => ({
-    id: index + 1,
-    title: `英雄聯盟政大盃第${index + 1}屆`,
-    date: '2024/08/23 13:00',
-    currentMembers: 3,
-    maxMembers: 5,
-    description: '這是一個很棒的活動，歡迎大家來參加！',
-    users: [
-      { id: 1, name: '用戶1', avatar: '/api/placeholder/40/40' },
-      { id: 2, name: '用戶2', avatar: '/api/placeholder/40/40' },
-      { id: 3, name: '用戶3', avatar: '/api/placeholder/40/40' },
-    ],
-  }))
+  // 計算當前頁面應顯示的群組
+  const getCurrentPageGroups = () => {
+    const startIndex = (currentPage - 1) * 8
+    return groups.slice(startIndex, startIndex + 8)
+  }
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <div className="group-wrapper">
@@ -111,70 +146,86 @@ const Group = () => {
 
         {/* 內容區域 */}
         <div className="group-content">
-          <div className="group-banner-grid">
-            {mockGroups.map((group) => (
-              <div key={group.id}>
-                <GroupBanner
-                  groupData={group}
-                  onOpenDetail={() => handleOpenModal(group)}
-                  onOpenJoin={() => handleOpenJoinModal(group)}
-                />
-              </div>
-            ))}
-          </div>
+          {groups.length === 0 ? (
+            <div className="no-groups-message">目前沒有揪團資料</div>
+          ) : (
+            <div className="group-banner-grid">
+              {getCurrentPageGroups().map((group) => (
+                <div key={group.group_id}>
+                  <GroupBanner
+                    groupData={{
+                      id: group.group_id,
+                      title: group.group_name,
+                      creatorId: group.creator_id,
+                      creatorName: group.creator_name,
+                      createTime: group.creat_time,
+                      currentMembers: group.member_count || 0,
+                      maxMembers: group.max_members,
+                      description: group.description,
+                      image: group.group_img,
+                    }}
+                    onOpenDetail={() => handleOpenModal(group)}
+                    onOpenJoin={() => handleOpenJoinModal(group)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
 
           {/* 分頁導航 */}
-          <nav className="group-pagination-container">
-            <ul className="group-pagination-list">
-              {/* 上一頁按鈕 */}
-              <li
-                className={`group-pagination-item ${
-                  currentPage === 1 ? 'disabled' : ''
-                }`}
-              >
-                <button
-                  className="group-pagination-link"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  ⟨
-                </button>
-              </li>
-
-              {/* 頁碼 */}
-              {generatePaginationItems().map((item, index) => (
+          {groups.length > 0 && (
+            <nav className="group-pagination-container">
+              <ul className="group-pagination-list">
+                {/* 上一頁按鈕 */}
                 <li
-                  key={`page-${index}`}
                   className={`group-pagination-item ${
-                    item === currentPage ? 'active' : ''
-                  } ${item === '...' ? 'disabled' : ''}`}
+                    currentPage === 1 ? 'disabled' : ''
+                  }`}
                 >
                   <button
                     className="group-pagination-link"
-                    onClick={() => item !== '...' && handlePageChange(item)}
-                    disabled={item === '...'}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
                   >
-                    {item}
+                    ⟨
                   </button>
                 </li>
-              ))}
 
-              {/* 下一頁按鈕 */}
-              <li
-                className={`group-pagination-item ${
-                  currentPage === totalPages ? 'disabled' : ''
-                }`}
-              >
-                <button
-                  className="group-pagination-link"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
+                {/* 頁碼 */}
+                {generatePaginationItems().map((item, index) => (
+                  <li
+                    key={`page-${index}`}
+                    className={`group-pagination-item ${
+                      item === currentPage ? 'active' : ''
+                    } ${item === '...' ? 'disabled' : ''}`}
+                  >
+                    <button
+                      className="group-pagination-link"
+                      onClick={() => item !== '...' && handlePageChange(item)}
+                      disabled={item === '...'}
+                    >
+                      {item}
+                    </button>
+                  </li>
+                ))}
+
+                {/* 下一頁按鈕 */}
+                <li
+                  className={`group-pagination-item ${
+                    currentPage === totalPages ? 'disabled' : ''
+                  }`}
                 >
-                  ⟩
-                </button>
-              </li>
-            </ul>
-          </nav>
+                  <button
+                    className="group-pagination-link"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    ⟩
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          )}
         </div>
       </div>
 

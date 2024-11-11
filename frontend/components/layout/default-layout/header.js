@@ -30,18 +30,20 @@ export default function Header(props) {
           <Link className="logo me-auto" href="/">
             <img src="/logo.svg" />
           </Link>
-          <div className="me-7 nav-list">
-            <Link className="text-light me-3" href="/">
+          <div className="me-3 nav-list">
+            <Link className={`text-light me-3`} href="/">
               首頁
             </Link>
-            <Link className="text-light me-3" href="/product">
+            <Link className={`text-light me-3`} href="/product">
               商品
             </Link>
-            <a className="text-light me-3">比較</a>
-            <a className="text-light me-3">租賃</a>
-            <a className="text-light me-3">活動</a>
-            <a className="text-light me-3">文章</a>
-            <a className="text-light me-3">部落格</a>
+            <a className={`text-light me-3`}>比較</a>
+            <Link className={`text-light me-3`} href="/event">
+              活動
+            </Link>
+            <Link className={`text-light me-3`} href="/blog">
+              部落格
+            </Link>
           </div>
           {isAuth == true ? (
             <>
@@ -78,6 +80,15 @@ export default function Header(props) {
           )}
         </div>
       </header>
+
+      <style jsx>
+        {`
+          .header-hover {
+            cursor: pointer;
+            color: red;
+          }
+        `}
+      </style>
     </>
   )
 }
