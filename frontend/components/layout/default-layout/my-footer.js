@@ -5,7 +5,7 @@ export default function MyFooter() {
         <div className="row m-3 border-bottom border-light">
           <div className="col-5">
             <div className="logo">
-              <img src="/logo.svg" alt />
+              <img src="/logo.svg" alt="網站 Logo" />
             </div>
           </div>
           <div className="col">
@@ -26,8 +26,8 @@ export default function MyFooter() {
         </div>
         <div className="row p-3">
           <div className="col">
-            <img src="/Icon-fb.svg" alt className="me-3" />
-            <img src="/Icon-ig.svg" alt />
+            <img src="/Icon-fb.svg" alt="Facebook 圖標" className="me-3" />
+            <img src="/Icon-ig.svg" alt="Instagram 圖標" />
           </div>
           <div className="col text-light text-end">© 2024 Hello, Inc.</div>
         </div>

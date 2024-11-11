@@ -3,12 +3,17 @@ import Swal from 'sweetalert2'
 import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
+import styles from '@/styles/dashboard.module.scss'
+import Accordion from 'react-bootstrap/Accordion'
+
 export default function UserProfile() {
   const { auth, setAuth } = useAuth()
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
-    password: '******',
+    // password: '',
+    currentPassword: '',
+    newPassword: '',
     gender: '',
     birthdate: '',
     phone: '',
@@ -20,15 +25,20 @@ export default function UserProfile() {
     detailed_address: '',
     image_path: '',
     remarks: '',
-    valid: 1
+    valid: 1,
+  })
+  const [currentPassword, setcurrentPassword] = useState({
+    password: '',
   })
 
-  const [profilePic, setProfilePic] = useState('https://via.placeholder.com/220x220')
+  const [profilePic, setProfilePic] = useState(
+    'https://via.placeholder.com/220x220'
+  )
   const [showpassword, setShowpassword] = useState(false)
+  const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
   const [selectedImg, setSelectedImg] = useState(null)
 
-  const [cities, setCities] = useState([])
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
@@ -39,13 +49,13 @@ export default function UserProfile() {
       { CityName: '台北市', CityEngName: 'Taipei City' },
       { CityName: '新北市', CityEngName: 'New Taipei City' },
       { CityName: '基隆市', CityEngName: 'Keelung City' },
-      { CityName: '新竹市', CityEngName: 'Hsinchu City' },
       { CityName: '桃園市', CityEngName: 'Taoyuan City' },
+      { CityName: '新竹市', CityEngName: 'Hsinchu City' },
       { CityName: '新竹縣', CityEngName: 'Hsinchu County' },
+      { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
     ],
     中部區域: [
       { CityName: '台中市', CityEngName: 'Taichung City' },
-      { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
       { CityName: '彰化縣', CityEngName: 'Changhua County' },
       { CityName: '南投縣', CityEngName: 'Nantou County' },
       { CityName: '雲林縣', CityEngName: 'Yunlin County' },
@@ -68,17 +78,17 @@ export default function UserProfile() {
       { CityName: '澎湖縣', CityEngName: 'Penghu County' },
     ],
   }
- 
+
   const handleCountryChange = (e) => {
     const { name, value } = e.target
-    setEditableUser(prev => ({
+    setEditableUser((prev) => ({
       ...prev,
       [name]: value,
       city: '',
       district: '',
-      road_name: ''
+      road_name: '',
     }))
-    
+
     if (value === '台灣') {
       setIsDistrictDisabled(false)
     } else {
@@ -91,14 +101,14 @@ export default function UserProfile() {
 
   const handleCityChange = (e) => {
     const { name, value } = e.target
-    setEditableUser(prev => ({
+    setEditableUser((prev) => ({
       ...prev,
       [name]: value,
       district: '',
-      road_name: ''
+      road_name: '',
     }))
     console.log(value)
-    const selectedCity = taiwanData.find(city => city.CityName === value)
+    const selectedCity = taiwanData.find((city) => city.CityName === value)
     console.log(selectedCity)
     if (selectedCity) {
       setDistricts(selectedCity.AreaList)
@@ -113,15 +123,19 @@ export default function UserProfile() {
 
   const handleDistrictChange = (e) => {
     const { name, value } = e.target
-    setEditableUser(prev => ({
+    setEditableUser((prev) => ({
       ...prev,
       [name]: value,
-      road_name: ''
+      road_name: '',
     }))
 
-    const selectedCity = taiwanData.find(city => city.CityName === editableUser.city)
+    const selectedCity = taiwanData.find(
+      (city) => city.CityName === editableUser.city
+    )
     if (selectedCity) {
-      const selectedArea = selectedCity.AreaList.find(area => area.AreaName === value)
+      const selectedArea = selectedCity.AreaList.find(
+        (area) => area.AreaName === value
+      )
       if (selectedArea && selectedArea.RoadList) {
         setRoads(selectedArea.RoadList)
         setIsRoadDisabled(false)
@@ -134,9 +148,9 @@ export default function UserProfile() {
 
   const handleRoadChange = (e) => {
     const { name, value } = e.target
-    setEditableUser(prev => ({
+    setEditableUser((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }))
   }
 
@@ -144,12 +158,16 @@ export default function UserProfile() {
     const user_id = auth?.userData?.user_id
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3005/api/dashboard/${user_id}`)
+        const response = await axios.get(
+          `http://localhost:3005/api/dashboard/${user_id}`
+        )
+
         if (response.data.status === 'success') {
+          // userData原本是鉤子拿的 在axios之後覆蓋掉了，變成userData是從資料庫拿的
           const userData = response.data.data.user
           setEditableUser({
             name: userData.name || '',
-            password: '******',//好吧
+            password: userData.password || ' ',
             gender: userData.gender || '',
             birthdate: userData.birthdate || '',
             phone: userData.phone || '',
@@ -160,20 +178,24 @@ export default function UserProfile() {
             road_name: userData.road_name || '',
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
-            remarks: userData.remarks || ''
+            remarks: userData.remarks || '',
           })
 
           // 如果國家是台灣，啟用地址選擇
           if (userData.country === '台灣') {
             setIsDistrictDisabled(false)
-            
+
             // 如果有城市數據，設置區域列表
-            const selectedCity = taiwanData.find(city => city.CityName === userData.city)
+            const selectedCity = taiwanData.find(
+              (city) => city.CityName === userData.city
+            )
             if (selectedCity) {
               setDistricts(selectedCity.AreaList)
-              
+
               // 如果有區域數據，設置路名列表
-              const selectedArea = selectedCity.AreaList.find(area => area.AreaName === userData.district)
+              const selectedArea = selectedCity.AreaList.find(
+                (area) => area.AreaName === userData.district
+              )
               if (selectedArea && selectedArea.RoadList) {
                 setRoads(selectedArea.RoadList)
                 setIsRoadDisabled(false)
@@ -197,8 +219,95 @@ export default function UserProfile() {
     }
   }, [user_id])
 
+  const pwdCheck = async () => {
+    // 移除 e 參數，因為我們改用 onClick
+    const user_id = auth?.userData?.user_id
+
+    //  檢查必要條件:從勾子抓到登入後的這個user_id
+    if (!user_id) {
+      console.error('User ID 不存在')
+      return // Handle this case appropriately
+    }
+    if (!editableUser.currentPassword) {
+      Swal.fire('錯誤', '請輸入密碼', 'error')
+      return
+    }
+
+    try {
+      const responsePwdSend = await fetch(
+        `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
+        {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            currentPassword: editableUser.currentPassword,
+          }),
+        }
+      )
+
+      // 嘗試把輸入的值丟回去後做處理
+      // 檢查後端回應的 status 是否為 'pwdmatch'
+      // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
+      // 用fetch不能response.data.data
+      const data = await responsePwdSend.json()
+      console.log('回應資料:', data) // 除錯用
+      // axios.才要responsePwdSend.data,用fetch只要
+      if (data.status === 'pwdmatch') {
+        Swal.fire('成功', '密碼與資料表相符', 'success')
+        setShowNewPasswordInput(true)
+        console.log('成功')
+      } else {
+        Swal.fire('錯誤', '密碼輸入錯誤', 'error')
+      }
+    } catch (error) {
+      Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
+    }
+  }
+
+  const confirmPwdReset = async () => {
+    try {
+      // 檢查新密碼是否有值
+      if (!editableUser.newPassword) {
+        Swal.fire('錯誤', '請輸入新密碼', 'error')
+        return
+      }
+
+      const user_id = auth?.userData?.user_id
+      const response = await axios.put(
+        `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
+        {
+          currentPassword: editableUser.currentPassword,
+          newPassword: editableUser.newPassword,
+        }
+      )
+
+      if (response.data.status === 'resetPwd success') {
+        Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
+        // 重置表單
+        // setEditableUser(prev => ({
+        //   ...prev,
+        //   currentPassword: '',
+        //   newPassword: ''
+        // }));
+        setShowNewPasswordInput(false)
+      }
+    } catch (error) {
+      console.error('密碼更新失敗:', error)
+      Swal.fire(
+        '錯誤',
+        error.response?.data?.message || '密碼更新失敗',
+        'error'
+      )
+    }
+  }
+
   const handleInputChange = (e) => {
     const { name, value } = e.target
+    console.log('輸入值型別:', typeof value) // 檢查型別
+    console.log('輸入值:', value) // 檢查值
     setEditableUser((prev) => ({
       ...prev,
       [name]: value,
@@ -212,46 +321,53 @@ export default function UserProfile() {
         Swal.fire('錯誤', '檔案不能超過5MB', 'error')
         return
       }
-      
+
       if (!file.type.startsWith('image/')) {
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
-      
+
       const reader = new FileReader()
       reader.onloadend = () => {
         setSelectedImg(reader.result)
         setProfilePic(reader.result)
         // 將 base64 圖片數據存儲到 editableUser 的 image_path 中
-        setEditableUser(prev => ({
+        setEditableUser((prev) => ({
           ...prev,
-          image_path: reader.result
+          image_path: reader.result,
         }))
       }
       reader.readAsDataURL(file)
     }
   }
-
+  // 更新使用者資料
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
+
     try {
-      if (!editableUser.name || !editableUser.email) {
+      if (!editableUser.name || !editableUser.email || !editableUser.password) {
         Swal.fire('錯誤', '請填寫必要欄位', 'error')
         return
       }
-     
-      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, editableUser)
-  
+
+      const response = await axios.put(
+        `http://localhost:3005/api/dashboard/${user_id}`,
+        editableUser
+      )
+
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
-        setAuth({isAuth:auth.isAuth, userData:{...editableUser}})
-        console.log({...editableUser});
+        setAuth({ isAuth: auth.isAuth, userData: { ...editableUser } })
+        console.log({ ...editableUser })
         // 改變的結果是輸入的狀態的物件
       }
     } catch (error) {
       console.error('更新失敗:', error)
-      Swal.fire('錯誤', error.response?.data?.message || '更新失敗，請稍後再試', 'error')
+      Swal.fire(
+        '錯誤',
+        error.response?.data?.message || '更新失敗，請稍後再試',
+        'error'
+      )
     }
   }
 
@@ -265,22 +381,25 @@ export default function UserProfile() {
         confirmButtonColor: '#805AF5',
         cancelButtonColor: '#d33',
         confirmButtonText: '確定停用',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
       })
-      
+
       if (!isConfirmed.isConfirmed) {
         return
       }
-          const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
-        ...editableUser,
-        valid: 0
-      })
+      const response = await axios.put(
+        `http://localhost:3005/api/dashboard/${user_id}`,
+        {
+          ...editableUser,
+          valid: 0,
+        }
+      )
 
       if (response.data.status === 'success') {
         Swal.fire({
           title: '帳號已停用',
           icon: 'success',
-          confirmButtonColor: '#805AF5'
+          confirmButtonColor: '#805AF5',
         })
         // 可選：重新導向到登出頁面或首頁
         // window.location.href = '/logout'
@@ -291,24 +410,27 @@ export default function UserProfile() {
         title: '停用失敗',
         text: error.response?.data?.message || '請稍後再試',
         icon: 'error',
-        confirmButtonColor: '#805AF5'
+        confirmButtonColor: '#805AF5',
       })
     }
   }
 
   const handleProfilePicSubmit = async (e) => {
     e.preventDefault()
-    
+
     if (!selectedImg) {
       Swal.fire('提示', '請先選擇要上傳的圖片', 'info')
       return
     }
 
     try {
-      const response = await axios.put(`http://localhost:3005/api/dashboard/${user_id}`, {
-        ...editableUser,
-        image_path: selectedImg
-      })
+      const response = await axios.put(
+        `http://localhost:3005/api/dashboard/${user_id}`,
+        {
+          ...editableUser,
+          image_path: selectedImg,
+        }
+      )
 
       if (response.data.status === 'success') {
         setUploadStatus('頭像更新成功！')
@@ -316,7 +438,11 @@ export default function UserProfile() {
       }
     } catch (error) {
       console.error('上傳失敗:', error)
-      Swal.fire('錯誤', error.response?.data?.message || '上傳失敗，請稍後再試', 'error')
+      Swal.fire(
+        '錯誤',
+        error.response?.data?.message || '上傳失敗，請稍後再試',
+        'error'
+      )
     }
   }
 
@@ -348,7 +474,10 @@ export default function UserProfile() {
                     <form onSubmit={handleSubmit}>
                       {/* 基本資料 */}
                       <div className="mb-3 row">
-                        <label htmlFor="name" className="col-sm-3 col-form-label">
+                        <label
+                          htmlFor="name"
+                          className="col-sm-3 col-form-label"
+                        >
                           使用者名稱
                         </label>
                         <div className="col-sm-9">
@@ -364,32 +493,10 @@ export default function UserProfile() {
                       </div>
 
                       <div className="mb-3 row">
-                        <label htmlFor="password" className="col-sm-3 col-form-label">
-                          密碼修改
-                        </label>
-                        <div className="col-sm-9">
-                          <input
-                            type={showpassword ? 'text' : 'password'}
-                            className="form-control"
-                            id="password"
-                            name="password"
-                            value={editableUser.password}
-                            onChange={handleInputChange}
-                          />
-                          要先輸入密碼正確，才讓使用者編輯密碼
-                          
-                          <input
-                            type="checkbox"
-                            id="showpassword"
-                            checked={showpassword}
-                            onChange={() => setShowpassword(!showpassword)}
-                            className="form-check-input"
-                          />
-                          顯示密碼
-                        </div>
-                      </div>
-                      <div className="mb-3 row">
-                        <label htmlFor="gender" className="col-sm-3 col-form-label">
+                        <label
+                          htmlFor="gender"
+                          className="col-sm-3 col-form-label"
+                        >
                           性別
                         </label>
                         <div className="col-sm-9">
@@ -408,7 +515,10 @@ export default function UserProfile() {
                       </div>
 
                       <div className="mb-3 row">
-                        <label htmlFor="birthdate" className="col-sm-3 col-form-label">
+                        <label
+                          htmlFor="birthdate"
+                          className="col-sm-3 col-form-label"
+                        >
                           生日
                         </label>
                         <div className="col-sm-9">
@@ -424,7 +534,10 @@ export default function UserProfile() {
                       </div>
 
                       <div className="mb-3 row">
-                        <label htmlFor="phone" className="col-sm-3 col-form-label">
+                        <label
+                          htmlFor="phone"
+                          className="col-sm-3 col-form-label"
+                        >
                           手機號碼
                         </label>
                         <div className="col-sm-9">
@@ -442,13 +555,16 @@ export default function UserProfile() {
                       {/* 地址選擇 */}
                       <div className="address-section">
                         <div className="mb-3 row">
-                          <label htmlFor="country" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="country"
+                            className="col-sm-3 col-form-label"
+                          >
                             國家
                           </label>
                           <div className="col-sm-9">
-                            <select 
-                              id="country" 
-                              className="form-select" 
+                            <select
+                              id="country"
+                              className="form-select"
                               name="country"
                               value={editableUser.country}
                               onChange={handleCountryChange}
@@ -464,48 +580,64 @@ export default function UserProfile() {
                         </div>
 
                         <div className="mb-3 row">
-                          <label htmlFor="city" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="city"
+                            className="col-sm-3 col-form-label"
+                          >
                             縣市
                           </label>
                           <div className="col-sm-9">
-                            <select 
-                              id="city" 
-                              name="city" 
-                              className="form-select" 
+                            <select
+                              id="city"
+                              name="city"
+                              className="form-select"
                               disabled={editableUser.country !== '台灣'}
                               value={editableUser.city}
                               onChange={handleCityChange}
                             >
                               <option value="">請選擇縣市</option>
-                              {Object.entries(groupedCities).map(([region, cities]) => (
-                                <optgroup key={region} label={region}>
-                                  {cities.map(city => (
-                                    <option key={city.CityName} value={city.CityName}>
-                                      {city.CityName} ({city.CityEngName})
-                                    </option>
-                                  ))}
-                                </optgroup>
-                              ))}
+                              {Object.entries(groupedCities).map(
+                                ([region, cities]) => (
+                                  <optgroup key={region} label={region}>
+                                    {cities.map((city) => (
+                                      <option
+                                        key={city.CityName}
+                                        value={city.CityName}
+                                      >
+                                        {city.CityName} ({city.CityEngName})
+                                      </option>
+                                    ))}
+                                  </optgroup>
+                                )
+                              )}
                             </select>
                           </div>
                         </div>
 
                         <div className="mb-3 row">
-                          <label htmlFor="district" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="district"
+                            className="col-sm-3 col-form-label"
+                          >
                             鄉鎮市區
                           </label>
                           <div className="col-sm-9">
-                            <select 
-                              id="district" 
-                              name="district" 
-                              className="form-select" 
-                              disabled={isDistrictDisabled || !editableUser.city}
+                            <select
+                              id="district"
+                              name="district"
+                              className="form-select"
+                              disabled={
+                                isDistrictDisabled || !editableUser.city
+                              }
                               value={editableUser.district}
                               onChange={handleDistrictChange}
                             >
                               <option value="">請選擇鄉鎮市區</option>
-                              {districts.map(area => (
-                                <option key={area.AreaName} value={area.AreaName}>
+                              {districts.map((area) => (
+                                <option
+                                  key={area.AreaName}
+                                  value={area.AreaName}
+                                >
                                   {area.AreaName} ({area.ZipCode})
                                 </option>
                               ))}
@@ -514,21 +646,29 @@ export default function UserProfile() {
                         </div>
 
                         <div className="mb-3 row">
-                          <label htmlFor="road_name" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="road_name"
+                            className="col-sm-3 col-form-label"
+                          >
                             路名
                           </label>
                           <div className="col-sm-9">
-                            <select 
-                              id="roadList" 
-                              name="road_name" 
-                              className="form-select" 
-                              disabled={isRoadDisabled || !editableUser.district}
+                            <select
+                              id="roadList"
+                              name="road_name"
+                              className="form-select"
+                              disabled={
+                                isRoadDisabled || !editableUser.district
+                              }
                               value={editableUser.road_name}
                               onChange={handleRoadChange}
                             >
                               <option value="">請選擇居住街道</option>
-                              {roads.map(road => (
-                                <option key={road.RoadName} value={road.RoadName}>
+                              {roads.map((road) => (
+                                <option
+                                  key={road.RoadName}
+                                  value={road.RoadName}
+                                >
                                   {road.RoadName}
                                 </option>
                               ))}
@@ -537,7 +677,10 @@ export default function UserProfile() {
                         </div>
 
                         <div className="mb-3 row">
-                          <label htmlFor="detailed_address" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="detailed_address"
+                            className="col-sm-3 col-form-label"
+                          >
                             詳細地址
                           </label>
                           <div className="col-sm-9">
@@ -557,7 +700,10 @@ export default function UserProfile() {
                         </div>
 
                         <div className="mb-3 row">
-                          <label htmlFor="remarks" className="col-sm-3 col-form-label">
+                          <label
+                            htmlFor="remarks"
+                            className="col-sm-3 col-form-label"
+                          >
                             備註
                           </label>
                           <div className="col-sm-9">
@@ -579,41 +725,26 @@ export default function UserProfile() {
 
                       {/* 電子郵件 */}
                       <div className="mb-3 row">
-                        <label htmlFor="email" className="col-sm-3 col-form-label">
+                        <label
+                          htmlFor="email"
+                          className="col-sm-3 col-form-label"
+                        >
                           電子郵件
                         </label>
-                        <div className="col-sm-9">
-                          {/* <input
-                            type="email"
-                            className="form-control"
-                            id="email"
-                            name="email"
-                            value={editableUser.email}
-                            onChange={handleInputChange}
-                          /> */} 
-                          {editableUser.email}
-                        </div>
+                        <div className="col-sm-9">{auth?.userData?.email}</div>
                       </div>
 
                       <div className="d-flex justify-content-between">
                         <button
                           type="submit"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                           onChange={handleSubmit}
                         >
                           更新
                         </button>
                         <button
                           type="button"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                           onClick={handleDeactivate}
                         >
                           停用
@@ -635,8 +766,7 @@ export default function UserProfile() {
                         <div className="mb-3">
                           <label
                             htmlFor="profile-pic-upload"
-                            className="btn btn-outline-primary"
-                            style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                            className={`btn btn-outline-primary ${styles['profile-button']}`}
                           >
                             大頭照預覽
                           </label>
@@ -650,11 +780,7 @@ export default function UserProfile() {
                         </div>
                         <button
                           type="submit"
-                          className="btn btn-primary"
-                          style={{
-                            backgroundColor: '#805AF5',
-                            borderColor: '#805AF5',
-                          }}
+                          className="btn btn-primary text-light"
                         >
                           更新
                         </button>
@@ -667,6 +793,93 @@ export default function UserProfile() {
                       </div>
                     </form>
                   </div>
+                </div>
+                {/* 密碼變更 */}
+                <div className="mt-5 row">
+                  <Accordion defaultActiveKey="0">
+                    <Accordion.Item eventKey="0">
+                      <Accordion.Header>
+                        {' '}
+                        <label
+                          htmlFor="password"
+                          className="col-sm-3 col-form-label"
+                        >
+                          密碼修改
+                        </label>
+                      </Accordion.Header>
+                      <Accordion.Body>
+                        <div className="mb-3">
+                          <input
+                            type={showpassword ? 'text' : 'password'}
+                            className="form-control"
+                            name="currentPassword"
+                            value={editableUser.currentPassword || ''}
+                            placeholder="請輸入當前密碼"
+                            onChange={handleInputChange}
+                          />
+                          {/* <span>
+                          要先輸入密碼正確，才能輸入新的密碼
+                          </span> */}
+                          <div className="form-text">
+                            要先輸入密碼正確，才能輸入新的密碼
+                          </div>
+
+                          <div className="d-flex justify-content-between align-itmes-center">
+                            <div>
+                              <input
+                                type="checkbox"
+                                id="showpassword"
+                                checked={showpassword}
+                                onChange={() => setShowpassword(!showpassword)}
+                                className="form-check-input"
+                              />{' '}
+                              顯示密碼
+                            </div>
+                            <button
+                              type="button"
+                              className="btn btn-primary text-white"
+                              onClick={pwdCheck}
+                            >
+                              送出檢查
+                            </button>
+                          </div>
+                        </div>
+                        {showNewPasswordInput && (
+                          <>
+                            <div className="mb-3">
+                              <input
+                                type="text"
+                                id="newPassword1"
+                                className="form-control"
+                                name="newPassword"
+                                value={editableUser.newPassword}
+                                onChange={handleInputChange}
+                                placeholder="請輸入新密碼"
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <input
+                                type="text"
+                                id="newPassword2"
+                                className="form-control mb-3"
+                                name="newPassword"
+                                value={editableUser.newPassword}
+                                onChange={handleInputChange}
+                                placeholder="請確認新密碼"
+                              />
+                              <button
+                                type="button"
+                                className="btn btn-secondary text-white"
+                                onClick={confirmPwdReset}
+                              >
+                                確認修改
+                              </button>
+                            </div>
+                          </>
+                        )}
+                      </Accordion.Body>
+                    </Accordion.Item>
+                  </Accordion>
                 </div>
               </div>
             </div>

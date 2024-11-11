@@ -1,14 +1,13 @@
 import React from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import CardExample from '@/components/bootstrap/cards'
-import Coupon from '@/components/coupon'
+import CouponUser from '@/components/coupon/coupon-user-components'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Link from 'next/link';
-import { FaPenFancy } from "react-icons/fa";
+import 'bootstrap/dist/css/bootstrap.min.css'
+import Link from 'next/link'
+import { FaPenFancy } from 'react-icons/fa'
 import { useRouter } from 'next/router'
-
 
 export default function CouponPage() {
   const router = useRouter()
@@ -17,7 +16,7 @@ export default function CouponPage() {
   return (
     <div className="container">
       <div className="row d-flex justify-content-center">
-      <div className="card col-2 border-0">
+        <div className="card col-2 border-0">
           <div className=" text-center ">
             <img
               src="https://via.placeholder.com/70x70"
@@ -36,16 +35,16 @@ export default function CouponPage() {
           </div>
           <div className="list-group list-group-flush">
             <Link
-              href="coupon-jquery"
-              className="list-group-item list-group-item-action text-center"
-            >
-              領取優惠卷
-            </Link>
-            <Link
               href={`/coupon/${id}`}
               className="list-group-item list-group-item-action text-center"
             >
               優惠卷
+            </Link>
+            <Link
+              href="coupon-jquery"
+              className="list-group-item list-group-item-action text-center"
+            >
+              領取優惠卷
             </Link>
           </div>
         </div>
@@ -107,17 +106,12 @@ export default function CouponPage() {
               {/* 優惠卷 */}
               <Tab.Pane eventKey="coupon-record">
                 <div className="container">
-                  <p>現有優惠卷</p>
-                  <div className="row g-4">
-                      <div className="col-md-6">
-                        <Coupon />
-                      </div>
+                  <CouponUser />
 
-                  </div>
                   {/* 分頁 */}
-                  <div className="pagination-section mt-4">
+                  {/* <div className="pagination-section mt-4">
                     <Paginationcomponent />
-                  </div>
+                  </div> */}
                 </div>
               </Tab.Pane>
 

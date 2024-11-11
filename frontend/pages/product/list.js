@@ -6,7 +6,84 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import Image from 'next/image'
 import BackToTop from '@/components/BackToTop/BackToTop'
+import { useRouter } from 'next/router'
+
 export default function List() {
+  // 利用網址列的參數來過濾產品
+  const router = useRouter()
+  const location = router
+  const [products, setProducts] = useState([])
+  const [totalPages, setTotalPages] = useState(1)
+
+  // 監聽網址變化並更新查詢內容
+  useEffect(() => {
+    const query = new URLSearchParams(location.search)
+    const page = query.get('page') || 1
+    const category = query.get('category') || ''
+    const categoryValue = query.get('category_value') || ''
+    const price = query.get('price') || ''
+    const search = query.get('search') || ''
+
+    fetchProducts({ page, category, categoryValue, price, search })
+  }, [location.search])
+
+  // 從後端撈取資料
+  const fetchProducts = async ({
+    page,
+    category,
+    categoryValue,
+    price,
+    search,
+  }) => {
+    let where = ''
+
+    if (page) {
+      where += `page=${page}`
+    }
+    if (category) {
+      where += `&category=${category}`
+    }
+    if (categoryValue) {
+      where += `&category_value=${categoryValue}`
+    }
+    if (price) {
+      where += `&price=${price}`
+    }
+    if (search) {
+      where += `&search=${search}`
+    }
+
+    const response = await fetch(
+      `http://localhost:3005/api/products/list?${where}`
+    )
+    const result = await response.json()
+    if (result.status === 'success') {
+      setProducts(result.data.products)
+      setTotalPages(result.data.totalPages)
+    }
+  }
+
+  // 當按下按鈕時更新網址列的參數
+  const handleButtonClick = (newParams) => {
+    // 保存當前頁面的滾動位置
+    const scrollPosition = window.scrollY
+
+    const searchParams = new URLSearchParams(location.search)
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        searchParams.set(key, value)
+      } else {
+        searchParams.delete(key)
+      }
+    })
+
+    // 使用 router.push 更新 URL
+    router.push(`?${searchParams.toString()}`)
+
+    // 更新 URL 後，將頁面滾動回之前的位置
+    window.scrollTo(0, scrollPosition)
+  }
+
   // 小尺寸時的側邊欄開關
   const [isChecked, setIsChecked] = useState(false)
   const handleToggle = (event) => {
@@ -196,28 +273,128 @@ export default function List() {
               <div className={`${styles.menu_content}`}>
                 <ul>
                   <li>
-                    <a href="">ACER</a>
+                    <a
+                      role="button"
+                      tabindex="0"
+                      onClick={(event) => {
+                        event.preventDefault() // 防止修改 URL 時捲動頁面
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'ACER',
+                        })
+                      }}
+                      onKeyDown={(event) => {
+                        if (event.key === 'Enter' || event.key === ' ') {
+                          event.preventDefault() // 防止空格鍵觸發頁面滾動
+                          handleButtonClick({
+                            page: 1,
+                            category: 'product_brand',
+                            category_value: 'ACER',
+                          })
+                        }
+                      }}
+                    >
+                      ACER
+                    </a>
                   </li>
                   <li>
-                    <a href="">ASUS</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'ASUS',
+                        })
+                      }
+                      href=""
+                    >
+                      ASUS
+                    </a>
                   </li>
                   <li>
-                    <a href="">DELL</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'DELL',
+                        })
+                      }
+                      href=""
+                    >
+                      DELL
+                    </a>
                   </li>
                   <li>
-                    <a href="">GIGABYTE</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'GIGABYTE',
+                        })
+                      }
+                      href=""
+                    >
+                      GIGABYTE
+                    </a>
                   </li>
                   <li>
-                    <a href="">HP</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'HP',
+                        })
+                      }
+                      href=""
+                    >
+                      HP
+                    </a>
                   </li>
                   <li>
-                    <a href="">MSI</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'MSI',
+                        })
+                      }
+                      href=""
+                    >
+                      MSI
+                    </a>
                   </li>
                   <li>
-                    <a href="">RAZER</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'RAZER',
+                        })
+                      }
+                      href=""
+                    >
+                      RAZER
+                    </a>
                   </li>
                   <li>
-                    <a href="">ROG</a>
+                    <a
+                      onClick={() =>
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_brand',
+                          category_value: 'ROG',
+                        })
+                      }
+                      href=""
+                    >
+                      ROG
+                    </a>
                   </li>
                 </ul>
               </div>
@@ -452,11 +629,11 @@ export default function List() {
           <main className={`${styles.product_list}`}>
             {
               // 產品卡片
-              [...Array(12)].map((v, i) => (
+              products.map((product) => (
                 <ProductCard
+                  key={product.product_id}
+                  product_id={product.product_id}
                   onSendMessage={handleShowMessage}
-                  key={i}
-                  product_id={274}
                 />
               ))
             }
@@ -475,31 +652,23 @@ export default function List() {
               </a>
             </li>
             {/* 頁碼 */}
-            <li className={`${styles.product_page_item}`}>
-              <a className={`${styles.product_page_link}`} href="">
-                1
-              </a>
-            </li>
-            <li className={`${styles.product_page_item}`}>
-              <a className={`${styles.product_page_link}`} href="">
-                2
-              </a>
-            </li>
-            <li className={`${styles.product_page_item}`}>
-              <a className={`${styles.product_page_link}`} href="">
-                ...
-              </a>
-            </li>
-            <li className={`${styles.product_page_item}`}>
-              <a className={`${styles.product_page_link}`} href="">
-                29
-              </a>
-            </li>
-            <li className={`${styles.product_page_item}`}>
-              <a className={`${styles.product_page_link}`} href="">
-                30
-              </a>
-            </li>
+            {/* 限制在前後三個數字，其他的用...取代 */}
+            {Array.from({ length: totalPages }).map((_, index) => (
+              <li
+                key={index}
+                className={`${styles.product_page_item}`}
+                onClick={() => handleButtonClick({ page: index + 1 })}
+              >
+                <a
+                  className={`${styles.product_page_link}`}
+                  href="#"
+                  aria-label={`Page ${index + 1}`}
+                >
+                  {index + 1}
+                </a>
+              </li>
+            ))}
+
             {/* 右箭頭 */}
             <li className={`${styles.product_page_item}`}>
               <a
