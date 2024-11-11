@@ -59,7 +59,7 @@ export default function Header(props) {
               </Link>
               <Link href="/">
                 <button
-                  className="btn btn-primary header-logout"
+                  className="btn btn-primary text-white"
                   onClick={handleLogout}
                 >
                   登出
