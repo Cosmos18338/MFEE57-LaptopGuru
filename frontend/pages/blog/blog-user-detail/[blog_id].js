@@ -7,7 +7,6 @@ export default function BlogId() {
   const router = useRouter()
   const { blog_id } = router.query // 動態獲取 blog_id
   const [blogData, setBlogData] = useState(null)
-  console.log(blogData)
 
   useEffect(() => {
     if (blog_id) {

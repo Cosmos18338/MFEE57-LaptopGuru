@@ -82,7 +82,7 @@ export default function Blogedit() {
       )
 
       if (response.ok) {
-        router.push(`/blog/blog-detail/${blog_id}`)
+        router.push(`/blog/blog-user-detail/${blog_id}`)
       }
     } catch (error) {
       console.error('錯誤:', error)
@@ -232,7 +232,7 @@ export default function Blogedit() {
               <div
                 key={v}
                 className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
-                  v === formData.blog_type ? 'BlogEditTypeSelectedActive' : ''
+                  v === formData.blog_type ? 'BlogEditBrandSelectedActive' : ''
                 }`}
                 onClick={() => handleChange('blog_type', v)}
               >
