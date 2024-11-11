@@ -66,6 +66,7 @@ export default function FrontPage(props) {
             </button> */}
           </div>
         </div>
+        
         <div className="home-section2">
           <div className="home-icon home-marquee-content3">
             <a
