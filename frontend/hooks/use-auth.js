@@ -2,6 +2,7 @@ import React, { useState, useContext, createContext, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axiosInstance from '@/services/axios-instance'
 import { checkAuth, getFavs } from '@/services/user'
+import Swal from 'sweetalert2'
 
 const AuthContext = createContext(null)
 
@@ -45,6 +46,7 @@ export const initUserData = {
   detailed_address: '',
   image_path: '',
   remarks: '',
+  level:0,
 }
 // 可以視為webtoken要押的資料
 // 承接登入以後用的
@@ -110,6 +112,7 @@ export const AuthProvider = ({ children }) => {
           detailed_address: result.data.detailed_address,
           birthdate: result.data.birthdate,
           remarks: result.data.remarks,
+          level:result.data.level,
         })
       }
       console.log(response.json())
@@ -130,7 +133,6 @@ export const AuthProvider = ({ children }) => {
       if (!response.ok) {
         throw new Error('登出失敗');
       }
-  
       const result = await response.json();
       
       if (result.status === 'success') {
@@ -148,7 +150,8 @@ export const AuthProvider = ({ children }) => {
           road_name: '',
           detailed_address: '',
           birthdate: '',
-          
+          level:''
+          // 共13 col
         })
         router.push('/');  // 導向首頁
       }

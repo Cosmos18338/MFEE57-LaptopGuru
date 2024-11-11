@@ -7,6 +7,9 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from './membership-levels'
 import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
+import CouponQuery from '@/components/coupon/coupon-query-components'
+import CouponList from '../coupon/test'
+
 
 export default function Dashboard() {
   const { auth, setAuth } = useAuth()
@@ -107,6 +110,7 @@ export default function Dashboard() {
                 <div>
                   <h4>優惠券</h4>
                   <p>這裡是優惠券的內容。</p>
+
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">
