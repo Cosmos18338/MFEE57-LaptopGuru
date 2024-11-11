@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styles from '@/styles/product-card.module.scss'
 import Image from 'next/image'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function ProductCard({ onSendMessage, product_id }) {
   // 產品卡片的 key 值，用於比較功能的 checkbox
@@ -8,12 +9,27 @@ export default function ProductCard({ onSendMessage, product_id }) {
   // 從後端撈取資料
   const [data, setData] = useState(null)
 
-  useEffect(() => {
-    async function init() {
-      //偵測使用者是否登入
-      const token = localStorage.getItem('jwt')
+  const { auth } = useAuth() // 獲取 auth 對象
+  const { isAuth } = auth // 獲取 isAuth
+  const { userData } = auth // 獲取 userdata
+
+  const [isChecked, setIsChecked] = useState(false) // 用來控制 checkbox 狀態
+
+  // 初始化
+  const init = async () => {
+    const response = await fetch(
+      `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`
+    )
+    const result = await response.json()
+    if (result.status === 'success') {
+      setIsChecked(true)
     }
-    async function fetchProduct(product_id) {
+  }
+  // 初始化
+  init()
+
+  useEffect(() => {
+    async function fetchProduct() {
       if (product_id) {
         try {
           const response = await fetch(
@@ -26,7 +42,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
         }
       }
     }
-    fetchProduct(product_id)
+    fetchProduct()
   }, [product_id]) // 加入依賴陣列，確保在 product_id 改變時重新執行
 
   //比較按鈕的狀態
@@ -42,24 +58,90 @@ export default function ProductCard({ onSendMessage, product_id }) {
     }
   }
 
-  // 收藏按鈕的狀態
-  const [isChecked, setIsChecked] = useState(false) // 用來控制 checkbox 狀態
+  //收藏按鈕的狀態
+  const toggleHeart = async () => {
+    if (isAuth) {
+      // 點擊按鈕時傳送訊息到父元件
+      if (isChecked) {
+        //刪除favorite_management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
 
-  const toggleHeart = () => {
-    // 點擊按鈕時傳送訊息到父元件
-    if (isChecked) {
-      onSendMessage('取消收藏！')
-      setIsChecked(false)
+          if (response.ok) {
+            // 收藏成功
+            onSendMessage('取消收藏！')
+            setIsChecked(false)
+          } else {
+            onSendMessage('取消收藏失敗！')
+          }
+        } catch (error) {
+          onSendMessage('取消收藏失敗！')
+        }
+      } else {
+        //寫入favorite management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${product_id}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          if (response.ok) {
+            // 收藏成功
+            onSendMessage('收藏成功！')
+            setIsChecked(true)
+          } else {
+            onSendMessage('收藏失敗！')
+          }
+        } catch (error) {
+          onSendMessage('收藏失敗！')
+        }
+      }
     } else {
-      onSendMessage('收藏成功！')
-      setIsChecked(true)
+      window.location.href = 'http://localhost:3000/member/login'
     }
   }
 
   // 加入購物車
-  const addToCart = () => {
-    // 點擊按鈕時傳送訊息到父元件
-    onSendMessage('加入購物車成功！')
+  const addToCart = async () => {
+    if (isAuth) {
+      // 加入購物車資料庫
+      try {
+        const response = await fetch(`http://localhost:3005/api/cart/add`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            user_id: userData.user_id,
+            product_id: product_id,
+            quantity: 1,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const result = await response.json()
+        if (result.status == 'success') {
+          onSendMessage('加入購物車成功！')
+        } else {
+          onSendMessage('加入購物車失敗，請再試一次！')
+        }
+      } catch (error) {
+        onSendMessage('加入購物車失敗，請洽管理員！')
+      }
+    } else {
+      window.location.href = 'http://localhost:3000/member/login'
+    }
   }
 
   return (
@@ -87,9 +169,13 @@ export default function ProductCard({ onSendMessage, product_id }) {
         />
       </div>
       <div className={styles.product_card_content}>
-        <div className={styles.product_text}>
-          <div>{data ? data.product_name : 'Loading...'}</div>
-          <div>{data ? data.model : ''}</div>
+        <div className={`${styles.product_text} `}>
+          <div className={styles.product_ellipsis}>
+            {data ? data.product_name : 'Loading...'}
+          </div>
+          <div className={styles.product_ellipsis}>
+            {data ? data.model : ''}
+          </div>
         </div>
         <div className={styles.product_icons}>
           <input
@@ -130,9 +216,23 @@ export default function ProductCard({ onSendMessage, product_id }) {
         <span className={styles.price}>
           {data ? `$${data.list_price}` : '$0'}
         </span>
-        <span className={styles.arrow}>→</span>
+        <span
+          onClick={() =>
+            (window.location.href = `http://localhost:3000/product/${product_id}`)
+          }
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              window.location.href = `http://localhost:3000/product/${product_id}`
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          className={styles.arrow}
+          style={{ cursor: 'pointer' }}
+        >
+          →
+        </span>
       </div>
-      {/* 顯示 alert */}
     </div>
   )
 }

@@ -112,23 +112,30 @@ router.post('/order', upload.none(), async (req, res, next) => {
   const { user_id, amount, coupon_id, detail, address } = req.body
   const order_id = uuidv4()
   try {
-    // if (detail.length === 0) {
-    //   return res.json({ status: 'error', message: '訂單內容不能為空' })
-    // }
+    if (detail.length === 0) {
+      return res.json({ status: 'error', message: '訂單內容不能為空' })
+    }
     const [data] = await db.query(
       'INSERT INTO order_list (user_id, order_id, order_amount, coupon_id, address) VALUES (?, ?, ?, ?, ?)',
       [user_id, order_id, amount, coupon_id, address]
     )
-    // detail.map(async (item) => {
-    //   await db.query(
-    //     'INSERT INTO order_detail (user_id, order_id, product_id, product_price, quantity) VALUES (?, ?, ?, ?, ?)',
-    //     [user_id, order_id, item.product_id, item.list_price, item.quantity]
-    //   )
-    // })
-    // await db.query('DELETE FROM cart WHERE user_id = ?', [user_id])
+
+    // res.json({ detailArray })
+    detail.map(async (item) => {
+      await db.query(
+        'INSERT INTO order_detail (user_id, order_id, product_id, quantity, product_price) VALUES (?, ?, ?, ?, ?)',
+        [user_id, order_id, item.product_id, item.quantity, item.list_price]
+      )
+      await db.query('DELETE FROM cart WHERE user_id = ? AND product_id = ?', [
+        user_id,
+        item.product_id,
+      ])
+    })
     res.json({
       status: 'success',
       message: `訂單成立成功，訂單編號為${order_id}`,
+      order_id: order_id,
+      address: address,
     })
   } catch (error) {
     res.json({ status: 'error', message: error })

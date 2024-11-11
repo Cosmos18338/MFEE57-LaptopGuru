@@ -131,4 +131,14 @@ app.use(function (err, req, res, next) {
   res.status(500).send({ error: err })
 })
 
+// 儲存group預設圖片
+// 設定靜態檔案提供
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
+
+// 確保上傳目錄存在
+const uploadDir = path.join(__dirname, 'public', 'uploads', 'groups')
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
+
 export default app
