@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Coupon from '@/components/coupon'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { useAuth } from '@/hooks/use-auth'
 
 const MySwal = withReactContent(Swal)
 
