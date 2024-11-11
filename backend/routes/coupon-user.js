@@ -206,7 +206,7 @@ router.put('/update', async (req, res) => {
       SET valid = ?
       WHERE user_id = ? AND coupon_id = ?
       `,
-      [valid, user_id, coupon_id]
+      [0, user_id, coupon_id]
     )
     console.log('更新結果:', result) // 記錄更新結果
 
