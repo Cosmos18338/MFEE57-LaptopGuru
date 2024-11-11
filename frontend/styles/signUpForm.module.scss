@@ -1,5 +1,6 @@
 .gradient-bg {
   position: relative;
+  z-index: 1;
   background-image: url(../assets/signup_login/andras-vas-Bd7gNnWJBkU-unsplash.jpg);
   background: linear-gradient(135deg, #3c007a, #000);
   background-repeat: no-repeat;
@@ -35,10 +36,7 @@
     background: linear-gradient(135deg, #8d70f1, #3c007a);
   }
 }
-.white {
-  color: white;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-}
+
 .left {
   // position: relative;
   z-index: 20;  /* 確保在其他元素上方 */
@@ -77,7 +75,7 @@
   letter-spacing: 3.20px; 
   word-wrap: break-word; 
   border-radius: 10px;
-padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px; background: rgba(30, 25, 55, 0.30); border-radius: 10px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex
+  padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px; background: rgba(30, 25, 55, 0.30); border-radius: 10px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex
 }
 .inputs::placeholder {
   font-size: 10px; /* 設置文字大小 */
@@ -168,11 +166,9 @@ padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px
   margin-right:40px;
 }
 
-// .row{
-//   height: calc(100vh - 396px);
-// }
 
 .content-row {
-  height: calc(100vh - 385px);
-
+  // height: calc(100vh - 385px);
+  position: relative;
+  z-index: 2;
 }
