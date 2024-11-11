@@ -21,10 +21,12 @@ export default function Header(props) {
               商品
             </Link>
             <a className="text-light me-3">比較</a>
-            <a className="text-light me-3">租賃</a>
-            <a className="text-light me-3">活動</a>
-            <a className="text-light me-3">文章</a>
-            <a className="text-light me-3">部落格</a>
+            <Link className="text-light me-3" href="/event">
+              活動
+            </Link>
+            <Link className="text-light me-3" href="/blog">
+              部落格
+            </Link>
           </div>
           {isAuth == true ? (
             <>
