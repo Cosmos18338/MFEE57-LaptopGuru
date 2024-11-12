@@ -11,6 +11,7 @@ export default function CouponList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [mounted, setMounted] = useState(false);
 
   // 獲取優惠券資料
   const getCouponData = async () => {
@@ -93,8 +94,9 @@ export default function CouponList() {
   }
 
   useEffect(() => {
-    getCouponData()
-  }, [])
+    setMounted(true);
+    getCouponData();
+  }, []);
 
   // 處理搜尋表單提交
   const handleSubmit = (e) => {

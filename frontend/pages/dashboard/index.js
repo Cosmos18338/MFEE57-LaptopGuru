@@ -1,63 +1,75 @@
-import React, { useState } from 'react';
-import { Nav, Tab } from 'react-bootstrap';
-import { FaPenFancy } from 'react-icons/fa';
-import { useAuth } from '@/hooks/use-auth';
-import CardExample from '@/components/bootstrap/cards';
-import UserProfile from '@/components/dashboard/userInfoEdit';
-import MembershipLevels from './membership-levels';
-import CouponList from '../coupon/test';
+import React, { useState } from 'react'
+import { Nav, Tab } from 'react-bootstrap'
+import { FaPenFancy } from 'react-icons/fa'
+import { useAuth } from '@/hooks/use-auth'
+import CardExample from '@/components/bootstrap/cards'
+import UserProfile from '@/components/dashboard/userInfoEdit'
+import MembershipLevels from './membership-levels'
+import CouponList from '@/components/coupon/coupon-list-components'
+import CouponUser from '@/components/coupon/coupon-user-components'
 
 export default function Test1() {
-  const { auth, setAuth } = useAuth();
-  const [activeKey, setActiveKey] = useState('home');
+  const { auth, setAuth } = useAuth()
+  const [activeKey, setActiveKey] = useState('home')
+  const [couponActiveKey, setCouponActiveKey] = useState('available')
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
-    'home': [
+    home: [
       { key: 'favorites', label: '收藏清單' },
-      { key: 'membership', label: '會員等級' }
+      { key: 'membership', label: '會員等級' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
       { key: 'processing', label: '處理中' },
-      { key: 'completed', label: '已完成' }
+      { key: 'completed', label: '已完成' },
     ],
     'coupon-record': [
-      { key: 'available', label: '可使用' },
-      { key: 'used', label: '已使用' },
-      { key: 'expired', label: '已過期' }
+      { key: 'available', label: '優惠卷' },
+      { key: 'used', label: '領取優惠卷' },
     ],
     'blog-record': [
       { key: 'my-posts', label: '我的文章' },
-      { key: 'drafts', label: '草稿' }
+      { key: 'drafts', label: '草稿' },
     ],
     'activity-record': [
       { key: 'upcoming', label: '即將參加' },
-      { key: 'past', label: '歷史活動' }
+      { key: 'past', label: '歷史活動' },
     ],
     'group-record': [
       { key: 'my-groups', label: '我的揪團' },
-      { key: 'joined', label: '已參加' }
-    ]
-  };
+      { key: 'joined', label: '已參加' },
+    ],
+  }
 
   const getCurrentSideNav = () => {
-    return sideNavConfigs[activeKey] || [];
-  };
+    return sideNavConfigs[activeKey] || []
+  }
+
+  const handleSideNavClick = (key) => {
+    if (activeKey === 'coupon-record') {
+      setCouponActiveKey(key)
+    }
+  }
 
   return (
     <div className="container">
       <div className="row">
-        <Tab.Container 
-          id="dashboard-tabs" 
+        <Tab.Container
+          id="dashboard-tabs"
           activeKey={activeKey}
-          onSelect={(k) => setActiveKey(k)}
+          onSelect={(k) => {
+            setActiveKey(k)
+          }}
         >
           {/* Left Sidebar */}
           <div className="col-md-3">
             <div className="text-center">
               <img
-                src={auth?.userData?.image_path || 'https://via.placeholder.com/70x70'}
+                src={
+                  auth?.userData?.image_path ||
+                  'https://via.placeholder.com/70x70'
+                }
                 alt="Profile"
                 className="rounded-circle img-fluid mb-3"
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
@@ -76,7 +88,24 @@ export default function Test1() {
             <Nav className="flex-column">
               {getCurrentSideNav().map((item) => (
                 <Nav.Item key={item.key}>
-                  <Nav.Link eventKey={item.key} className="text-center">
+                  <Nav.Link
+                    onClick={() => handleSideNavClick(item.key)}
+                    className={`text-center ${
+                      activeKey === 'coupon-record' &&
+                      couponActiveKey === item.key
+                        ? 'active'
+                        : ''
+                    }`}
+                    // style={{
+                    //   cursor: 'pointer',
+                    //   color: '#805AF5',
+                    //   backgroundColor:
+                    //     activeKey === 'coupon-record' &&
+                    //     couponActiveKey === item.key
+                    //       ? '#f0ebff'
+                    //       : 'transparent',
+                    // }}
+                  >
                     {item.label}
                   </Nav.Link>
                 </Nav.Item>
@@ -127,10 +156,11 @@ export default function Test1() {
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
-                <div>
-                  <h4>優惠券</h4>
+                {couponActiveKey === 'available' ? (
+                  <CouponUser />
+                ) : (
                   <CouponList />
-                </div>
+                )}{' '}
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">
                 <div>
@@ -166,5 +196,5 @@ export default function Test1() {
         </Tab.Container>
       </div>
     </div>
-  );
+  )
 }
