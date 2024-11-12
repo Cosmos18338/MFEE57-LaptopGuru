@@ -1,30 +1,63 @@
-import React from 'react'
-import { Nav, Tab } from 'react-bootstrap'
-import { FaPenFancy } from 'react-icons/fa'
-import { useAuth } from '@/hooks/use-auth'
-import CardExample from '@/components/bootstrap/cards'
-import UserProfile from '@/components/dashboard/userInfoEdit'
-import MembershipLevels from './membership-levels'
-import CouponQuery from '@/components/coupon/coupon-query-components'
-import CouponList from '../coupon/test'
+import React, { useState } from 'react';
+import { Nav, Tab } from 'react-bootstrap';
+import { FaPenFancy } from 'react-icons/fa';
+import { useAuth } from '@/hooks/use-auth';
+import CardExample from '@/components/bootstrap/cards';
+import UserProfile from '@/components/dashboard/userInfoEdit';
+import MembershipLevels from './membership-levels';
+import CouponList from '../coupon/test';
 
+export default function Test1() {
+  const { auth, setAuth } = useAuth();
+  const [activeKey, setActiveKey] = useState('home');
 
-export default function Dashboard() {
-  const { auth, setAuth } = useAuth()
+  // 定義不同頁籤對應的左側導航配置
+  const sideNavConfigs = {
+    'home': [
+      { key: 'favorites', label: '收藏清單' },
+      { key: 'membership', label: '會員等級' }
+    ],
+    'shopping-record': [
+      { key: 'all-orders', label: '全部訂單' },
+      { key: 'processing', label: '處理中' },
+      { key: 'completed', label: '已完成' }
+    ],
+    'coupon-record': [
+      { key: 'available', label: '可使用' },
+      { key: 'used', label: '已使用' },
+      { key: 'expired', label: '已過期' }
+    ],
+    'blog-record': [
+      { key: 'my-posts', label: '我的文章' },
+      { key: 'drafts', label: '草稿' }
+    ],
+    'activity-record': [
+      { key: 'upcoming', label: '即將參加' },
+      { key: 'past', label: '歷史活動' }
+    ],
+    'group-record': [
+      { key: 'my-groups', label: '我的揪團' },
+      { key: 'joined', label: '已參加' }
+    ]
+  };
+
+  const getCurrentSideNav = () => {
+    return sideNavConfigs[activeKey] || [];
+  };
 
   return (
     <div className="container">
       <div className="row">
-        <Tab.Container id="dashboard-tabs" defaultActiveKey="home">
+        <Tab.Container 
+          id="dashboard-tabs" 
+          activeKey={activeKey}
+          onSelect={(k) => setActiveKey(k)}
+        >
           {/* Left Sidebar */}
           <div className="col-md-3">
-            <div className="text-center mb-4">
-         
+            <div className="text-center">
               <img
-                src={
-                  auth?.userData?.image_path ||
-                  'https://via.placeholder.com/70x70'
-                }
+                src={auth?.userData?.image_path || 'https://via.placeholder.com/70x70'}
                 alt="Profile"
                 className="rounded-circle img-fluid mb-3"
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
@@ -39,24 +72,21 @@ export default function Dashboard() {
               </button>
             </div>
 
-            {/* 左側導航 - 與上方導航連動 */}
+            {/* 左側導航 - 動態根據上方選擇改變 */}
             <Nav className="flex-column">
-              <Nav.Item>
-                <Nav.Link eventKey="favorites" className="text-center">
-                  收藏清單
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="membership" className="text-center">
-                  會員等級
-                </Nav.Link>
-              </Nav.Item>
+              {getCurrentSideNav().map((item) => (
+                <Nav.Item key={item.key}>
+                  <Nav.Link eventKey={item.key} className="text-center">
+                    {item.label}
+                  </Nav.Link>
+                </Nav.Item>
+              ))}
             </Nav>
           </div>
 
           {/* Main Content Area */}
           <div className="col-md-9">
-            {/* 上方導航 - 與左側導航連動 */}
+            {/* 上方導航 */}
             <Nav
               variant="tabs"
               className="mb-3"
@@ -68,9 +98,6 @@ export default function Dashboard() {
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="shopping-record">購買清單</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="lease-record">租賃清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
@@ -86,7 +113,7 @@ export default function Dashboard() {
               </Nav.Item>
             </Nav>
 
-            {/* 共用的內容區域 */}
+            {/* 內容區域 */}
             <Tab.Content>
               <Tab.Pane eventKey="home">
                 <div className="row justify-content-end">
@@ -99,17 +126,10 @@ export default function Dashboard() {
                   <CardExample />
                 </div>
               </Tab.Pane>
-              <Tab.Pane eventKey="lease-record">
-                <div>
-                  <h4>租賃清單</h4>
-                  <p>這裡是租賃清單的內容。</p>
-                </div>
-              </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
                 <div>
                   <h4>優惠券</h4>
-                  <p>這裡是優惠券的內容。</p>
-
+                  <CouponList />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">
@@ -146,5 +166,5 @@ export default function Dashboard() {
         </Tab.Container>
       </div>
     </div>
-  )
+  );
 }

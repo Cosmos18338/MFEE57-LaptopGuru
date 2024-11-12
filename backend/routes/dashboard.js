@@ -24,7 +24,7 @@ router.get('/all', async function (req, res) {
 // 在 /api/dashboard/:user_id 的路由中,我們使用了 req.params 來獲取 URL 中的動態參數 user_id。然後,我們使用這個 user_id 來查詢資料庫,找到對應的使用者資訊。
 router.get('/:user_id', async function (req, res) {
   try {
-    const { user_id } = req.params//這邊params取的是自己寫的後端路由並非前端對吧
+    const { user_id } = req.params //這邊params取的是自己寫的後端路由並非前端對吧
     const [users] = await db.query('SELECT * FROM users WHERE user_id = ?', [user_id])
     
     if (users.length === 0) {
@@ -39,16 +39,16 @@ router.get('/:user_id', async function (req, res) {
 })
 // patch這邊用於部分更新資源，只傳送需要更新的欄位，較為節省頻寬。用put會覆蓋整個資源，如果缺少某些欄位可能會被設為null,與我原本的語意不同所以使用patch。但經老師的解釋後是說Restful API 中規則 patch必須確定使用者更新的是哪一些欄位，否則會報錯，這樣操作比較麻煩，所以要用put
 
-// 更新使用者資料
+// 更新使用者資料，停用跟更新都是用同一個路由，更新照片應該也是同一個路由
 router.put('/:user_id', async (req, res) => {
   try {
     const { user_id } = req.params
     const { name, gender, birthdate, phone, email, country, city, district, road_name, detailed_address, image_path, remarks ,valid} = req.body
     
       var [result] = await db.query(
-        'UPDATE users SET name=?, birthdate=?, phone=?, email=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
+        'UPDATE users SET name=?, birthdate=?, phone=?, gender=?, country=?, city=?, district=?, road_name=?, detailed_address=?, image_path=?, remarks=?, valid=? WHERE user_id=?',
         [
-          name, birthdate, phone, email, gender,
+          name, birthdate, phone, gender,
           country, city, district, road_name, detailed_address, image_path, remarks, valid,
           user_id  // 加入 WHERE 條件的參數
         ]
