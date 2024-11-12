@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/router' // 加入這行
 
 export default function Blogcreated(props) {
+  const router = useRouter() // 加入 router
   // 建立一個可重用的時間函數
   function getTimestamp() {
     const now = new Date()
@@ -45,18 +47,22 @@ export default function Blogcreated(props) {
 
     try {
       const response = await fetch(
-        'http://localhost:3005/api/blog/blogcreated',
+        'http://localhost:3005/api/blog/blog-created',
         {
           method: 'POST',
           body: formData,
         }
       )
+      console.log('成功連結')
 
       const result = await response.json()
 
       if (response.ok) {
         alert('部落格新增成功')
-        // window.location.href = 'http://localhost:3000/blog/BlogList'
+        if (result.blog_id) {
+          // 導航到新建立的文章頁面
+          router.push(`/blog/blog-user-detail/${result.blog_id}`)
+        }
       } else {
         alert(`發生錯誤: ${result.message}`)
       }
@@ -64,29 +70,6 @@ export default function Blogcreated(props) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
     }
-  }
-
-  const handleBrandClick = (brand) => {
-    // 先移除所有元素的 'focus' 類
-    const brandElements = document.querySelectorAll('.BlogEditBrandSelected')
-    brandElements.forEach((el) => el.classList.remove('focus'))
-
-    // 給點擊的元素添加 'focus' 類
-    const clickedElement = document.querySelector(
-      `.BlogEditBrandSelected:contains(${brand})`
-    )
-    clickedElement.classList.add('focus')
-
-    const formData = new FormData()
-    formData.append('blog_type', blog_type)
-    formData.append('blog_title', blog_title)
-    formData.append('blog_content', blog_content)
-    formData.append('blog_brand', blog_brand)
-    formData.append('blog_brand_model', blog_brand_model)
-    formData.append('blog_keyword', blog_keyword)
-    formData.append('blog_valid_value', '1')
-    formData.append('blog_created_date', getTimestamp())
-    formData.append('blog_image', blog_image)
   }
 
   return (
@@ -238,7 +221,9 @@ export default function Blogcreated(props) {
             {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((v) => (
               <div
                 key={v}
-                className="BlogEditTypeSelected d-flex justify-content-center align-items-center"
+                className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                  v === blog_type ? 'BlogEditBrandSelectedActive' : ''
+                }`}
                 onClick={() => setType(v)}
               >
                 <p>{v}</p>
