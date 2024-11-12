@@ -9,6 +9,9 @@ import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
 
 export default function Signup() {
+  // 處理失焦
+
+  
   const validatePassword = (password) => {
     const rules = {
       minLength: password.length >= 8,
@@ -224,6 +227,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.email}
                       onChange={handleFieldChange}
+                      
                     />
                     {errors.email && (
                       <div className="error">{errors.email}</div>
@@ -283,6 +287,7 @@ export default function Signup() {
                         onChange={() =>
                           setShowConfirmpassword(!showConfirmpassword)
                         }
+                        
                         className="form-check-input"
                       />
                       <label
@@ -308,6 +313,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.phone}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -322,6 +328,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.birthdate}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -335,6 +342,7 @@ export default function Signup() {
                       className={`form-select ${styles.inputs}`}
                       value={user.gender}
                       onChange={handleFieldChange}
+                      
                     >
                       <option value="">請選擇</option>
                       <option value="女">女</option>
@@ -352,6 +360,8 @@ export default function Signup() {
                         checked={user.agree}
                         onChange={handleFieldChange}
                         className="form-check-input"
+                        
+
                       />
                       <label
                         htmlFor="agree"

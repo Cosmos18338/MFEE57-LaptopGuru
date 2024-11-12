@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import styles from './GroupManagement.module.css'
+import EditGroupModal from './EditGroupModal'
 
-const GroupList = () => {
+const GroupManagement = () => {
   const [groups, setGroups] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [selectedGroup, setSelectedGroup] = useState(null)
 
   useEffect(() => {
     fetchUserGroups()
@@ -95,6 +98,53 @@ const GroupList = () => {
     }
   }
 
+  // 處理編輯群組
+  const handleEdit = (group) => {
+    setSelectedGroup(group)
+    setIsEditModalOpen(true)
+  }
+
+  const handleEditSave = async (updatedData) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3005/api/group/${selectedGroup.group_id}`,
+        {
+          method: 'PUT',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            group_name: updatedData.title,
+            description: updatedData.description,
+            max_members: updatedData.maxMembers,
+            group_time: updatedData.group_time,
+          }),
+        }
+      )
+
+      const result = await response.json()
+
+      if (result.status === 'success') {
+        // 更新本地群組列表
+        setGroups((prevGroups) =>
+          prevGroups.map((group) =>
+            group.group_id === selectedGroup.group_id
+              ? { ...group, ...result.data.group }
+              : group
+          )
+        )
+        alert('更新成功！')
+        setIsEditModalOpen(false)
+      } else {
+        throw new Error(result.message || '更新失敗')
+      }
+    } catch (error) {
+      console.error('更新揪團失敗:', error)
+      alert(error.message)
+    }
+  }
+
   // 處理圖片路徑
   const getImageUrl = (imagePath) => {
     if (!imagePath) {
@@ -108,7 +158,7 @@ const GroupList = () => {
   if (groups.length === 0) return <div>目前沒有參加或創建的群組</div>
 
   return (
-    <div className={`container py-2`}>
+    <div className={`py-2`}>
       <div className={styles.groupList}>
         <div className={styles.listHeader}>
           <div className={styles.listTitle}>
@@ -124,9 +174,9 @@ const GroupList = () => {
             <div className="col-2"></div>
             <div className="col-3">揪團名稱</div>
             <div className="col-2">時間</div>
-            <div className="col-2">人數</div>
+            <div className="col-1">人數</div>
             <div className="col-2">身份</div>
-            <div className="col-1">編輯</div>
+            <div className="col-2">編輯</div>
           </div>
         </div>
 
@@ -148,21 +198,19 @@ const GroupList = () => {
               <div className="col-2">
                 {new Date(group.creat_time).toLocaleString()}
               </div>
-              <div className="col-2">
+              <div className="col-1">
                 {group.member_count}/{group.max_members}
               </div>
               <div className="col-2">
                 {group.role === 'creator' ? '創建者' : '參加者'}
               </div>
-              <div className="col-1">
+              <div className="col-2">
                 <div className="d-flex gap-2">
                   {group.role === 'creator' && (
                     <>
                       <button
                         className={styles.actionBtn}
-                        onClick={() =>
-                          (window.location.href = `/group/edit/${group.group_id}`)
-                        }
+                        onClick={() => handleEdit(group)}
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
@@ -212,9 +260,7 @@ const GroupList = () => {
                     <div className={styles.mobileActions}>
                       <button
                         className={styles.actionBtn}
-                        onClick={() =>
-                          (window.location.href = `/group/edit/${group.group_id}`)
-                        }
+                        onClick={() => handleEdit(group)}
                       >
                         <i className="bi bi-pencil-square"></i>
                       </button>
@@ -232,8 +278,21 @@ const GroupList = () => {
           </div>
         ))}
       </div>
+
+      {isEditModalOpen && (
+        <EditGroupModal
+          groupData={{
+            title: selectedGroup.group_name,
+            description: selectedGroup.description,
+            maxMembers: selectedGroup.max_members,
+            group_time: selectedGroup.group_time,
+          }}
+          onClose={() => setIsEditModalOpen(false)}
+          onSave={handleEditSave}
+        />
+      )}
     </div>
   )
 }
 
-export default GroupList
+export default GroupManagement
