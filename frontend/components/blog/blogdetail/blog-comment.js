@@ -87,7 +87,7 @@ export default function BlogComment({ blog_id }) {
           <div className="m-4">
             <p>#{index + 1}</p>
             <hr />
-            <div className="w-50 h-50 d-flex flex-row align-items-start justify-content-between">
+            <div className="w-100 h-50 d-flex flex-row align-items-start justify-content-between">
               <div className="overflow-hidden BlogDetailCommentImg">
                 <img
                   className="w-100 h-100 object-fit-cover"

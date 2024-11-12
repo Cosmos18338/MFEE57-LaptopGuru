@@ -3,6 +3,9 @@ import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 import Link from 'next/link'
 import BlogComment from '@/components/blog/blogdetail/blog-comment'
+import BloghomepageCardgroup from '@/components/blog/bloghomepage/bloghomepage-cardgroup'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 
 export default function BlogId() {
   const router = useRouter()
@@ -56,17 +59,43 @@ export default function BlogId() {
             alt
           />
         </div>
-        <p className="display-5 BlogDetailSectionContentAreaTitle">
-          部落格標題
-        </p>
-        <p className="display-5 fw-bold BlogDetailSectionContentAreaTitle">
-          {blogData.blog_title}
-        </p>
-        <p className="display-5 BlogDetailText">部落格內文</p>
-        <p className="BlogDetailText">{blogData.blog_content}</p>
-        {/* <p className="BlogDetailText">要不要刪除阿</p> */}
+        <div className="d-flex flex-column">
+          <div>
+            <p className="mb-5 mt-5 display-5 fw-bold  BlogDetailSectionContentAreaTitle">
+              部落格標題
+            </p>
+            <p className="fs-5 BlogDetailSectionContentAreaTitle">
+              {blogData.blog_title}
+            </p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5">
+            <p className="display-5 fw-bold "> 部落格分類</p>
+            <p className="fs-5">開箱文</p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold ">
+            <p className="display-5 fw-bold ">品牌</p>
+            <p>123</p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5">
+            <p className="display-5 fw-bold">購買機型</p>
+            <p>123</p>
+          </div>
+        </div>
+
+        <div className="mb-5 mt-5 d-flex flex-column gap-5">
+          <p className="display-5 BlogDetailText fw-bold">部落格內文</p>
+          <p className="fs-5 BlogDetailText ">{blogData.blog_content}</p>
+        </div>
       </section>
       <BlogComment blog_id={blog_id} />
+
+      <div className="ArticleSmallTitle text-nowrap mt-5 mb-5">
+        <p>
+          <FontAwesomeIcon icon={faDiamond} className="me-4" />
+          <span>更多熱門文章</span>
+        </p>
+      </div>
+      <BloghomepageCardgroup />
     </>
   )
 }

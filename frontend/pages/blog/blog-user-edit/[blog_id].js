@@ -82,7 +82,7 @@ export default function Blogedit() {
       )
 
       if (response.ok) {
-        router.push(`/blog/blog-detail/${blog_id}`)
+        router.push(`/blog/blog-user-detail/${blog_id}`)
       }
     } catch (error) {
       console.error('錯誤:', error)
@@ -163,12 +163,13 @@ export default function Blogedit() {
               className="form-control BlogCreatedTextArea"
               value={formData.blog_content}
               onChange={(e) => handleChange('blog_content', e.target.value)}
-              rows="10"
+              rows="20"
               placeholder="請輸入內文"
             />
           </div>
         </div>
 
+        {/* 品牌選擇區塊 */}
         <div className="d-flex flex-row justify-content-between align-items-start col-12 mb-5">
           <div className="BlogSmallTitleAlign d-flex justify-content-start align-items-start col-6">
             <div className="BlogEditSmallTitle text-nowrap">
@@ -232,7 +233,7 @@ export default function Blogedit() {
               <div
                 key={v}
                 className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
-                  v === formData.blog_type ? 'BlogEditTypeSelectedActive' : ''
+                  v === formData.blog_type ? 'BlogEditBrandSelectedActive' : ''
                 }`}
                 onClick={() => handleChange('blog_type', v)}
               >
@@ -262,7 +263,28 @@ export default function Blogedit() {
         </div>
 
         <div className="d-flex flex-row justify-content-around align-items-center mt-5">
-          <button className="BlogEditButtonSubmit" type="submit">
+          <button
+            className="BlogEditButtonSubmit"
+            type="submit"
+            onClick={async () => {
+              // 加入確認視窗
+              if (window.confirm('更新文章？')) {
+                try {
+                  const res = await fetch(
+                    `http://localhost:3005/api/blog/blog-user-edit/${blog_id}`,
+                    {
+                      method: 'PUT',
+                    }
+                  )
+                  if (res.ok) {
+                    router.push('/blog/blog-edit-success')
+                  }
+                } catch (error) {
+                  console.error('刪除失敗:', error)
+                }
+              }
+            }}
+          >
             送出
           </button>
           <button
