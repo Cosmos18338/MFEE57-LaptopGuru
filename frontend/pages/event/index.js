@@ -5,6 +5,8 @@ import EventNavbar from '@/components/event/EventNavbar'
 import axios from 'axios'
 import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
+import { Edit } from 'lucide-react'
+import EditGroupModal from '@/components/group/EditGroupModal'
 
 // 分頁標籤組件
 const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
@@ -218,8 +220,6 @@ export default function Event() {
                 onPageChange={handlePageChange}
               />
             )}
-            <EventManagement />
-            <GroupManagement />
           </div>
         </main>
       </div>

@@ -21,6 +21,7 @@ export default function CartIndex() {
     order_id: '',
     amount: '',
   })
+  const [couponAll, setCouponAll] = useState([])
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
 
@@ -64,6 +65,22 @@ export default function CartIndex() {
       showConfirmButton: false,
       timer: 1500,
     })
+  }
+
+  const searchCoupon = async () => {
+    const [result] = await fetch(
+      `http://localhost:3005/api/coupon/${user_id}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+
+    const data = await result.json()
+    const coupons = data.data
+    setCouponAll(coupons)
   }
 
   // 處理7-11選擇
@@ -164,6 +181,10 @@ export default function CartIndex() {
   }, [user_id])
 
   // useEffect(() => {
+  //   searchCoupon()
+  // }, [user_id])
+
+  // useEffect(() => {
   //   if (cartdata.length > 0) {
   //     let total = 0
   //     cartdata.forEach((item) => {
@@ -233,13 +254,14 @@ export default function CartIndex() {
               </div>
             </div>
             <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className=" d-flex justify-content-center mb-2">
-                <button
-                  className="btn btn-primary w-50  text-light"
-                  type="button"
-                >
-                  使用優惠券
-                </button>
+              <div className="text-center mb-2">
+                <select className="form-select border-primary">
+                  <option value="" selected disabled>
+                    選擇運送方式
+                  </option>
+                  <option value="宅配">宅配</option>
+                  <option value="7-11">7-11</option>
+                </select>
               </div>
               <div className="text-center mb-2">
                 <select

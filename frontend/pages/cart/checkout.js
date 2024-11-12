@@ -16,13 +16,13 @@ export default function Checkout(props) {
         icon: 'success',
         title: `訂單編號: ${order_id}已建立成功`,
         showConfirmButton: false,
-        timer: 1500,
+        timer: 3000,
       })
     }
 
     setTimeout(() => {
       window.location.href = '/dashboard'
-    }, 1500)
+    }, 3000)
   }, [])
 
   const handleUpdate = async (order_id) => {

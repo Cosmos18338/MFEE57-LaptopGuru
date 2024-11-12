@@ -2,8 +2,9 @@ import express from 'express'
 const router = express.Router()
 
 // 資料庫使用
-import sequelize from '#configs/db.js'
-const { Purchase_Order } = sequelize.models
+// import sequelize from '#configs/db.js'
+// const { purchase_order } = sequelize.models
+import db from '##/configs/mysql.js'
 
 // 中介軟體，存取隱私會員資料用
 import authenticate from '#middlewares/authenticate.js'
@@ -59,7 +60,10 @@ router.post('/create-order', authenticate, async (req, res) => {
   }
 
   // 儲存到資料庫
-  await Purchase_Order.create(dbOrder)
+  // await purchase_order.create(dbOrder)
+  const result = await db.query('INSERT INTO purchase_order SET ?', dbOrder)
+
+  console.log(result)
 
   // 回傳給前端的資料
   res.json({ status: 'success', data: { order } })
@@ -81,7 +85,7 @@ router.get('/reserve', async (req, res) => {
   }
 
   // 從資料庫取得訂單資料
-  const orderRecord = await Purchase_Order.findByPk(orderId, {
+  const orderRecord = await purchase_order.findByPk(orderId, {
     raw: true, // 只需要資料表中資料
   })
 
@@ -113,7 +117,7 @@ router.get('/reserve', async (req, res) => {
     console.log(reservation)
 
     // 在db儲存reservation資料
-    const result = await Purchase_Order.update(
+    const result = await purchase_order.update(
       {
         reservation: JSON.stringify(reservation),
         transaction_id: reservation.transactionId,
@@ -141,7 +145,7 @@ router.get('/confirm', async (req, res) => {
   const transactionId = req.query.transactionId
 
   // 從資料庫取得交易資料
-  const dbOrder = await Purchase_Order.findOne({
+  const dbOrder = await purchase_order.findOne({
     where: { transaction_id: transactionId },
     raw: true, // 只需要資料表中資料
   })
@@ -179,7 +183,7 @@ router.get('/confirm', async (req, res) => {
     }
 
     // 更新資料庫的訂單狀態
-    const result = await Purchase_Order.update(
+    const result = await purchase_order.update(
       {
         status,
         return_code: linePayResponse.body.returnCode,

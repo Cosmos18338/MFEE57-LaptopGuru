@@ -8,12 +8,11 @@ const upload = multer()
 import db from '##/configs/mysql.js'
 
 // 這是dashboard的路由
-// 老師說用get id之後去寫我不確定怎麼寫 
+// 老師說用get id之後去寫我不確定怎麼寫
 router.get('/all', async function (req, res) {
   try {
     const [users] = await db.query('SELECT * FROM users')
     return res.json({ status: 'success', data: { users } })
-
   } catch (error) {
     console.error('無法取得資料:', error)
     return res.status(500).json({ status: 'error', message: '無法連接' })
@@ -30,7 +29,7 @@ router.get('/:user_id', async function (req, res) {
     if (users.length === 0) {
       return res.status(404).json({ status: 'error', message: '找不到該用戶' })
     }
-    
+
     return res.json({ status: 'success', data: { user: users[0] } })
   } catch (error) {
     console.error('無法取得資料:', error)
@@ -78,83 +77,89 @@ try{
     console.log('檢查參數:', {
       user_id,
       currentPassword,
-      currentPasswordType: typeof currentPassword
-    });
-    const [users] = await db.query('SELECT password FROM users WHERE user_id = ?', [user_id])
+      currentPasswordType: typeof currentPassword,
+    })
+    const [users] = await db.query(
+      'SELECT password FROM users WHERE user_id = ?',
+      [user_id]
+    )
     if (users.length === 0) {
       return res.status(404).json({ status: 'error', message: '找不到該用戶' })
     }
-    const hashedPassword = String(users[0].password);
-    const inputPassword = String(currentPassword);
+    const hashedPassword = String(users[0].password)
+    const inputPassword = String(currentPassword)
 
     const isMatch = await compareHash(inputPassword, hashedPassword)
     if (!isMatch) {
-      return res.status(400).json({ status: 'error', message: '當前密碼不正確' })
-    }else if(isMatch){
-      return res.status(200).json({status:'pwdmatch',message:'用戶在輸入框中輸入之密碼與原始密碼吻合'})
-      console.log("成功");
-
+      return res
+        .status(400)
+        .json({ status: 'error', message: '當前密碼不正確' })
+    } else if (isMatch) {
+      return res.status(200).json({
+        status: 'pwdmatch',
+        message: '用戶在輸入框中輸入之密碼與原始密碼吻合',
+      })
+      console.log('成功')
     }
-  }catch(error){
-    console.error('檢查密碼失敗:', error);
-        return res.status(500).json({ status: 'error', message: '伺服器錯誤' });
+  } catch (error) {
+    console.error('檢查密碼失敗:', error)
+    return res.status(500).json({ status: 'error', message: '伺服器錯誤' })
   }
-  
 })
 
 router.put('/:user_id/pwdReset', async (req, res) => {
   try {
-    const { user_id } = req.params;
-    const { currentPassword, newPassword } = req.body;
+    const { user_id } = req.params
+    const { currentPassword, newPassword } = req.body
 
     // 驗證參數
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ 
-        status: 'error', 
-        message: '缺少必要參數' 
-      });
+      return res.status(400).json({
+        status: 'error',
+        message: '缺少必要參數',
+      })
     }
 
     // 先檢查當前密碼是否正確
     const [users] = await db.query(
-      'SELECT password FROM users WHERE user_id = ?', 
+      'SELECT password FROM users WHERE user_id = ?',
       [user_id]
-    );
+    )
 
     if (users.length === 0) {
-      return res.status(404).json({ 
-        status: 'error', 
-        message: '找不到該用戶' 
-      });
+      return res.status(404).json({
+        status: 'error',
+        message: '找不到該用戶',
+      })
     }
 
     // 驗證當前密碼
     const isCurrentPasswordValid = await compareHash(
-      currentPassword, 
+      currentPassword,
       users[0].password
-    );
+    )
 
     if (!isCurrentPasswordValid) {
-      return res.status(400).json({ 
-        status: 'error', 
-        message: '當前密碼不正確' 
-      });
+      return res.status(400).json({
+        status: 'error',
+        message: '當前密碼不正確',
+      })
     }
 
     // 產生新密碼的雜湊值
-    const hashedPassword = await generateHash(newPassword);
+    const hashedPassword = await generateHash(newPassword)
 
     // 更新密碼
     const [result] = await db.query(
       'UPDATE users SET password = ? WHERE user_id = ?',
       [hashedPassword, user_id]
-    );
+    )
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ 
-        status: 'error', 
-        message: '找不到該用戶' 
-      });
+      return res.status(404).json({
+        status: 'error',
+        message: '找不到該用戶',
+      })
     }
 
     return res.status(200).json({
@@ -163,12 +168,12 @@ router.put('/:user_id/pwdReset', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('密碼更新失敗:', error);
-    return res.status(500).json({ 
-      status: 'error', 
-      message: '密碼更新失敗' 
-    });
+    console.error('密碼更新失敗:', error)
+    return res.status(500).json({
+      status: 'error',
+      message: '密碼更新失敗',
+    })
   }
-});
+})
 
 export default router

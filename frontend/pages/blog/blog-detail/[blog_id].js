@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
+import Link from 'next/link'
+import BlogComment from '@/components/blog/blogdetail/blog-comment'
 
 export default function BlogId() {
   const router = useRouter()
   const { blog_id } = router.query // 動態獲取 blog_id
   const [blogData, setBlogData] = useState(null)
-
   console.log(blogData)
 
   useEffect(() => {
@@ -24,6 +25,9 @@ export default function BlogId() {
   if (!blogData) {
     return <p>Loading...</p> // 當資料還沒載入時顯示 loading
   }
+  // 確認一下圖片路徑
+  console.log(`確認一下圖片路徑`)
+  console.log(`http://localhost:3005${blogData.blog_image}`)
 
   return (
     <>
@@ -44,16 +48,25 @@ export default function BlogId() {
             />
           </div>
         </div> */}
-      <section className="BlogDetailSectionContentArea">
+      <section className="BlogDetailSectionContentArea mt-5">
         <div className="d-flex align-items-center justify-content-center mb-5">
-          <img className="w-50 h-50 ratio" src={blogData.blog_image} alt />
+          <img
+            className="w-50 h-50 ratio"
+            src={`http://localhost:3005${blogData.blog_image}`}
+            alt
+          />
         </div>
-        <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
+        <p className="display-5 BlogDetailSectionContentAreaTitle">
+          部落格標題
+        </p>
+        <p className="display-5 fw-bold BlogDetailSectionContentAreaTitle">
           {blogData.blog_title}
         </p>
+        <p className="display-5 BlogDetailText">部落格內文</p>
         <p className="BlogDetailText">{blogData.blog_content}</p>
-        <p className="BlogDetailText">要不要刪除阿</p>
+        {/* <p className="BlogDetailText">要不要刪除阿</p> */}
       </section>
+      <BlogComment blog_id={blog_id} />
     </>
   )
 }
