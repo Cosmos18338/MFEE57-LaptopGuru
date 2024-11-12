@@ -26,9 +26,33 @@ const upload = multer({
 // -------------------------------時間戳記製作-------------------------------
 
 // 後端路由
-router.get('/test', async (req, res) => {
-  console.log('apple') // 這會在伺服器控制台顯示 'apple'
-  res.send('Test endpoint is working') // 回應 Postman 字串
+// router.get('/test', async (req, res) => {
+//   console.log('apple') // 這會在伺服器控制台顯示 'apple'
+//   res.send('Test endpoint is working') // 回應 Postman 字串
+// })
+
+router.get('/blogcardgroup', async (req, res) => {
+  const { page = 1, limit = 6 } = req.query
+  const offset = (page - 1) * limit
+
+  try {
+    const [[{ total }]] = await db.query(
+      'SELECT COUNT(*) as total FROM blogoverview WHERE blog_valid_value = 1'
+    )
+
+    const [blogs] = await db.query(
+      `SELECT * FROM blogoverview 
+       WHERE blog_valid_value = 1
+       ORDER BY blog_created_date DESC 
+       LIMIT ? OFFSET ?`,
+      [Number(limit), offset]
+    )
+
+    res.json({ blogs, total })
+  } catch (error) {
+    console.error('Latest blogs error:', error)
+    res.status(500).json({ message: '伺服器錯誤' })
+  }
 })
 
 router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
@@ -358,6 +382,7 @@ router.get('/latest', async (req, res) => {
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
+
 // 後端修改 - blog.js router
 router.get('/search', async (req, res) => {
   const {

@@ -121,7 +121,7 @@ export default function CouponUser() {
             <Button
               variant="primary"
               type="submit"
-              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5', color: 'white' }}
             >
               搜尋
             </Button>
@@ -149,15 +149,8 @@ export default function CouponUser() {
           filteredCoupons.map((coupon) => (
             <div
               key={coupon.id}
-              className="col-md-6"
+              className="col-md-6 coupon-item"
               onClick={() => handleCartCoupon(coupon.coupon_id)}
-              style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease',
-                ':hover': {
-                  transform: 'translateY(-5px)'
-                }
-              }}
             >
               <Coupon
                 coupon_id={coupon.coupon_id}

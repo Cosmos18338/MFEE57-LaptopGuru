@@ -11,24 +11,27 @@ export default function UserProfile() {
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
-    // password: '',
-    currentPassword: '',
-    newPassword: '',
     gender: '',
+    password: '',
     birthdate: '',
     phone: '',
-    email: '',
     country: '',
     city: '',
     district: '',
     road_name: '',
     detailed_address: '',
+    user_id: 0,
     image_path: '',
     remarks: '',
     valid: 1,
   })
-  const [currentPassword, setcurrentPassword] = useState({
-    password: '',
+
+  // const [currentPassword,
+  //   newPassword]=useState({password:''})
+
+  const [passwordState, setPasswordState]=useState({
+    currentPassword:'',
+    newPassword:''
   })
 
   const [profilePic, setProfilePic] = useState(
@@ -167,11 +170,10 @@ export default function UserProfile() {
           const userData = response.data.data.user
           setEditableUser({
             name: userData.name || '',
-            password: userData.password || ' ',
             gender: userData.gender || '',
+            // password: userData.password || ' ',
             birthdate: userData.birthdate || '',
             phone: userData.phone || '',
-            email: userData.email || '',
             country: userData.country || '',
             city: userData.city || '',
             district: userData.district || '',
@@ -179,6 +181,8 @@ export default function UserProfile() {
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
+            valid: userData.valid??1,
+            // email: userData.email || '',
           })
 
           // 如果國家是台灣，啟用地址選擇
@@ -345,20 +349,28 @@ export default function UserProfile() {
     e.preventDefault()
 
     try {
-      if (!editableUser.name || !editableUser.email || !editableUser.password) {
-        Swal.fire('錯誤', '請填寫必要欄位', 'error')
+      if (!editableUser.name) {
+        Swal.fire('錯誤', '請填寫名稱', 'error')
         return
       }
+      const dataToSubmit = {
+        ...editableUser,
+        email: auth?.userData?.email || editableUser.email, // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
+      }
+      delete dataToSubmit.password // 移除 password 欄位
+      delete dataToSubmit.currentPassword // 移除 currentPassword 欄位
+      delete dataToSubmit.newPassword // 移除 newPassword 欄位
 
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
-        editableUser
+        // editableUser
+        dataToSubmit
       )
 
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
-        setAuth({ isAuth: auth.isAuth, userData: { ...editableUser } })
-        console.log({ ...editableUser })
+        setAuth({ isAuth: auth.isAuth, userData: { ...dataToSubmit, user_id } })
+        console.log({ ...dataToSubmit })
         // 改變的結果是輸入的狀態的物件
       }
     } catch (error) {
@@ -387,6 +399,7 @@ export default function UserProfile() {
       if (!isConfirmed.isConfirmed) {
         return
       }
+      //s停用button跟更新button用的是同一個路由所以停用
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
         {
@@ -768,7 +781,7 @@ export default function UserProfile() {
                             htmlFor="profile-pic-upload"
                             className={`btn btn-outline-primary ${styles['profile-button']}`}
                           >
-                            大頭照預覽
+                            上傳大頭照
                           </label>
                           <input
                             id="profile-pic-upload"
@@ -817,9 +830,7 @@ export default function UserProfile() {
                             placeholder="請輸入當前密碼"
                             onChange={handleInputChange}
                           />
-                          {/* <span>
-                          要先輸入密碼正確，才能輸入新的密碼
-                          </span> */}
+
                           <div className="form-text">
                             要先輸入密碼正確，才能輸入新的密碼
                           </div>
