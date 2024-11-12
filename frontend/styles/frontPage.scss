@@ -90,35 +90,6 @@
     background-position: 100% 100%;
   }
 }
-/* RWD媒體查詢調整 */
-// @media screen and (max-width: 768px) {
-//   .home-container-body {
-//     padding: 0 15px;
-//     align-items: center;
-//   }
-
-//   .home-section3,
-//   .home-section4,
-//   .home-section5,
-//   .home-activity-section6 {
-//     padding: 30px 15px;
-//     align-items: center;
-//   }
-
-//   .home-article-body {
-//     width: 100%;
-//   }
-// }
-
-// @media screen and (max-width: 480px) {
-//   .home-container-body,
-//   .home-section3,
-//   .home-section4,
-//   .home-section5,
-//   .home-activity-section6 {
-//     padding: 20px 10px;
-//   }
-// }
 
 .home-welcome {
   display: flex;
@@ -327,8 +298,8 @@
   align-items: flex-start;
   gap: 10px;
   flex-shrink: 0;
-  position: relative; /* 添加相對定位 */
-  overflow: hidden; /* 確保圖片放大不會溢出 */
+  position: relative;
+  overflow: hidden; 
   border-radius: 10px;
 }
 
@@ -432,31 +403,6 @@
       rgba(101, 32, 239, 0.9) 100%
     ),
     url(/images/index/laptop-banner.jpg) lightgray -684.93px 0px / 1495.391% 100% no-repeat;
-}
-
-.home-btn {
-  width: 60px;
-  height: 60px;
-  border: none;
-  border-radius: 100px;
-  background: rgba(255, 255, 255, 0.6);
-  box-shadow: 0px 0px 20px 2px #8c6fe5;
-  backdrop-filter: blur(5px);
-  transition: all 0.3s ease;
-  position: absolute;
-  bottom: 20%;
-  right: 5%;
-}
-
-.home-btn:hover {
-  background-color: #5b2cb9;
-  transform: translateX(3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.home-btn img {
-  width: 1.5em;
-  transform: rotate(-90deg);
 }
 
 /* RWD 設置 */
@@ -733,7 +679,8 @@
   color: var(--color-1, #805af5);
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   font-size: var(--h6-font-size);
-  font-weight: 400;
+  font-weight: 900;
+  font-size: 24px;
 }
 
 .home-pic-body {
@@ -1253,12 +1200,14 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 40px 20px;
+  height: 908px;
+  padding: 40px 20px 0px 20px;
   gap: 32px;
   margin: 0 auto;
   max-width: 1440px;
   width: 100%;
   position: relative;
+  overflow: hidden;
 }
 
 .home-article {
@@ -1281,7 +1230,7 @@
   backdrop-filter: blur(5px);
   transition: all 0.3s ease;
   position: absolute;
-  bottom: 0;
+  bottom: 35%;
   left: 50%;
   transform: translateX(-50%);
   cursor: pointer;
@@ -1711,7 +1660,7 @@ box-shadow: 0px 4px 75px 0px #805AF5 inset;}
   align-items: center;
   align-self: stretch;
   gap: 10px;
-  padding: 0 50px;
+  padding: 0 0px;
   justify-content: flex-end;
   transform: translateY(250px);
 }
@@ -1722,13 +1671,13 @@ box-shadow: 0px 4px 75px 0px #805AF5 inset;}
   align-items: center;
   align-self: stretch;
   gap: 10px;
-  padding: 0 50px;
+  padding: 0 0px;
   justify-content: flex-end;
 }
 
 .home-activity-card-footer3 {
   display: flex;
-  padding: 10px 10px 10px 361px;
+  // padding: 10px 10px 10px 361px;
   align-items: center;
   align-self: stretch;
   gap: 10px;

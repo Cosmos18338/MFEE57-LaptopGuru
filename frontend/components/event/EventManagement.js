@@ -3,7 +3,7 @@ import styles from './EventManagement.module.css'
 
 const ActivityList = () => {
   return (
-    <div className={`container py-2`}>
+    <div className={`py-2`}>
       <div className={styles.groupList}>
         <div className={styles.listHeader}>
           <div className={styles.listTitle}>
