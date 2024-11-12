@@ -15,6 +15,7 @@ export default function Test1() {
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   const [subActiveKey, setSubActiveKey] =useState("")
+// 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {

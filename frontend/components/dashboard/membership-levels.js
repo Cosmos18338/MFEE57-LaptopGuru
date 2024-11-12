@@ -1,6 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react';
+import { useAuth } from '@/hooks/use-auth';
+import ProgressBar from 'react-bootstrap/ProgressBar';
+import axios from 'axios';
 
 export default function MembershipLevels() {
+  const { auth } = useAuth();
+  const level_chinese = auth?.userData?.level;
+  const [membershipData, setMembershipData] = useState({
+    totalSpent: 0,
+    nextLevelRequired: 0
+  });
+
+
+  const getMembershipLevel = (level_chinese) => {
+    switch (level_chinese) {
+      case 0:
+        return '剛註冊';
+      case 1:
+        return '銅牌會員';
+      case 2:
+        return '銀牌會員';
+      case 3:
+        return '金牌會員';
+      case 4:
+        return '鑽石會員';
+      default:
+        return '未知等級';
+    }
+  };
+
+  useEffect(() => {
+    const fetchMembershipData = async () => {
+      try {
+        const response = await axios.get(`/api/membership/${auth.userData.user_id}`);
+        setMembershipData(response.data);
+      } catch (error) {
+        console.error('Error fetching membership data:', error);
+      }
+    };
+
+    if (auth?.userData?.user_id) {
+      fetchMembershipData();
+    }
+  }, [auth?.userData?.user_id]);
+
+  const calculateProgress = () => {
+    const total = membershipData.totalSpent;
+    if (total >= 100000) return 100;
+    if (total >= 70000) return 75;
+    if (total >= 40000) return 50;
+    if (total >= 20000) return 25;
+    return (total / 20000) * 25;
+  };
+
+  const getVariant = () => {
+    const total = membershipData.totalSpent;
+    if (total >= 100000) return "info";
+    if (total >= 70000) return "success";
+    if (total >= 40000) return "warning";
+    if (total >= 20000) return "danger";
+    return "secondary";
+  };
+
   const levels = [
     {
       name: '銅牌會員',
@@ -22,15 +83,12 @@ export default function MembershipLevels() {
       benefits:
         '可於文章區發表文章、參加活動、免費包膜服務(價值1,000)、日後購買新機免費升級延長保固半年、生日禮(抽獎券-可抽筆電支架)',
     },
-  ]
+  ];
 
   return (
-    <div
-      className="container-fluid py-5"
-      style={{
-        background: 'linear-gradient(135deg, #6C4CCE 0%, #805AF5 100%)',
-      }}
-    >
+    <div className="container-fluid py-5" style={{
+      background: 'linear-gradient(135deg, #6C4CCE 0%, #805AF5 100%)',
+    }}>
       <style jsx>{`
         .membership-card {
           background: linear-gradient(180deg, #6c4cce 0%, #000000 100%);
@@ -62,15 +120,39 @@ export default function MembershipLevels() {
           display: inline-block;
           margin-right: 8px;
         }
-      `}</style>
+      `}
+      </style>
+
       <div className="row mb-4">
         <div className="col">
           <h2 className="text-white mb-0">
             <span className="diamond"></span>
             會員等級
           </h2>
+          <div className="col-">
+            <h3 className="text-white">目前是{getMembershipLevel(level_chinese)}</h3>
+          </div>
         </div>
       </div>
+
+      <div className="row">
+        <div className="col">
+          <h3 className="text-white">
+            累計消費: ${membershipData.totalSpent}
+          </h3>
+          <p className="text-white">
+            距離下一等級還需消費: ${membershipData.nextLevelRequired}
+          </p>
+          <ProgressBar
+            now={calculateProgress()}
+            // 
+            variant={getVariant()}
+            className="mb-4"
+          />
+        </div>
+      </div>
+
+{/* 以下是卡片 */}
       <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
         {levels.map((level, index) => (
           <div key={index} className="col">
@@ -82,5 +164,5 @@ export default function MembershipLevels() {
         ))}
       </div>
     </div>
-  )
+  );
 }

@@ -9,6 +9,7 @@ import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
   const { renderJumpingText } = useJumpingLetters()
@@ -140,12 +141,6 @@ export default function LogIn(props) {
                       onChange={(e) => {
                         setPassword(e.target.value)
                       }}
-                      onClick={() => {
-                        setShowpassword((prev) => {
-                          console.log('changing showpassword to:', !prev) // 檢查狀態更新
-                          return !prev
-                        })
-                      }}
                       id="password"
                       name="password" // 添加 name
                       className={`form-control ${styles.inputs}`}
@@ -157,6 +152,21 @@ export default function LogIn(props) {
                       style={{ color: '#E0B0FF', cursor: 'pointer' }}
                     />
                   </div>
+                  <div className='form-text'>
+                    <input
+                      type="checkbox"
+                      name=""
+                      id=""
+                      onClick={() => {
+                        setShowpassword((prev) => {
+                          console.log('changing showpassword to:', !prev) // 檢查狀態更新
+                          return !prev
+                        })
+                      }}
+                    />
+                    <span className="text-white">點擊切換顯示密碼與否</span>
+                  </div>
+
                   <div
                     id="Error_message"
                     className={`form-text text-white p-5`}
