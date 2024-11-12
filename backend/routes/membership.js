@@ -3,10 +3,9 @@ const router = express.Router()
 import db from '##/configs/mysql.js'
 
 // 獲取會員等級資訊
-router.get('/api/membership/:user_id', async (req, res) => {
+router.get('/:user_id', async (req, res) => {
   try {
-    const user_id = req.params.user_id
-    
+    const { user_id } = req.params    
     // 查詢該會員的所有訂單總金額
     const [orders] = await db.query(
       'SELECT SUM(order_amount) as total_spent FROM order_list WHERE user_id = ?',
@@ -14,7 +13,7 @@ router.get('/api/membership/:user_id', async (req, res) => {
     )
     
     const totalSpent = orders[0].total_spent || 0
-
+    console.log(totalSpent);
     // 獲取會員基本資料
     const [userResults] = await db.query(
       'SELECT level FROM users WHERE user_id = ?',
