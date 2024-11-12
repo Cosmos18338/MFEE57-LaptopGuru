@@ -3,17 +3,17 @@
   background: rgba(46, 16, 101, 0);
   border: 2px solid transparent;
   border-radius: 8px;
-  overflow: visible; 
+  overflow: visible;
 }
 
 .card::before {
-  content: "";
+  content: '';
   position: absolute;
   top: -1px;
   left: -1px;
   right: -1px;
   bottom: -1px;
-  border-radius: 8px; 
+  border-radius: 8px;
   padding: 1px;
   background: linear-gradient(45deg, #4834d4, #9b59b6, #e84393);
   -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
@@ -36,7 +36,7 @@
   height: 180px;
   width: 100%;
   object-fit: cover;
-  border-radius: 6px 6px 0 0; 
+  border-radius: 6px 6px 0 0;
   position: relative;
   z-index: 2;
   overflow: hidden;
@@ -53,4 +53,17 @@
 
 .smallIcon {
   font-size: 0.8rem;
+}
+
+.gameTypeBar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  padding: 8px 16px;
+  font-size: 14px;
+  text-transform: uppercase;
+  z-index: 2;
 }
