@@ -149,4 +149,5 @@ router.post('/logout', authenticate, (req, res) => {
   return res.json({ status: 'success', data: null })
 })
 
+
 export default router
