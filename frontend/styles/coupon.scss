@@ -148,3 +148,13 @@
     margin-bottom: 10px;
   }
 }
+
+//優惠卷hover效果
+.coupon-item {
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.coupon-item:hover {
+  transform: scale(1.02);
+}

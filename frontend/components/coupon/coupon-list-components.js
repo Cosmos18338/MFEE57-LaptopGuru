@@ -151,7 +151,7 @@ export default function CouponList() {
             <Button
               variant="primary"
               type="submit"
-              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5', color: 'white' }}
               className="me-2"
             >
               搜尋
@@ -180,18 +180,8 @@ export default function CouponList() {
           filteredCoupons.map((coupon) => (
             <div
               key={coupon.coupon_id}
-              className="col-md-6"
+              className="col-md-6 coupon-item"
               onClick={() => handleClaimCoupon(coupon.coupon_id)}
-              style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
             >
               <Coupon
                 coupon_id={coupon.coupon_id}

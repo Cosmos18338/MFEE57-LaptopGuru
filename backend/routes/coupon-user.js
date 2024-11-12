@@ -125,7 +125,63 @@ router.post('/add', upload.none(), async (req, res, next) => {
   }
 })
 
-// 抓取coupon_user valid=1的資料
+// router.get('/:user_id', async (req, res) => {
+//   try {
+//     const user_id = parseInt(req.params.user_id)
+
+//     if (isNaN(user_id) || user_id <= 0) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: '無效的用戶編號',
+//       })
+//     }
+
+//     // 只檢查 coupon_user 的 valid = 1
+//     const [validCoupons] = await db.query(
+//       `
+//       SELECT
+//         cu.id,
+//         cu.user_id,
+//         cu.coupon_id,
+//         cu.valid as user_coupon_valid,
+//         c.coupon_code,
+//         c.coupon_content,
+//         c.discount_method,
+//         c.coupon_discount,
+//         c.coupon_start_time,
+//         c.coupon_end_time,
+//         c.valid as coupon_valid
+//       FROM coupon_user cu
+//       JOIN coupon c ON cu.coupon_id = c.coupon_id
+//       WHERE cu.user_id = ?
+//       AND cu.valid = 1  /* 只檢查 coupon_user 的 valid */
+//       ORDER BY cu.id DESC
+//       `,
+//       [user_id]
+//     )
+
+//     if (validCoupons.length === 0) {
+//       return res.json({
+//         status: 'success',
+//         data: [],
+//         message: '目前沒有可用的優惠券',
+//       })
+//     }
+
+//     res.json({
+//       status: 'success',
+//       data: validCoupons,
+//       message: '查詢成功',
+//     })
+//   } catch (error) {
+//     console.error('Error:', error)
+//     res.status(500).json({
+//       status: 'error',
+//       message: '伺服器錯誤',
+//     })
+//   }
+// })
+
 router.get('/:user_id', async (req, res) => {
   try {
     const user_id = parseInt(req.params.user_id)
@@ -137,7 +193,7 @@ router.get('/:user_id', async (req, res) => {
       })
     }
 
-    // 只檢查 coupon_user 的 valid = 1
+    // 加入 users 資料表的關聯查詢
     const [validCoupons] = await db.query(
       `
       SELECT 
@@ -151,17 +207,37 @@ router.get('/:user_id', async (req, res) => {
         c.coupon_discount,
         c.coupon_start_time,
         c.coupon_end_time,
-        c.valid as coupon_valid
+        c.valid as coupon_valid,
+        u.name as user_name,
+        u.email as user_email,
+        u.phone as user_phone,
+        u.level as user_level
       FROM coupon_user cu
       JOIN coupon c ON cu.coupon_id = c.coupon_id
+      JOIN users u ON cu.user_id = u.user_id
       WHERE cu.user_id = ? 
-      AND cu.valid = 1  /* 只檢查 coupon_user 的 valid */
+      AND cu.valid = 1
+      AND u.valid = 1  /* 確保用戶帳號有效 */
       ORDER BY cu.id DESC
       `,
       [user_id]
     )
 
+    // 檢查用戶是否存在
     if (validCoupons.length === 0) {
+      // 檢查用戶是否存在但沒有優惠券
+      const [userExists] = await db.query(
+        `SELECT user_id FROM users WHERE user_id = ? AND valid = 1`,
+        [user_id]
+      )
+
+      if (userExists.length === 0) {
+        return res.status(404).json({
+          status: 'error',
+          message: '用戶不存在或已被停用',
+        })
+      }
+
       return res.json({
         status: 'success',
         data: [],
