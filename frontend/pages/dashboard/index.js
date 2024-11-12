@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import { Nav, Tab } from 'react-bootstrap';
 import { FaPenFancy } from 'react-icons/fa';
@@ -7,15 +6,6 @@ import CardExample from '@/components/bootstrap/cards';
 import UserProfile from '@/components/dashboard/userInfoEdit';
 import MembershipLevels from './membership-levels';
 import CouponList from '../coupon/test';
-=======
-import React from 'react'
-import { Nav, Tab } from 'react-bootstrap'
-import { FaPenFancy } from 'react-icons/fa'
-import { useAuth } from '@/hooks/use-auth'
-import CardExample from '@/components/bootstrap/cards'
-import UserProfile from '@/components/dashboard/userInfoEdit'
-import MembershipLevels from './membership-levels'
->>>>>>> dev_kuma
 
 export default function Test1() {
   const { auth, setAuth } = useAuth();
