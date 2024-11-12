@@ -28,8 +28,8 @@ export default function Signup() {
     }
 
     return Object.entries(rules)
-      .filter(([rule, valid]) => !valid)
-      .map(([rule]) => messages[rule])
+      .filter(([rules, valid]) => !valid)
+      .map(([rules]) => messages[rule])
   }
 
   const router = useRouter()
@@ -104,7 +104,10 @@ export default function Signup() {
 
     try {
       setSubmitError('')
-
+      
+      if (!validateForm()) {
+        return
+      }
       const passwordErrors = validatePassword(user.password)
       if (passwordErrors.length > 0) {
         setErrors((prev) => ({
@@ -114,9 +117,6 @@ export default function Signup() {
         return
       }
 
-      if (!validateForm()) {
-        return
-      }
 
       const response = await axios.post(
         'http://localhost:3005/api/signup',
