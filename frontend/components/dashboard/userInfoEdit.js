@@ -20,7 +20,7 @@ export default function UserProfile() {
     district: '',
     road_name: '',
     detailed_address: '',
-
+    user_id: 0,
     image_path: '',
     remarks: '',
     valid: 1,
@@ -369,7 +369,7 @@ export default function UserProfile() {
 
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
-        setAuth({ isAuth: auth.isAuth, userData: { ...dataToSubmit } })
+        setAuth({ isAuth: auth.isAuth, userData: { ...dataToSubmit, user_id } })
         console.log({ ...dataToSubmit })
         // 改變的結果是輸入的狀態的物件
       }
@@ -830,9 +830,7 @@ export default function UserProfile() {
                             placeholder="請輸入當前密碼"
                             onChange={handleInputChange}
                           />
-                          {/* <span>
-                          要先輸入密碼正確，才能輸入新的密碼
-                          </span> */}
+
                           <div className="form-text">
                             要先輸入密碼正確，才能輸入新的密碼
                           </div>
