@@ -51,28 +51,24 @@ export default function BlogSearchPage() {
     setCurrentPage(1)
   }
 
+  // 修改 handleTypeChange 函數
   const handleTypeChange = (e) => {
     const { value, checked } = e.target
     setFilters((prev) => ({
       ...prev,
-      types: checked
-        ? [...prev.types, value]
-        : prev.types.filter((t) => t !== value),
-      // 清空其他選項如果需要互斥
-      // brands: [] // 取消註釋如果需要互斥
+      types: checked ? [value] : [], // 改為單選：選中時只存一個值，取消時清空
+      // brands: [] // 如果需要互斥，取消註解這行
     }))
     setCurrentPage(1)
   }
 
+  // 修改 handleBrandChange 函數
   const handleBrandChange = (e) => {
     const { value, checked } = e.target
     setFilters((prev) => ({
       ...prev,
-      brands: checked
-        ? [...prev.brands, value]
-        : prev.brands.filter((b) => b !== value),
-      // 清空其他選項如果需要互斥
-      // types: [] // 取消註釋如果需要互斥
+      brands: checked ? [value] : [], // 改為單選：選中時只存一個值，取消時清空
+      // types: [] // 如果需要互斥，取消註解這行
     }))
     setCurrentPage(1)
   }

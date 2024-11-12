@@ -234,16 +234,9 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
                   ) : (
                     filteredCoupons.map((coupon) => (
                       <div
-                        className="col-12 col-md-8"
+                        className="col-12 col-md-8 coupon-item"
                         key={coupon.id}
                         onClick={() => handleCouponSelect(coupon)}
-                        style={{
-                          cursor: 'pointer',
-                          transition: 'transform 0.2s',
-                          ':hover': {
-                            transform: 'scale(1.02)',
-                          },
-                        }}
                       >
                         <div className="d-flex justify-content-center">
                           <Coupon
