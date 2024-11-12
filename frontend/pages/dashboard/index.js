@@ -7,6 +7,8 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import GroupManagement from '@/components/group/GroupManagement'
+
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
@@ -112,15 +114,6 @@ export default function Test1() {
                         ? 'active'
                         : ''
                     }`}
-                    // style={{
-                    //   cursor: 'pointer',
-                    //   color: '#805AF5',
-                    //   backgroundColor:
-                    //     activeKey === 'coupon-record' &&
-                    //     couponActiveKey === item.key
-                    //       ? '#f0ebff'
-                    //       : 'transparent',
-                    // }}
                   >
                     {item.label}
                   </Nav.Link>
@@ -194,7 +187,7 @@ export default function Test1() {
               <Tab.Pane eventKey="group-record">
                 <div>
                   <h4>揪團列表</h4>
-                  {/* <GroupManagement /> */}
+                  <GroupManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="favorites">
