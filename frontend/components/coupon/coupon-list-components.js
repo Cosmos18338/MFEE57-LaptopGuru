@@ -11,6 +11,7 @@ export default function CouponList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [mounted, setMounted] = useState(false);
 
   // 獲取優惠券資料
   const getCouponData = async () => {
@@ -93,8 +94,9 @@ export default function CouponList() {
   }
 
   useEffect(() => {
-    getCouponData()
-  }, [])
+    setMounted(true);
+    getCouponData();
+  }, []);
 
   // 處理搜尋表單提交
   const handleSubmit = (e) => {
@@ -151,7 +153,7 @@ export default function CouponList() {
             <Button
               variant="primary"
               type="submit"
-              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5', color: 'white' }}
               className="me-2"
             >
               搜尋
@@ -180,18 +182,8 @@ export default function CouponList() {
           filteredCoupons.map((coupon) => (
             <div
               key={coupon.coupon_id}
-              className="col-md-6"
+              className="col-md-6 coupon-item"
               onClick={() => handleClaimCoupon(coupon.coupon_id)}
-              style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
             >
               <Coupon
                 coupon_id={coupon.coupon_id}

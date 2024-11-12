@@ -1,8 +1,16 @@
 import React, { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
+import { useRouter } from 'next/router'
+import { Upload } from 'lucide-react'
 
 export default function Blogcreated(props) {
+  const router = useRouter() // 加入 router
+
+  const brands = [
+    ['ROG', 'DELL', 'Acer', 'Raser'],
+    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
+  ]
   // 建立一個可重用的時間函數
   function getTimestamp() {
     const now = new Date()
@@ -45,18 +53,22 @@ export default function Blogcreated(props) {
 
     try {
       const response = await fetch(
-        'http://localhost:3005/api/blog/blogcreated',
+        'http://localhost:3005/api/blog/blog-created',
         {
           method: 'POST',
           body: formData,
         }
       )
+      console.log('成功連結')
 
       const result = await response.json()
 
       if (response.ok) {
         alert('部落格新增成功')
-        // window.location.href = 'http://localhost:3000/blog/BlogList'
+        if (result.blog_id) {
+          // 導航到新建立的文章頁面
+          router.push(`/blog/blog-user-detail/${result.blog_id}`)
+        }
       } else {
         alert(`發生錯誤: ${result.message}`)
       }
@@ -66,31 +78,8 @@ export default function Blogcreated(props) {
     }
   }
 
-  const handleBrandClick = (brand) => {
-    // 先移除所有元素的 'focus' 類
-    const brandElements = document.querySelectorAll('.BlogEditBrandSelected')
-    brandElements.forEach((el) => el.classList.remove('focus'))
-
-    // 給點擊的元素添加 'focus' 類
-    const clickedElement = document.querySelector(
-      `.BlogEditBrandSelected:contains(${brand})`
-    )
-    clickedElement.classList.add('focus')
-
-    const formData = new FormData()
-    formData.append('blog_type', blog_type)
-    formData.append('blog_title', blog_title)
-    formData.append('blog_content', blog_content)
-    formData.append('blog_brand', blog_brand)
-    formData.append('blog_brand_model', blog_brand_model)
-    formData.append('blog_keyword', blog_keyword)
-    formData.append('blog_valid_value', '1')
-    formData.append('blog_created_date', getTimestamp())
-    formData.append('blog_image', blog_image)
-  }
-
   return (
-    <div className="BlogEditAlignAllItems mt-5">
+    <div className="BlogEditAlignAllItems mt-5 w-100">
       {/* 圖片上傳區塊 */}
       <div className="">
         <div className="BlogEditSmallTitle text-nowrap">
@@ -113,8 +102,9 @@ export default function Blogcreated(props) {
           />
         ) : (
           <>
-            <i className="fa-solid fa-arrow-up-from-bracket" />
-            <div style={{ cursor: 'pointer' }}>點擊上傳圖片</div>
+            <div className="cursor-pointer">
+              <Upload className="w-24 h-24" />
+            </div>
           </>
         )}
         <input
@@ -147,7 +137,7 @@ export default function Blogcreated(props) {
         </div>
 
         {/* 文章內容區塊 */}
-        <div className="d-flex align-items-start justify-content-start mb-5 mt-5">
+        <div className="d-flex align-items-start justify-content-start mb-5 mt-5 col-6">
           <div className="BlogEditSmallTitle text-nowrap">
             <p>
               <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
@@ -160,14 +150,14 @@ export default function Blogcreated(props) {
               className="form-control BlogCreatedTextArea"
               value={blog_content}
               onChange={(e) => setContent(e.target.value)}
-              rows="10"
+              rows="20"
               placeholder="請輸入內文"
             />
           </div>
         </div>
 
         {/* 品牌選擇區塊 */}
-        <div className="d-flex flex-row justify-content-between align-items-start col-12 mb-5">
+        <div className="d-flex flex-row justify-content-between align-items-start col-6 mb-5">
           <div className="BlogSmallTitleAlign d-flex justify-content-start align-items-start col-6">
             <div className="BlogEditSmallTitle text-nowrap">
               <p>
@@ -177,32 +167,22 @@ export default function Blogcreated(props) {
               </p>
             </div>
           </div>
-          <div className="d-flex flex-row gap-5 col-6">
-            <div className="d-flex flex-column gap-5">
-              {[
-                'ROG',
-                'DELL',
-                'Acer',
-                'Raser',
-                'GIGABYTE',
-                'MSI',
-                'HP',
-                'ASUS',
-              ].map((v) => (
-                <div
-                  key={v}
-                  className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
-                    v === blog_brand ? 'BlogEditBrandSelectedActive' : ''
-                  }`}
-                  // style={
-                  //   v === blog_brand ? { color: 'black' } : { color: 'white' }
-                  // }
-                  onClick={() => setBrand(v)}
-                >
-                  <p>{v}</p>
-                </div>
-              ))}
-            </div>
+          <div className="d-flex flex-row gap-5 justify-content-center">
+            {brands.map((column, columnIndex) => (
+              <div key={columnIndex} className="d-flex flex-column gap-5">
+                {column.map((brand) => (
+                  <div
+                    key={brand}
+                    className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                      brand === blog_brand ? 'BlogEditBrandSelectedActive' : ''
+                    }`}
+                    onClick={() => setBrand(brand)}
+                  >
+                    <p className="m-0">{brand}</p>
+                  </div>
+                ))}
+              </div>
+            ))}
           </div>
         </div>
 
@@ -238,7 +218,9 @@ export default function Blogcreated(props) {
             {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((v) => (
               <div
                 key={v}
-                className="BlogEditTypeSelected d-flex justify-content-center align-items-center"
+                className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                  v === blog_type ? 'BlogEditBrandSelectedActive' : ''
+                }`}
                 onClick={() => setType(v)}
               >
                 <p>{v}</p>

@@ -39,7 +39,7 @@ export default function CouponPageJquery() {
           </div>
           <div className="list-group list-group-flush">
             <Link
-              href={`/coupon/${id}`}
+              href={`/coupon/coupon-user`}
               className="list-group-item list-group-item-action text-center"
             >
               優惠卷

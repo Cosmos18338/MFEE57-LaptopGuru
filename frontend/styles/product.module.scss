@@ -283,6 +283,10 @@
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   transition: color 0.3s;
+  // 移除預設樣式
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .product_page_item.active .product_page_link {

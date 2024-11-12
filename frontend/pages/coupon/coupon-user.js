@@ -4,7 +4,7 @@ import CardExample from '@/components/bootstrap/cards'
 import CouponUser from '@/components/coupon/coupon-user-components'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import Paginationcomponent from '@/components/paginationcomponent/paginationcomponent'
-import 'bootstrap/dist/css/bootstrap.min.css'
+// import 'bootstrap/dist/css/bootstrap.min.css'
 import Link from 'next/link'
 import { FaPenFancy } from 'react-icons/fa'
 import { useRouter } from 'next/router'
@@ -35,7 +35,7 @@ export default function CouponPage() {
           </div>
           <div className="list-group list-group-flush">
             <Link
-              href={`/coupon/${id}`}
+              href={`/coupon/coupon-user`}
               className="list-group-item list-group-item-action text-center"
             >
               優惠卷
