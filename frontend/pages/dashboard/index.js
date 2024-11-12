@@ -5,8 +5,6 @@ import { useAuth } from '@/hooks/use-auth'
 import CardExample from '@/components/bootstrap/cards'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from './membership-levels'
-import CouponQuery from '@/components/coupon/coupon-query-components'
-import CouponList from '../coupon/test'
 
 
 export default function Dashboard() {
