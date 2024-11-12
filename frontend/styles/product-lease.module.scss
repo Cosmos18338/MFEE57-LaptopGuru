@@ -302,6 +302,19 @@
   font-size: var(--h10-font-size);
   line-height: 24px;
 }
+.product_collection_checkbox {
+  display: none; /* 隱藏原生 checkbox */
+}
+
+.product_collection_icon {
+  cursor: pointer; /* 添加指標樣式 */
+  transition: color 0.3s ease; /* 添加過渡效果 */
+  stroke: white; /* 默認顏色 */
+}
+
+.product_collection_checkbox:checked + .product_collection_icon {
+  fill: #805af5; /* 選中顏色 */
+}
 
 /* 隱藏預設的 checkbox */
 .articleCheckbox input[type='checkbox'] {

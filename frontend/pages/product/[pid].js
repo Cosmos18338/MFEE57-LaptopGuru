@@ -8,16 +8,34 @@ import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import ProductCard from '@/components/product/product-card'
-
+import { useAuth } from '@/hooks/use-auth'
 export default function Detail() {
   // 從網址列的參數取得商品ID，並透過ID取得商品資料
   const router = useRouter()
   const { pid } = router.query
   const [data, setData] = useState(null)
   const [isLoading, setIsLoding] = useState(true)
-  // 狀態顯示訊息
 
+  const { auth } = useAuth() // 獲取 auth 對象
+  const { isAuth } = auth // 獲取 isAuth
+  const { userData } = auth // 獲取 userdata
+
+  const [isChecked, setIsChecked] = useState(false) // 用來控制 checkbox 狀態
   const [alertMessage, setAlertMessages] = useState([]) // 使用陣列儲存訊息
+  const [quantity, setQuantity] = useState(1) // 用來控制購買數量
+
+  // 初始化
+  const init = async () => {
+    const response = await fetch(
+      `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`
+    )
+    const result = await response.json()
+    if (result.status === 'success') {
+      setIsChecked(true)
+    }
+  }
+  // 初始化
+  init()
 
   // 新增訊息到陣列
   const handleShowMessage = (message) => {
@@ -67,6 +85,92 @@ export default function Detail() {
       fetchRelatedProducts()
     }
   }, [pid])
+
+  //收藏按鈕的狀態
+  const toggleHeart = async () => {
+    if (isAuth) {
+      // 點擊按鈕時傳送訊息到父元件
+      if (isChecked) {
+        //刪除favorite_management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          if (response.ok) {
+            // 收藏成功
+            handleShowMessage('取消收藏！')
+            setIsChecked(false)
+          } else {
+            handleShowMessage('取消收藏失敗！')
+          }
+        } catch (error) {
+          handleShowMessage('取消收藏失敗！')
+        }
+      } else {
+        //寫入favorite management資料庫
+        try {
+          const response = await fetch(
+            `http://localhost:3005/api/favorites/${userData.user_id}/${pid}`,
+            {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          if (response.ok) {
+            // 收藏成功
+            handleShowMessage('收藏成功！')
+            setIsChecked(true)
+          } else {
+            handleShowMessage('收藏失敗！')
+          }
+        } catch (error) {
+          handleShowMessage('收藏失敗！')
+        }
+      }
+    } else {
+      window.location.href = 'http://localhost:3000/member/login'
+    }
+  }
+
+  // 加入購物車
+  const addToCart = async () => {
+    if (isAuth) {
+      // 加入購物車資料庫
+      try {
+        const response = await fetch(`http://localhost:3005/api/cart/add`, {
+          method: 'PUT',
+          body: JSON.stringify({
+            user_id: userData.user_id,
+            product_id: pid,
+            quantity: quantity,
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        const result = await response.json()
+        if (result.status == 'success') {
+          handleShowMessage('加入購物車成功！')
+        } else {
+          handleShowMessage('加入購物車失敗，請再試一次！')
+        }
+      } catch (error) {
+        handleShowMessage('加入購物車失敗，請洽管理員！')
+      }
+    } else {
+      window.location.href = 'http://localhost:3000/member/login'
+    }
+  }
   return (
     <>
       <Header />
@@ -88,7 +192,7 @@ export default function Detail() {
                   }
                   height={400}
                   width={500}
-                  alt="Product"
+                  alt="product"
                 />
                 <div className={`${styles.carouselBtn} ${styles.leftBtn}`}>
                   <Image
@@ -155,14 +259,34 @@ export default function Detail() {
                       alt="Cart"
                       width={20}
                       height={20}
+                      onClick={addToCart}
                     />
-                    <Image
-                      className={styles.heart}
-                      src="/images/lease/heart.svg"
-                      alt="Favorite"
+
+                    <input
+                      type="checkbox"
+                      id="heartCheckbox"
+                      checked={isChecked}
+                      className={styles.product_collection_checkbox}
+                    />
+                    <svg
+                      className={styles.product_collection_icon}
+                      onClick={toggleHeart}
                       width={20}
                       height={20}
-                    />
+                      viewBox="0 0 32 30"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </div>
                 </div>
 
@@ -190,13 +314,23 @@ export default function Detail() {
                         max="99"
                         defaultValue={1}
                         className={styles.quantityInput}
+                        onChange={(e) => setQuantity(e.target.value)}
                       />
                     </div>
                   </div>
                 </div>
 
                 <div className={styles.buttonContainer}>
-                  <button className={styles.rentButton}>購買</button>
+                  {/* 加入購物車並挑轉到購物車頁 */}
+                  <button
+                    className={styles.rentButton}
+                    onClick={() => {
+                      addToCart()
+                      router.push('/cart')
+                    }}
+                  >
+                    購買
+                  </button>
                   <div className={styles.articleCheckbox}>
                     <input type="checkbox" id="customCheck" />
                     <label htmlFor="customCheck" style={{ color: 'white' }}>
