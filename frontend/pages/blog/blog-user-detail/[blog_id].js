@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 import Link from 'next/link'
+import { IoArrowBackCircleOutline } from 'react-icons/io5'
 
 export default function BlogId() {
   const router = useRouter()
@@ -32,8 +33,17 @@ export default function BlogId() {
   return (
     <>
       <ArticleDetailMainArea />
+      <div className=" mt-5 mb-5">
+        <Link
+          href="/blog/blog-user-overview/1"
+          className="text-decoration-none fs-5" // 移除底線
+        >
+          <p>
+            <IoArrowBackCircleOutline /> 返回部落格總覽
+          </p>
+        </Link>
+      </div>
 
-      <p>返回user-overview的按鈕</p>
       {/* <div>
         <div className="mt-5">
           <div className="mb-5">
@@ -58,15 +68,33 @@ export default function BlogId() {
             alt
           />
         </div>
-        <p className="display-5 BlogDetailSectionContentAreaTitle">
-          部落格標題
-        </p>
-        <p className="display-5 fw-bold BlogDetailSectionContentAreaTitle">
-          {blogData.blog_title}
-        </p>
-        <p className="display-5 BlogDetailText">部落格內文</p>
-        <p className="BlogDetailText">{blogData.blog_content}</p>
-        {/* <p className="BlogDetailText">要不要刪除阿</p> */}
+        <div className="d-flex flex-column">
+          <div>
+            <p className="mb-5 mt-5 display-5 fw-bold  BlogDetailSectionContentAreaTitle">
+              部落格標題
+            </p>
+            <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
+              {blogData.blog_title}
+            </p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5">
+            <p className="display-5 fw-bold "> 部落格分類</p>
+            <p className="fs-5 fw-bold">{blogData.blog_type}</p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold ">
+            <p className="display-5 fw-bold ">品牌</p>
+            <p className="fs-5 fw-bold">{blogData.blog_brand}</p>
+          </div>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5">
+            <p className="display-5 fw-bold">購買機型</p>
+            <p>{blogData.blog_brand_model}</p>
+          </div>
+        </div>
+
+        <div className="mb-5 mt-5 d-flex flex-column gap-5">
+          <p className="display-5 BlogDetailText fw-bold">部落格內文</p>
+          <p className="fs-5 BlogDetailText">{blogData.blog_content}</p>
+        </div>
 
         <Link href={`/blog/blog-user-edit/${blog_id}`}>
           <button className="BlogEditButtonDelete" type="button">
