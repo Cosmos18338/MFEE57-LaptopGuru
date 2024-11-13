@@ -4,59 +4,127 @@ import ChatRoom from '@/components/chatroom/ChatRoom'
 import CreateRoomForm from '@/components/chatroom/CreateRoomForm'
 import UserList from '@/components/chatroom/UserList'
 import EventButton from '@/components/event/EventButton'
+import websocketService from '@/services/websocketService'
 import styles from '@/styles/Chat.module.css'
 
 export default function Chat() {
-  // 初始化時給一個空數組
   const [users, setUsers] = useState([])
   const [rooms, setRooms] = useState([])
-  const [ws, setWs] = useState(null)
   const [messages, setMessages] = useState([])
   const [currentRoom, setCurrentRoom] = useState(null)
-  const [currentUser, setCurrentUser] = useState(1)
+  const [currentUser, setCurrentUser] = useState(null)
   const [showCreateRoom, setShowCreateRoom] = useState(false)
   const [message, setMessage] = useState('')
 
-  // 使用 useEffect 來設置初始數據
+  // 初始化 WebSocket 連接和事件監聽
   useEffect(() => {
-    // 模擬從 API 獲取數據
-    setUsers([
-      { id: 1, name: 'User 1', online: true },
-      { id: 2, name: 'User 2', online: false },
-      // 更多使用者...
-    ])
+    // 假設從 localStorage 或 context 獲取用戶ID
+    const userId = localStorage.getItem('userId') || 1
+    setCurrentUser(userId)
 
-    setRooms([
-      { id: 1, name: '公共聊天室', memberCount: 5 },
-      { id: 2, name: '遊戲討論', memberCount: 3 },
-      // 更多房間...
-    ])
+    // 連接 WebSocket
+    websocketService.connect(userId)
+
+    // 註冊監聽器
+    websocketService.on('registered', handleRegistered)
+    websocketService.on('message', handleNewMessage)
+    websocketService.on('roomCreated', handleRoomCreated)
+    websocketService.on('userJoined', handleUserJoined)
+    websocketService.on('userLeft', handleUserLeft)
+
+    // 載入初始數據
+    fetchInitialData()
+
+    // 清理函數
+    return () => {
+      websocketService.disconnect()
+    }
   }, [])
 
+  // 獲取初始數據
+  const fetchInitialData = async () => {
+    try {
+      const [usersResponse, roomsResponse] = await Promise.all([
+        fetch('http://localhost:3005/api/chat/users'),
+        fetch('http://localhost:3005/api/chat/rooms'),
+      ])
+
+      const usersData = await usersResponse.json()
+      const roomsData = await roomsResponse.json()
+
+      if (usersData.status === 'success') setUsers(usersData.data)
+      if (roomsData.status === 'success') setRooms(roomsData.data)
+    } catch (error) {
+      console.error('獲取初始數據失敗:', error)
+    }
+  }
+
+  // WebSocket 事件處理函數
+  const handleRegistered = (data) => {
+    setRooms(data.roomAry || [])
+  }
+
+  const handleNewMessage = (data) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        fromID: data.fromID,
+        content: data.message,
+        roomID: data.roomID,
+        timestamp: new Date(),
+        isPrivate: data.private,
+      },
+    ])
+  }
+
+  const handleRoomCreated = (data) => {
+    setRooms((prev) => [...prev, data.room])
+  }
+
+  const handleUserJoined = (data) => {
+    setUsers((prev) => [...prev, data.user])
+  }
+
+  const handleUserLeft = (data) => {
+    setUsers((prev) =>
+      prev.map((user) =>
+        user.id === data.userId ? { ...user, online: false } : user
+      )
+    )
+  }
+
+  // 用戶交互處理函數
   const handlePrivateChat = (userId) => {
     setCurrentRoom(null)
-    // 這裡可以添加開啟私人聊天的邏輯
-    console.log('Opening private chat with user:', userId)
+    // 開啟私人聊天
+    websocketService.send({
+      type: 'openPrivateChat',
+      targetUserId: userId,
+      fromId: currentUser,
+    })
   }
 
   const handleRoomSelect = (roomId) => {
     setCurrentRoom(roomId)
-    // 這裡可以添加切換房間的邏輯
-    console.log('Switching to room:', roomId)
+    if (roomId) {
+      websocketService.send({
+        type: 'joinRoom',
+        roomID: roomId,
+        fromID: currentUser,
+      })
+    }
   }
 
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (!message.trim()) return
 
-    ws?.send(
-      JSON.stringify({
-        type: 'message',
-        fromID: currentUser,
-        message: message,
-        roomID: currentRoom,
-      })
-    )
+    websocketService.send({
+      type: 'message',
+      fromID: currentUser,
+      message: message,
+      roomID: currentRoom,
+    })
 
     setMessage('')
   }
@@ -65,7 +133,6 @@ export default function Chat() {
     <Container fluid className={styles.container}>
       <h3 className={styles.chatTitle}>聊天室</h3>
       <div className={styles.chatLayout}>
-        {/* 左側使用者列表 */}
         <UserList
           users={users}
           rooms={rooms}
@@ -75,18 +142,15 @@ export default function Chat() {
           onRoomSelect={handleRoomSelect}
         />
 
-        {/* 右側聊天區域 */}
         <div className={styles.chatContent}>
           <ChatRoom
             messages={messages}
             currentUser={currentUser}
             currentRoom={currentRoom}
-            ws={ws}
           />
         </div>
       </div>
 
-      {/* 底部輸入區域 */}
       <div className={styles.inputArea}>
         <form onSubmit={handleSendMessage} className={styles.inputForm}>
           <input
@@ -102,11 +166,9 @@ export default function Chat() {
         </form>
       </div>
 
-      {/* 新增聊天室的 Modal */}
       <CreateRoomForm
         show={showCreateRoom}
         onHide={() => setShowCreateRoom(false)}
-        ws={ws}
         currentUser={currentUser}
       />
     </Container>

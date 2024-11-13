@@ -3,67 +3,105 @@ import { ChatRoom } from '../models/ChatRoom.js'
 
 class ChatService {
   constructor() {
-    this.clients = new Map()
-    this.rooms = new Map()
+    this.clients = new Map() // userId -> WebSocket
+    this.rooms = new Map() // roomId -> Set<WebSocket>
   }
 
-  // 處理新的WebSocket連接
-  handleConnection(ws) {
-    ws.on('message', (message) => this.handleMessage(ws, message))
-    ws.on('close', () => this.handleDisconnect(ws))
-  }
+  handleConnection(ws, req) {
+    console.log('新的 WebSocket 連接已建立')
 
-  // 處理接收到的訊息
-  handleMessage(ws, message) {
-    try {
-      const data = JSON.parse(message)
-
-      switch (data.type) {
-        case 'register':
-          this.registerClient(ws, data)
-          break
-        case 'message':
-          this.broadcastMessage(data)
-          break
-        case 'joinRoom':
-          this.handleJoinRoom(ws, data)
-          break
-        case 'leaveRoom':
-          this.handleLeaveRoom(ws, data)
-          break
+    ws.on('message', async (message) => {
+      try {
+        const data = JSON.parse(message.toString())
+        await this.handleMessage(ws, data)
+      } catch (error) {
+        console.error('處理訊息錯誤:', error)
+        ws.send(
+          JSON.stringify({
+            type: 'error',
+            message: '處理訊息時發生錯誤',
+          })
+        )
       }
-    } catch (error) {
-      console.error('處理訊息時發生錯誤:', error)
-    }
-  }
+    })
 
-  // 註冊客戶端
-  registerClient(ws, data) {
-    const { userID } = data
-    this.clients.set(userID, ws)
-    ws.userID = userID
+    ws.on('close', () => {
+      this.handleDisconnect(ws)
+    })
 
-    // 使用 ChatRoom 來獲取房間列表
-    ChatRoom.getAll().then((rooms) => {
-      const roomAry = rooms.map((room) => ({
-        id: room.id,
-        name: room.name,
-      }))
-
-      ws.send(
-        JSON.stringify({
-          type: 'registered',
-          roomAry,
-        })
-      )
+    ws.on('error', (error) => {
+      console.error('WebSocket 客戶端錯誤:', error)
     })
   }
 
-  // 廣播訊息
-  async broadcastMessage(data) {
+  async handleMessage(ws, data) {
+    console.log('收到訊息:', data)
+
+    switch (data.type) {
+      case 'register':
+        await this.handleRegister(ws, data)
+        break
+      case 'message':
+        await this.handleChatMessage(ws, data)
+        break
+      case 'joinRoom':
+        await this.handleJoinRoom(ws, data)
+        break
+      case 'leaveRoom':
+        await this.handleLeaveRoom(ws, data)
+        break
+      default:
+        console.warn('未知的訊息類型:', data.type)
+    }
+  }
+
+  async handleRegister(ws, data) {
+    const { userID } = data
+
+    // 儲存客戶端連接
+    this.clients.set(userID, ws)
+    ws.userID = userID
+
+    try {
+      // 獲取房間列表
+      const rooms = await ChatRoom.getAll()
+
+      // 發送註冊成功和房間列表
+      ws.send(
+        JSON.stringify({
+          type: 'registered',
+          success: true,
+          rooms: rooms.map((room) => ({
+            id: room.id,
+            name: room.name,
+            memberCount: room.memberCount,
+          })),
+        })
+      )
+
+      // 廣播用戶上線通知
+      this.broadcast(
+        {
+          type: 'userConnected',
+          userID,
+        },
+        [ws]
+      )
+    } catch (error) {
+      console.error('處理註冊錯誤:', error)
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          message: '註冊處理失敗',
+        })
+      )
+    }
+  }
+
+  async handleChatMessage(ws, data) {
     const { fromID, message, roomID, targetUserID } = data
 
-    if (roomID) {
+    try {
       // 儲存訊息到資料庫
       await ChatRoom.saveMessage({
         roomId: roomID,
@@ -73,65 +111,159 @@ class ChatService {
         recipientId: targetUserID,
       })
 
-      // 發送訊息給目標使用者或房間成員
+      const messageData = {
+        type: 'message',
+        fromID,
+        message,
+        timestamp: new Date().toISOString(),
+        roomID,
+      }
+
       if (targetUserID) {
-        const targetClient = this.clients.get(targetUserID)
-        if (targetClient && targetClient.readyState === WebSocket.OPEN) {
-          targetClient.send(
-            JSON.stringify({
-              type: 'message',
-              fromID,
-              message,
-              roomID,
-              private: true,
-            })
-          )
+        // 私人訊息
+        const targetWs = this.clients.get(targetUserID)
+        if (targetWs?.readyState === WebSocket.OPEN) {
+          messageData.private = true
+          targetWs.send(JSON.stringify(messageData))
+          ws.send(JSON.stringify(messageData)) // 發送者也收到訊息
         }
       } else {
-        const members = await ChatRoom.getMembers(roomID)
-        members.forEach((member) => {
-          const client = this.clients.get(member.user_id)
-          if (client && client.readyState === WebSocket.OPEN) {
-            client.send(
-              JSON.stringify({
-                type: 'message',
-                fromID,
-                message,
-                roomID,
-              })
-            )
-          }
-        })
+        // 群組訊息
+        this.broadcastToRoom(roomID, messageData, ws)
       }
+    } catch (error) {
+      console.error('處理聊天訊息錯誤:', error)
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          message: '發送訊息失敗',
+        })
+      )
     }
   }
 
-  // 處理加入房間
   async handleJoinRoom(ws, data) {
     const { roomID, fromID } = data
-    await ChatRoom.addMember(roomID, fromID)
 
-    const members = await ChatRoom.getMembers(roomID)
-    members.forEach((member) => {
-      const client = this.clients.get(member.user_id)
-      if (client && client.readyState === WebSocket.OPEN) {
-        client.send(
-          JSON.stringify({
-            type: 'joinRoom',
-            fromID,
-            roomID,
-            members: members.map((m) => m.user_id),
+    try {
+      await ChatRoom.addMember(roomID, fromID)
+
+      if (!this.rooms.has(roomID)) {
+        this.rooms.set(roomID, new Set())
+      }
+      this.rooms.get(roomID).add(ws)
+
+      const members = await ChatRoom.getMembers(roomID)
+
+      // 通知房間內所有成員
+      this.broadcastToRoom(roomID, {
+        type: 'memberJoined',
+        roomID,
+        userID: fromID,
+        members: members.map((m) => m.user_id),
+      })
+
+      // 發送加入成功確認
+      ws.send(
+        JSON.stringify({
+          type: 'roomJoined',
+          roomID,
+          success: true,
+        })
+      )
+    } catch (error) {
+      console.error('處理加入房間錯誤:', error)
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          message: '加入房間失敗',
+        })
+      )
+    }
+  }
+
+  async handleLeaveRoom(ws, data) {
+    const { roomID, userID } = data
+
+    try {
+      await ChatRoom.removeMember(roomID, userID)
+      const roomClients = this.rooms.get(roomID)
+      if (roomClients) {
+        roomClients.delete(ws)
+      }
+
+      // 通知房間其他成員
+      this.broadcastToRoom(
+        roomID,
+        {
+          type: 'memberLeft',
+          roomID,
+          userID,
+        },
+        ws
+      )
+
+      ws.send(
+        JSON.stringify({
+          type: 'roomLeft',
+          roomID,
+          success: true,
+        })
+      )
+    } catch (error) {
+      console.error('處理離開房間錯誤:', error)
+      ws.send(
+        JSON.stringify({
+          type: 'error',
+          message: '離開房間失敗',
+        })
+      )
+    }
+  }
+
+  handleDisconnect(ws) {
+    if (ws.userID) {
+      // 移除客戶端連接
+      this.clients.delete(ws.userID)
+
+      // 從所有房間中移除
+      this.rooms.forEach((clients, roomID) => {
+        if (clients.has(ws)) {
+          clients.delete(ws)
+          // 通知房間其他成員
+          this.broadcastToRoom(roomID, {
+            type: 'memberDisconnected',
+            userID: ws.userID,
           })
-        )
+        }
+      })
+
+      // 廣播用戶離線通知
+      this.broadcast({
+        type: 'userDisconnected',
+        userID: ws.userID,
+      })
+    }
+  }
+
+  broadcast(message, excludeWs = []) {
+    const messageStr = JSON.stringify(message)
+    this.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN && !excludeWs.includes(client)) {
+        client.send(messageStr)
       }
     })
   }
 
-  // 處理斷開連接
-  handleDisconnect(ws) {
-    if (ws.userID) {
-      this.clients.delete(ws.userID)
-      // 可以在這裡處理使用者離線的邏輯
+  broadcastToRoom(roomID, message, excludeWs = null) {
+    const messageStr = JSON.stringify(message)
+    const roomClients = this.rooms.get(roomID)
+    if (roomClients) {
+      roomClients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN && client !== excludeWs) {
+          client.send(messageStr)
+        }
+      })
     }
   }
 }
