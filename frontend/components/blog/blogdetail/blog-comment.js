@@ -19,16 +19,21 @@ export default function BlogComment({ blog_id }) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 
-  // 获取评论列表
+  // 2. 修改加載判斷邏輯
   useEffect(() => {
     if (blog_id) {
       fetch(`http://localhost:3005/api/blog/blog-comment/${blog_id}`)
         .then((response) => response.json())
         .then((data) => {
-          setBlogComment(data)
-          console.log('撈取資料正常')
+          // 確保 data 是陣列
+          const commentArray = Array.isArray(data) ? data : []
+          setBlogComment(commentArray)
+          console.log('撈取資料正常:', commentArray)
         })
-        .catch((error) => console.error('Error fetching blog data:', error))
+        .catch((error) => {
+          console.error('Error fetching blog data:', error)
+          setBlogComment([]) // 錯誤時設為空陣列
+        })
     }
   }, [blog_id])
 
@@ -37,7 +42,11 @@ export default function BlogComment({ blog_id }) {
   const user_id = userData.user_id
   console.log(user_id)
 
-  // 处理提交评论
+  // 3. 修改 loading 判斷
+  if (!Array.isArray(blogComment)) {
+    return <p>Loading comments...</p>
+  }
+
   const handleSubmit = async () => {
     if (!newComment.trim()) {
       alert('請輸入留言內容')
@@ -64,12 +73,12 @@ export default function BlogComment({ blog_id }) {
       )
 
       if (response.ok) {
-        // 提交成功后刷新评论列表
         const newData = await response.json()
-        setBlogComment([...blogComment, newData])
-        setNewComment('') // 清空输入框
+        // 直接更新現有的評論列表
+        setBlogComment((prevComments) => [...prevComments, newData])
+        setNewComment('') // 清空輸入框
         alert('留言成功！')
-        router.reload()
+        // 移除 router.reload()
       } else {
         alert('你沒登入吧！')
       }
@@ -94,11 +103,15 @@ export default function BlogComment({ blog_id }) {
               <div className="overflow-hidden BlogDetailCommentImg">
                 <img
                   className="w-100 h-100 object-fit-cover"
-                  src="https://th.bing.com/th/id/R.88c444f63f40cfa9b49801f826befa80?rik=QAme0H3xbxieEQ&pid=ImgRaw&r=0"
-                  alt=""
+                  src={
+                    comment.image_path
+                      ? `http://localhost:3005${comment.image_path}`
+                      : 'https://th.bing.com/th/id/R.88c444f63f40cfa9b49801f826befa80?rik=QAme0H3xbxieEQ&pid=ImgRaw&r=0'
+                  }
+                  alt={comment.name || '匿名用戶'}
                 />
               </div>
-              <p>要換成名字和大頭貼的話要去撈 user 資料表</p>
+              {/* <p>{comment.name || '匿名用戶'}</p> */}
               <p>於 {comment.blog_created_date} 留言</p>
             </div>
             <div className="w-100 h-100 mt-5 mb-5">{comment.blog_content}</div>

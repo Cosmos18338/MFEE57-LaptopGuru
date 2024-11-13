@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
@@ -10,15 +10,17 @@ export default function Blogcreated(props) {
 
   // -------------------使用者-------------------
   const { auth } = useAuth()
-  const { userData } = auth
+  const { isAuth, userData } = auth // 一起解構
   const user_id = userData.user_id
   console.log(user_id)
+  // -------------------使用者-------------------
 
-  // 如果沒有登入就導向首頁或登入頁
-  if (!userData) {
-    router.push('http://localhost:3000/member/login') // 或是 router.push('/')
-    return null // 返回 null 避免渲染其他內容
-  }
+  // 2. 用戶驗證，如果沒有登入就導向首頁或登入頁
+  useEffect(() => {
+    if (!isAuth) {
+      router.push('http://localhost:3000/member/login')
+    }
+  }, [isAuth, router])
   // -------------------使用者-------------------
 
   const brands = [
@@ -92,6 +94,9 @@ export default function Blogcreated(props) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
     }
+  }
+  if (!isAuth) {
+    return null // 或是返回一個 loading 元件
   }
 
   return (

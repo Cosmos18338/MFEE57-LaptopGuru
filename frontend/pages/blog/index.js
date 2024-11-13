@@ -12,7 +12,7 @@ export default function BlogSearchPage() {
 
   // -------------------使用者-------------------
   const { auth } = useAuth()
-  const { userData } = auth
+  const { userData, isAuth } = auth // 加上 isAuth 的解構
   const user_id = userData.user_id
   console.log(user_id)
   // -------------------使用者-------------------
@@ -167,29 +167,22 @@ export default function BlogSearchPage() {
         {/* 搜尋列 */}
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-        {userData?.user_id ? (
-          <Link href="/blog/blog-created">
-            <div className="d-flex flex-row-reverse mb-5">
-              <button
-                type="button"
-                className="btn text-white BlogIndexCreatedButton"
-              >
-                新增發文！
-              </button>
-            </div>
+        <div className="d-flex flex-row-reverse mb-5">
+          <Link
+            href={
+              isAuth
+                ? '/blog/blog-created'
+                : 'http://localhost:3000/member/login'
+            }
+          >
+            <button
+              type="button"
+              className="btn text-white BlogIndexCreatedButton"
+            >
+              {isAuth ? '新增發文！' : '登入後發文'}
+            </button>
           </Link>
-        ) : (
-          <Link href="http://localhost:3000/member/login">
-            <div className="d-flex flex-row-reverse mb-5">
-              <button
-                type="button"
-                className="btn text-white BlogIndexCreatedButton"
-              >
-                登入後發文
-              </button>
-            </div>
-          </Link>
-        )}
+        </div>
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="position-relative">

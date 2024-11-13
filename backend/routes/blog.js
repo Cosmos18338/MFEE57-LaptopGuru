@@ -208,6 +208,7 @@ router.get('/blog-edit/:blog_id', async (req, res) => {
       'SELECT * FROM blogoverview WHERE blog_id = ?',
       [req.params.blog_id]
     )
+    console.log('後端返回的資料:', rows[0]) // 檢查資料
     res.json(rows[0])
   } catch (error) {
     res.status(500).json({ error: '獲取失敗' })
@@ -219,9 +220,6 @@ router.put(
   upload.single('blog_image'),
   async (req, res) => {
     try {
-      // console.log('收到的資料:', req.body)
-      // console.log('收到的檔案:', req.file)
-
       const {
         user_id,
         blog_type,
@@ -230,6 +228,7 @@ router.put(
         blog_brand,
         blog_brand_model,
         blog_keyword,
+        originalImage,
       } = req.body
 
       // 修改圖片處理邏輯
@@ -237,18 +236,18 @@ router.put(
       if (req.file) {
         // 有新上傳的圖片
         blog_image = `/blog-images/${req.file.originalname}`
-      } else if (req.body.blog_image) {
-        // 沒有新圖片，但有舊圖片路徑
-        blog_image = req.body.blog_image
+      } else if (originalImage) {
+        // 使用原始圖片
+        blog_image = originalImage
       }
 
       const sql = `
-        UPDATE blogoverview 
-        SET user_id=?, blog_type=?, blog_title=?, blog_content=?, 
-            blog_brand=?, blog_brand_model=?, blog_keyword=?, 
-            blog_image=?
-        WHERE blog_id=?
-      `
+      UPDATE blogoverview 
+      SET user_id=?, blog_type=?, blog_title=?, blog_content=?, 
+          blog_brand=?, blog_brand_model=?, blog_keyword=?, 
+          blog_image=?
+      WHERE blog_id=?
+    `
 
       await db.query(sql, [
         user_id,
@@ -262,7 +261,10 @@ router.put(
         req.params.blog_id,
       ])
 
-      res.json({ success: true })
+      res.json({
+        success: true,
+        blog_image: blog_image, // 返回最終使用的圖片路徑
+      })
     } catch (error) {
       console.error('更新錯誤:', error)
       res.status(500).json({ error: '更新失敗' })
@@ -323,68 +325,68 @@ router.get('/blog_user_overview/:user_id', async (req, res) => {
   }
 })
 
+// GET 評論路由
 router.get('/blog-comment/:blog_id', async (req, res) => {
   try {
+    console.log('收到查詢請求，blog_id:', req.params.blog_id) // 加入偵錯訊息
+
     const [blogComment] = await db.query(
-      'SELECT * FROM blogcomment WHERE blog_id = ?',
+      `SELECT 
+        bc.*,
+        users.name,
+        users.image_path
+      FROM blogcomment bc
+      LEFT JOIN users ON bc.user_id = users.user_id
+      WHERE bc.blog_id = ?
+      ORDER BY bc.blog_created_date ASC`,
       [req.params.blog_id]
     )
 
-    if (!blogComment) {
-      return res.status(404).json({ message: '找不到該文章' })
-    }
+    console.log('查詢結果:', blogComment) // 加入偵錯訊息
 
-    res.json(blogComment)
+    // 修改這裡的判斷邏輯
+    // if (!blogComment) {
+    //   return res.status(404).json({ message: '找不到該文章' })
+    // }
+
+    // 始終返回陣列
+    res.json(blogComment || [])
   } catch (error) {
     console.error('部落格查詢錯誤:', error)
     res.status(500).json({ message: '伺服器錯誤' })
   }
 })
 
+// POST 評論路由
 router.post('/blog-comment/:blog_id', async (req, res) => {
   const { blog_id } = req.params
   const { user_id, blog_content, blog_created_date } = req.body
 
-  const sql = `
-    INSERT INTO blogcomment 
-    (blog_id, user_id, blog_content, blog_created_date) 
-    VALUES (?, ?, ?, ?)
-  `
-
   try {
-    const [result] = await db.execute(sql, [
-      blog_id,
-      user_id,
-      blog_content,
-      blog_created_date,
-    ])
+    // 1. 新增評論
+    const [result] = await db.execute(
+      `INSERT INTO blogcomment 
+      (blog_id, user_id, blog_content, blog_created_date) 
+      VALUES (?, ?, ?, ?)`,
+      [blog_id, user_id, blog_content, blog_created_date]
+    )
 
-    res.json({ success: true, comment_id: result.insertId })
+    // 2. 獲取剛新增的評論及用戶資料
+    const [newComment] = await db.query(
+      `SELECT 
+        bc.*,
+        users.name,
+        users.image_path
+      FROM blogcomment bc
+      LEFT JOIN users ON bc.user_id = users.user_id
+      WHERE bc.blog_comment_id = ?`,
+      [result.insertId]
+    )
+
+    res.json(newComment[0])
   } catch (error) {
+    console.error('新增評論錯誤:', error)
     res.status(500).json({ error: 'Error posting comment' })
-  }
-})
-router.get('/latest', async (req, res) => {
-  const { page = 1, limit = 6 } = req.query
-  const offset = (page - 1) * limit
-
-  try {
-    const [[{ total }]] = await db.query(
-      'SELECT COUNT(*) as total FROM blogoverview WHERE blog_valid_value = 1'
-    )
-
-    const [blogs] = await db.query(
-      `SELECT * FROM blogoverview 
-       WHERE blog_valid_value = 1
-       ORDER BY blog_created_date DESC 
-       LIMIT ? OFFSET ?`,
-      [Number(limit), offset]
-    )
-
-    res.json({ blogs, total })
-  } catch (error) {
-    console.error('Latest blogs error:', error)
-    res.status(500).json({ message: '伺服器錯誤' })
   }
 })
 
