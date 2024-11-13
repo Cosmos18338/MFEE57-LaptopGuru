@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ArticleSectionContainer from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import Link from 'next/link'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const ITEMS_PER_PAGE = 6
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData, isAuth } = auth // 加上 isAuth 的解構
+  const user_id = userData.user_id
+  console.log(user_id)
+  // -------------------使用者-------------------
 
   // 統一的過濾狀態
   const [filters, setFilters] = useState({
@@ -159,16 +167,22 @@ export default function BlogSearchPage() {
         {/* 搜尋列 */}
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-        <Link href={`/blog/blog-created`}>
-          <div className="d-flex flex-row-reverse mb-5">
+        <div className="d-flex flex-row-reverse mb-5">
+          <Link
+            href={
+              isAuth
+                ? '/blog/blog-created'
+                : 'http://localhost:3000/member/login'
+            }
+          >
             <button
               type="button"
               className="btn text-white BlogIndexCreatedButton"
             >
-              新增發文！
+              {isAuth ? '新增發文！' : '登入後發文'}
             </button>
-          </div>
-        </Link>
+          </Link>
+        </div>
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="position-relative">

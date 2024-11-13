@@ -29,13 +29,13 @@ export default function UserProfile() {
   // const [currentPassword,
   //   newPassword]=useState({password:''})
 
-const [passwordErrors, setPasswordErrors] = useState({
-  newPassword1: '',
-  newPassword2: ''
-});
+  const [passwordErrors, setPasswordErrors] = useState({
+    newPassword1: '',
+    newPassword2: '',
+  })
 
   const [profilePic, setProfilePic] = useState(
-    'https://via.placeholder.com/220x220'
+    editableUser.image_path ||'https://via.placeholder.com/220x220' 
   )
   const [showpassword, setShowpassword] = useState(false)
   const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
@@ -181,7 +181,7 @@ const [passwordErrors, setPasswordErrors] = useState({
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
-            valid: userData.valid??1,
+            valid: userData.valid ?? 1,
             // email: userData.email || '',
           })
 
@@ -362,7 +362,7 @@ const [passwordErrors, setPasswordErrors] = useState({
       }
       const dataToSubmit = {
         ...editableUser,
-        // email: auth?.userData?.email || editableUser.email, 
+        // email: auth?.userData?.email || editableUser.email,
         // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
       }
       delete dataToSubmit.password // 移除 password 欄位

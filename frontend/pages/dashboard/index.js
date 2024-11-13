@@ -11,6 +11,7 @@ import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
+import BlogUserOverview from '@/components/blog/bloguseroverview'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
@@ -28,8 +29,8 @@ export default function Test1() {
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
-      { key: 'processing', label: '處理中' },
-      { key: 'completed', label: '已完成' },
+      { key: 'processing', label: '未付款' },
+      { key: 'completed', label: '已付款' },
     ],
     'coupon-record': [
       { key: 'available', label: '優惠卷' },
@@ -37,7 +38,7 @@ export default function Test1() {
     ],
     'blog-record': [
       { key: 'my-posts', label: '我的文章' },
-      { key: 'drafts', label: '草稿' },
+      // { key: 'drafts', label: '草稿' },
     ],
     'activity-record': [
       { key: 'upcoming', label: '即將參加' },
@@ -147,7 +148,7 @@ export default function Test1() {
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="blog-record">文章</Nav.Link>
+                <Nav.Link eventKey="blog-record">部落格</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="activity-record">活動</Nav.Link>
@@ -167,7 +168,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <BuylistPage />
+                  <BuylistPage orderStatus={subActiveKey} />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
@@ -179,8 +180,9 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">
                 <div>
-                  <h4>文章列表</h4>
-                  <p>這裡是文章列表的內容。</p>
+                  <BlogUserOverview />
+                  {/* <h4>文章列表</h4>
+                  <p>這裡是文章列表的內容。</p> */}
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="activity-record">

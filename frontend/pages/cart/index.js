@@ -1,21 +1,18 @@
-import React, { use } from 'react'
+import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import BuyCard from '@/components/cart/buy-card'
-import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
-import Link from 'next/link'
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值
 
 export default function CartIndex() {
-  const router = useRouter()
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
@@ -30,6 +27,7 @@ export default function CartIndex() {
 
   const [couponDetails, setCouponDetails] = useState({
     coupon_id: '',
+    coupon_code: '',
     coupon_discount: 0,
     finalPrice: 0,
   })
@@ -126,7 +124,7 @@ export default function CartIndex() {
 
     const check = await MySwal.fire({
       title: '確認訂單後將無法修改',
-      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>金額: ${couponDetails.finalPrice}元`,
+      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${couponDetails.coupon_code}<br>金額: ${couponDetails.finalPrice}元`,
       icon: 'warning',
       showCancelButton: true,
 
@@ -203,6 +201,7 @@ export default function CartIndex() {
   useEffect(() => {
     setCouponDetails({
       coupon_id: '',
+      coupon_code: '',
       coupon_discount: 0,
       finalPrice: total,
     })
@@ -241,7 +240,7 @@ export default function CartIndex() {
             <p>購物車是空的</p>
           )}
           {cartdata && cartdata.length > 0 ? (
-            <div className="border border-primary w-50 p-3">
+            <div className="border border-primary rounded w-50 p-3">
               <h3>確認訂單細節</h3>
               <h5>收件人</h5>
               <div className="mb-2">
@@ -265,7 +264,7 @@ export default function CartIndex() {
                   }}
                 />
               </div>
-              <h5>地址</h5>
+              <h5>運送方式</h5>
               <div className="text-center mb-2">
                 <select
                   className="form-select border-primary"
@@ -378,6 +377,14 @@ export default function CartIndex() {
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="text-center mb-2">
                 <CouponBtn price={total} setCouponValue={setCouponDetails} />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  className="form-control border-primary"
+                  value={couponDetails.coupon_code}
+                  disabled
+                />
               </div>
             </div>
             <div>
