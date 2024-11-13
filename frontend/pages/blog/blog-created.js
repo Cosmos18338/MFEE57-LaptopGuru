@@ -1,11 +1,27 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { Upload } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { isAuth, userData } = auth // 一起解構
+  const user_id = userData.user_id
+  console.log(user_id)
+  // -------------------使用者-------------------
+
+  // 2. 用戶驗證，如果沒有登入就導向首頁或登入頁
+  useEffect(() => {
+    if (!isAuth) {
+      router.push('http://localhost:3000/member/login')
+    }
+  }, [isAuth, router])
+  // -------------------使用者-------------------
 
   const brands = [
     ['ROG', 'DELL', 'Acer', 'Raser'],
@@ -24,6 +40,7 @@ export default function Blogcreated(props) {
   }
 
   // 狀態定義
+
   const [blog_type, setType] = useState('')
   const [blog_title, setTitle] = useState('')
   const [blog_content, setContent] = useState('')
@@ -39,6 +56,7 @@ export default function Blogcreated(props) {
     e.preventDefault()
 
     const formData = new FormData()
+    formData.append('user_id', user_id)
     formData.append('blog_type', blog_type)
     formData.append('blog_title', blog_title)
     formData.append('blog_content', blog_content)
@@ -76,6 +94,9 @@ export default function Blogcreated(props) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
     }
+  }
+  if (!isAuth) {
+    return null // 或是返回一個 loading 元件
   }
 
   return (
@@ -147,7 +168,8 @@ export default function Blogcreated(props) {
           </div>
           <div>
             <textarea
-              className="form-control BlogCreatedTextArea"
+              className="form-control"
+              style={{ width: '430%' }}
               value={blog_content}
               onChange={(e) => setContent(e.target.value)}
               rows="20"

@@ -1,29 +1,44 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
+import { useRouter } from 'next/router'
+import { Form, Button } from 'react-bootstrap'
 import Coupon from '@/components/coupon'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { useAuth } from '@/hooks/use-auth'
 import { useDiscount } from '@/hooks/use-coupon-discount'
 
 const MySwal = withReactContent(Swal)
 
-export default function CouponBtn({ price, setCouponValue = () => {} }) {
+export default function CouponBtn({ price, setCouponValue }) {
+  const router = useRouter()
+  const { auth } = useAuth()
+  const userId = auth?.userData?.user_id
+
+  // 除錯用
+  console.log('當前auth狀態:', auth)
+  console.log('用戶ID:', userId)
+
   const {
     appliedCoupon,
     setAppliedCoupon,
     calculateFinalPrice,
     calculateDiscountAmount,
   } = useDiscount(price)
+
   const [couponDataList, setCouponDataList] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
 
-  const userId = 1 // 假設使用者 ID 是 1
-
   // 獲取優惠券列表
   const getCouponData = async () => {
+    if (!userId) {
+      setError('請先登入')
+      setLoading(false)
+      return
+    }
+
     try {
-      setLoading(true)
       const res = await fetch(`http://localhost:3005/api/coupon-user/${userId}`)
 
       if (!res.ok) {
@@ -47,8 +62,8 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
         throw new Error(resData.message || '獲取資料失敗')
       }
     } catch (err) {
-      setError(err.message)
       console.error('Error:', err)
+      setError(err.message)
       MySwal.fire({
         title: '錯誤',
         text: err.message,
@@ -61,23 +76,34 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
 
   // 更新優惠券狀態
   const updateCouponStatus = async (couponId) => {
-    try {
-      const res = await fetch('http://localhost:3005/api/coupon-user/update', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          user_id: userId,
-          coupon_id: couponId,
-          valid: 0,
-        }),
+    if (!userId) {
+      MySwal.fire({
+        title: '請先登入',
+        text: '需要登入才能使用優惠券',
+        icon: 'warning',
       })
+      router.push('/member/login')
+      return false
+    }
+
+    try {
+      const res = await fetch(
+        `http://localhost:3005/api/coupon-user/update/${userId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coupon_id: couponId,
+            valid: 0,
+          }),
+        }
+      )
 
       const data = await res.json()
 
       if (data.status === 'success') {
-        // 更新成功後重新獲取優惠券列表
         await getCouponData()
         return true
       } else {
@@ -113,23 +139,22 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
       })
 
       if (result.isConfirmed) {
-        // 更新優惠券狀態
-        const updateSuccess = await updateCouponStatus(coupon.coupon_id)
-
-        if (updateSuccess) {
-          setAppliedCoupon(coupon)
-          setCouponValue({
-            ...coupon,
-            discountAmount,
-            finalPrice,
-          })
-          setSearchTerm('')
-          MySwal.fire({
-            title: '成功',
-            text: '優惠券已套用',
-            icon: 'success',
-          })
-        }
+        // const updateSuccess = await updateCouponStatus(coupon.coupon_id)
+        // if (updateSuccess) {
+        setAppliedCoupon(coupon)
+        setCouponValue({
+          ...coupon,
+          coupon_code: coupon.coupon_code,
+          discountAmount,
+          finalPrice,
+        })
+        setSearchTerm('')
+        MySwal.fire({
+          title: '成功',
+          text: '優惠券已套用',
+          icon: 'success',
+        })
+        // }
       }
     } catch (error) {
       console.error('處理優惠券選擇失敗:', error)
@@ -137,8 +162,12 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
   }
 
   useEffect(() => {
-    getCouponData()
-  }, [])
+    if (userId) {
+      getCouponData()
+    } else {
+      setLoading(false)
+    }
+  }, [userId])
 
   // 搜尋功能
   const filteredCoupons = couponDataList.filter((coupon) => {
@@ -150,13 +179,34 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
     )
   })
 
+  // 檢查是否未登入
+  const handleClick = () => {
+    if (!userId) {
+      MySwal.fire({
+        title: '請先登入',
+        text: '需要登入才能使用優惠券',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: '前往登入',
+        cancelButtonText: '取消',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          router.push('/member/login')
+        }
+      })
+      return
+    }
+  }
+
   const couponModal = (
     <div>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary text-light "
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
+        onClick={handleClick}
+        style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
       >
         選擇優惠券
       </button>
@@ -170,7 +220,6 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
       >
-        {/* Modal 內容保持不變 */}
         <div className="modal-dialog modal-lg">
           <div className="modal-content">
             <div className="modal-header">
@@ -237,6 +286,7 @@ export default function CouponBtn({ price, setCouponValue = () => {} }) {
                         className="col-12 col-md-8 coupon-item"
                         key={coupon.id}
                         onClick={() => handleCouponSelect(coupon)}
+                        style={{ cursor: 'pointer' }}
                       >
                         <div className="d-flex justify-content-center">
                           <Coupon

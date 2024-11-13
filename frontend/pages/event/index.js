@@ -3,10 +3,6 @@ import EventCard from '@/components/event/EventCard'
 import Carousel from '@/components/event/Carousel'
 import EventNavbar from '@/components/event/EventNavbar'
 import axios from 'axios'
-import EventManagement from '@/components/event/EventManagement'
-import GroupManagement from '@/components/group/GroupManagement'
-import { Edit } from 'lucide-react'
-import EditGroupModal from '@/components/group/EditGroupModal'
 
 // 分頁標籤組件
 const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
@@ -152,6 +148,13 @@ export default function Event() {
   // 初始載入
   useEffect(() => {
     fetchEvents()
+
+    // 定時更新資料（每30秒）
+    const interval = setInterval(() => {
+      fetchEvents(currentPage, activeTab)
+    }, 30000)
+
+    return () => clearInterval(interval)
   }, [])
 
   // 處理分頁變更
@@ -206,6 +209,7 @@ export default function Event() {
                     applyEndTime={event.applyEndTime}
                     eventStartTime={event.eventStartTime}
                     maxPeople={event.maxPeople}
+                    currentParticipants={event.currentParticipants}
                     status={event.status}
                     teamType={event.teamType}
                   />

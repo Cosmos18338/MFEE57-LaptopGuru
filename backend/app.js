@@ -15,7 +15,9 @@ import usersRouter from './routes/users.js'
 import eventsRouter from './routes/events.js'
 import couponRouter from './routes/coupon.js'
 import couponUserRouter from './routes/coupon-user.js'
+import chatRoutes from './routes/chat.js'
 
+import forgotPasswordRouter from './routes/forgot-password.js'
 // 使用檔案的session store，存在sessions資料夾
 import sessionFileStore from 'session-file-store'
 const FileStore = sessionFileStore(session)
@@ -70,6 +72,7 @@ app.use('/api/signup', signupRouter)
 app.use('/api/dashboard', dashboardRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/events', eventsRouter)
+app.use('/api/forgot-password', forgotPasswordRouter)
 
 //優惠卷路由
 app.use('/api/coupon', couponRouter)
@@ -140,5 +143,8 @@ const uploadDir = path.join(__dirname, 'public', 'uploads', 'groups')
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
+
+// 使用聊天室路由
+app.use('/api/chat', chatRoutes)
 
 export default app

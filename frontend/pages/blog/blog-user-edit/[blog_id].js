@@ -2,17 +2,14 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Blogedit() {
   const router = useRouter()
   const { blog_id } = router.query
+  const { auth } = useAuth()
+  const { userData } = auth
 
-  const brands = [
-    ['ROG', 'DELL', 'Acer', 'Raser'],
-    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
-  ]
-
-  // 使用同一個表單管理功能，把 const blog_type = useState('') 都全部去除
   const [formData, setFormData] = useState({
     blog_type: '',
     blog_title: '',
@@ -21,12 +18,16 @@ export default function Blogedit() {
     blog_brand_model: '',
     blog_keyword: '',
     blog_image: null,
+    originalImage: null,
     blog_valid_value: '1',
   })
 
-  useEffect(() => {
-    console.log('1. blog_id:', blog_id) // 檢查 blog_id
+  const brands = [
+    ['ROG', 'DELL', 'Acer', 'Raser'],
+    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
+  ]
 
+  useEffect(() => {
     if (blog_id) {
       fetch(`http://localhost:3005/api/blog/blog-edit/${blog_id}`, {
         method: 'GET',
@@ -36,16 +37,17 @@ export default function Blogedit() {
       })
         .then((r) => r.json())
         .then((data) => {
-          setFormData(data)
+          console.log('從後端收到的資料:', data)
+          setFormData({
+            ...data,
+            originalImage: data.blog_image,
+            blog_image: data.blog_image,
+          })
         })
-        .catch((error) => console.log('3. 錯誤:', error)) // 檢查錯誤
+        .catch((error) => console.log('錯誤:', error))
     }
   }, [blog_id])
 
-  // 如果要檢查 formData 的變化，可以加一個新的 useEffect
-  useEffect(() => {}, [formData])
-
-  // 統一的表單處理函數
   const handleChange = (name, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -56,10 +58,9 @@ export default function Blogedit() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      // 創建 FormData 物件
       const formDataToSend = new FormData()
 
-      // 加入所有欄位
+      formDataToSend.append('user_id', userData.user_id)
       formDataToSend.append('blog_type', formData.blog_type)
       formDataToSend.append('blog_title', formData.blog_title)
       formDataToSend.append('blog_content', formData.blog_content)
@@ -67,22 +68,24 @@ export default function Blogedit() {
       formDataToSend.append('blog_brand_model', formData.blog_brand_model)
       formDataToSend.append('blog_keyword', formData.blog_keyword)
 
-      // 如果有新圖片才加入
+      // 處理圖片
       if (formData.blog_image instanceof File) {
         formDataToSend.append('blog_image', formData.blog_image)
+      } else {
+        formDataToSend.append('originalImage', formData.originalImage)
       }
 
       const response = await fetch(
         `http://localhost:3005/api/blog/blog-edit/${blog_id}`,
         {
           method: 'PUT',
-          // 移除 Content-Type header，讓瀏覽器自動設定
           body: formDataToSend,
         }
       )
 
       if (response.ok) {
-        router.push(`/blog/blog-user-detail/${blog_id}`)
+        window.alert('編輯成功！') // 加入這行
+        router.push('/blog/blog-edit-success') // 改用這個路徑
       }
     } catch (error) {
       console.error('錯誤:', error)
@@ -105,13 +108,14 @@ export default function Blogedit() {
         className="BlogImgUploadDiv d-flex align-items-center justify-content-center"
         onClick={() => document.getElementById('imageInput').click()}
       >
-        {formData.blog_image ? (
+        {formData.blog_image || formData.originalImage ? (
           <img
-            // 如果是檔案物件用 URL.createObjectURL，如果是字串路徑直接使用
             src={
               formData.blog_image instanceof File
                 ? URL.createObjectURL(formData.blog_image)
-                : `http://localhost:3005${formData.blog_image}`
+                : `http://localhost:3005${
+                    formData.originalImage || formData.blog_image
+                  }`
             }
             alt="預覽圖片"
             className="object-fit-cover w-100 h-100"
@@ -144,7 +148,8 @@ export default function Blogedit() {
               className="form-control form-control-lg"
               type="text"
               placeholder="標題"
-              value={formData.blog_title}
+              style={{ width: '200%' }}
+              value={formData.blog_title || ''}
               onChange={(e) => handleChange('blog_title', e.target.value)}
             />
           </div>
@@ -160,16 +165,16 @@ export default function Blogedit() {
           </div>
           <div>
             <textarea
-              className="form-control BlogCreatedTextArea"
-              value={formData.blog_content}
+              className="form-control"
+              value={formData.blog_content || ''}
               onChange={(e) => handleChange('blog_content', e.target.value)}
+              style={{ width: '430%' }}
               rows="20"
               placeholder="請輸入內文"
             />
           </div>
         </div>
 
-        {/* 品牌選擇區塊 */}
         <div className="d-flex flex-row justify-content-between align-items-start col-12 mb-5">
           <div className="BlogSmallTitleAlign d-flex justify-content-start align-items-start col-6">
             <div className="BlogEditSmallTitle text-nowrap">
@@ -214,7 +219,7 @@ export default function Blogedit() {
               className="form-control form-control-lg"
               type="text"
               placeholder="型號"
-              value={formData.blog_brand_model}
+              value={formData.blog_brand_model || ''}
               onChange={(e) => handleChange('blog_brand_model', e.target.value)}
             />
           </div>
@@ -256,42 +261,20 @@ export default function Blogedit() {
               className="form-control form-control-lg"
               type="text"
               placeholder="輸入一組你喜歡的關鍵字！"
-              value={formData.blog_keyword}
+              value={formData.blog_keyword || ''}
               onChange={(e) => handleChange('blog_keyword', e.target.value)}
             />
           </div>
         </div>
 
         <div className="d-flex flex-row justify-content-around align-items-center mt-5">
-          <button
-            className="BlogEditButtonSubmit"
-            type="submit"
-            onClick={async () => {
-              // 加入確認視窗
-              if (window.confirm('更新文章？')) {
-                try {
-                  const res = await fetch(
-                    `http://localhost:3005/api/blog/blog-user-edit/${blog_id}`,
-                    {
-                      method: 'PUT',
-                    }
-                  )
-                  if (res.ok) {
-                    router.push('/blog/blog-edit-success')
-                  }
-                } catch (error) {
-                  console.error('刪除失敗:', error)
-                }
-              }
-            }}
-          >
+          <button className="BlogEditButtonSubmit" type="submit">
             送出
           </button>
           <button
             className="BlogEditButtonDelete"
             type="button"
             onClick={async () => {
-              // 加入確認視窗
               if (window.confirm('確定要刪除這篇文章嗎？')) {
                 try {
                   const res = await fetch(

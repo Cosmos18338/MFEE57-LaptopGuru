@@ -6,32 +6,31 @@ import db from '../configs/mysql.js'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import cors from 'cors'
-import jsonwebtoken from 'jsonwebtoken'
+import { checkAuth } from './auth.js'
 import 'dotenv/config.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// 確保上傳目錄存在
+// 設定上傳目錄
 const uploadDir = path.join(__dirname, '../public/uploads/groups')
 try {
   if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true })
   }
 } catch (error) {
-  console.error('Error creating upload directory:', error)
+  console.error('建立上傳目錄失敗:', error)
 }
 
-// CORS 設定
-router.use(
-  cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
-)
+// 設定 CORS
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}
+router.use(cors(corsOptions))
 
-// multer設定
+// 設定 multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir)
@@ -60,32 +59,6 @@ const upload = multer({
     cb(new Error('只允許上傳 .jpg, .jpeg, .png, .gif 格式的圖片'))
   },
 })
-
-// 檢查認證的中間件
-const checkAuth = (req, res, next) => {
-  try {
-    // 從 cookie 獲取 token
-    const token = req.cookies.accessToken
-
-    if (!token) {
-      return res.status(401).json({
-        status: 'error',
-        message: '請先登入',
-      })
-    }
-
-    // 解析 token
-    const decoded = jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET)
-    req.user = decoded
-    next()
-  } catch (error) {
-    console.error('認證錯誤:', error)
-    return res.status(401).json({
-      status: 'error',
-      message: '認證失敗，請重新登入',
-    })
-  }
-}
 
 // GET - 取得所有群組
 router.get('/all', async function (req, res) {
@@ -318,7 +291,7 @@ router.post('/', checkAuth, upload.single('group_img'), async (req, res) => {
         description: description.trim(),
         creator_id,
         max_members: maxMembersNum,
-        group_img: group_img ? `http://localhost:3005${group_img}` : null,
+        group_img: group_img || null,
         group_time,
       },
     })
@@ -499,6 +472,39 @@ router.delete('/:id', checkAuth, async (req, res) => {
   } finally {
     if (connection) connection.release()
   }
+})
+
+// 添加錯誤處理中間件
+router.use((err, req, res, next) => {
+  console.error('群組路由錯誤:', err)
+
+  // 處理檔案上傳相關錯誤
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        status: 'error',
+        message: '檔案大小不能超過 5MB',
+      })
+    }
+    return res.status(400).json({
+      status: 'error',
+      message: '檔案上傳失敗',
+    })
+  }
+
+  // 處理檔案不存在錯誤
+  if (err.code === 'ENOENT') {
+    return res.status(404).json({
+      status: 'error',
+      message: '找不到檔案',
+    })
+  }
+
+  // 一般錯誤處理
+  res.status(500).json({
+    status: 'error',
+    message: err.message || '伺服器錯誤',
+  })
 })
 
 export default router

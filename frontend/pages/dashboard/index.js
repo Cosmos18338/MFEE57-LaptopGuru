@@ -4,25 +4,32 @@ import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
 import CardExample from '@/components/bootstrap/cards'
 import UserProfile from '@/components/dashboard/userInfoEdit'
-import MembershipLevels from './membership-levels'
+import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import EventManagement from '@/components/event/EventManagement'
+import GroupManagement from '@/components/group/GroupManagement'
+import BuylistPage from '@/components/dashboard/buylist-page'
+import BlogUserOverview from '@/components/blog/bloguseroverview'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
+  const [subActiveKey, setSubActiveKey] = useState('')
+  // 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
     home: [
+      { key: 'profile', label: '檔案管理' },
       { key: 'favorites', label: '收藏清單' },
       { key: 'membership', label: '會員等級' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
-      { key: 'processing', label: '處理中' },
-      { key: 'completed', label: '已完成' },
+      { key: 'processing', label: '未付款' },
+      { key: 'completed', label: '已付款' },
     ],
     'coupon-record': [
       { key: 'available', label: '優惠卷' },
@@ -30,7 +37,7 @@ export default function Test1() {
     ],
     'blog-record': [
       { key: 'my-posts', label: '我的文章' },
-      { key: 'drafts', label: '草稿' },
+      // { key: 'drafts', label: '草稿' },
     ],
     'activity-record': [
       { key: 'upcoming', label: '即將參加' },
@@ -49,6 +56,17 @@ export default function Test1() {
   const handleSideNavClick = (key) => {
     if (activeKey === 'coupon-record') {
       setCouponActiveKey(key)
+    }
+  }
+
+  const renderHome = (key) => {
+    switch (key) {
+      case 'profile':
+        return <UserProfile />
+      case 'membership':
+        return <MembershipLevels />
+      default:
+        return <UserProfile />
     }
   }
 
@@ -89,22 +107,16 @@ export default function Test1() {
               {getCurrentSideNav().map((item) => (
                 <Nav.Item key={item.key}>
                   <Nav.Link
-                    onClick={() => handleSideNavClick(item.key)}
+                    onClick={() => {
+                      handleSideNavClick(item.key)
+                      setSubActiveKey(item.key)
+                    }}
                     className={`text-center ${
                       activeKey === 'coupon-record' &&
                       couponActiveKey === item.key
                         ? 'active'
                         : ''
                     }`}
-                    // style={{
-                    //   cursor: 'pointer',
-                    //   color: '#805AF5',
-                    //   backgroundColor:
-                    //     activeKey === 'coupon-record' &&
-                    //     couponActiveKey === item.key
-                    //       ? '#f0ebff'
-                    //       : 'transparent',
-                    // }}
                   >
                     {item.label}
                   </Nav.Link>
@@ -132,7 +144,7 @@ export default function Test1() {
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="blog-record">文章</Nav.Link>
+                <Nav.Link eventKey="blog-record">部落格</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="activity-record">活動</Nav.Link>
@@ -146,13 +158,13 @@ export default function Test1() {
             <Tab.Content>
               <Tab.Pane eventKey="home">
                 <div className="row justify-content-end">
-                  <UserProfile />
+                  {/* <UserProfile /> */}
+                  {renderHome(subActiveKey)}
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <h4>購買清單</h4>
-                  <CardExample />
+                  <BuylistPage orderStatus={subActiveKey} />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
@@ -164,20 +176,21 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">
                 <div>
-                  <h4>文章列表</h4>
-                  <p>這裡是文章列表的內容。</p>
+                  <BlogUserOverview />
+                  {/* <h4>文章列表</h4>
+                  <p>這裡是文章列表的內容。</p> */}
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="activity-record">
                 <div>
                   <h4>活動列表</h4>
-                  {/* <EventManagement /> */}
+                  <EventManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="group-record">
                 <div>
                   <h4>揪團列表</h4>
-                  {/* <GroupManagement /> */}
+                  <GroupManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="favorites">
