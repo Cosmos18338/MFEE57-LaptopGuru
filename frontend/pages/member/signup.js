@@ -9,6 +9,9 @@ import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
 
 export default function Signup() {
+  // 處理失焦
+
+  
   const validatePassword = (password) => {
     const rules = {
       minLength: password.length >= 8,
@@ -26,7 +29,9 @@ export default function Signup() {
 
     return Object.entries(rules)
       .filter(([rule, valid]) => !valid)
+      // !valid 意思是找出值是 false 的規則
       .map(([rule]) => messages[rule])
+      // 用 rule 當作 key 去 messages 物件找對應的訊息
   }
 
   const router = useRouter()
@@ -101,7 +106,10 @@ export default function Signup() {
 
     try {
       setSubmitError('')
-
+      
+      if (!validateForm()) {
+        return
+      }
       const passwordErrors = validatePassword(user.password)
       if (passwordErrors.length > 0) {
         setErrors((prev) => ({
@@ -111,9 +119,6 @@ export default function Signup() {
         return
       }
 
-      if (!validateForm()) {
-        return
-      }
 
       const response = await axios.post(
         'http://localhost:3005/api/signup',
@@ -224,6 +229,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.email}
                       onChange={handleFieldChange}
+                      
                     />
                     {errors.email && (
                       <div className="error">{errors.email}</div>
@@ -283,6 +289,7 @@ export default function Signup() {
                         onChange={() =>
                           setShowConfirmpassword(!showConfirmpassword)
                         }
+                        
                         className="form-check-input"
                       />
                       <label
@@ -308,6 +315,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.phone}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -322,6 +330,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.birthdate}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -335,6 +344,7 @@ export default function Signup() {
                       className={`form-select ${styles.inputs}`}
                       value={user.gender}
                       onChange={handleFieldChange}
+                      
                     >
                       <option value="">請選擇</option>
                       <option value="女">女</option>
@@ -352,6 +362,8 @@ export default function Signup() {
                         checked={user.agree}
                         onChange={handleFieldChange}
                         className="form-check-input"
+                        
+
                       />
                       <label
                         htmlFor="agree"

@@ -1,120 +1,3 @@
-// // import express from 'express'
-// // const router = express.Router()
-// // import db from '##/configs/mysql.js'
-// // import multer from 'multer'
-
-// // const upload = multer()
-
-// // // 獲取所有優惠券資訊
-// // router.get('/', async (req, res) => {
-// //   try {
-// //     // SQL 查詢修改為獲取所有優惠券
-// //     const [coupons] = await db.query(
-// //       `
-// //       SELECT
-// //         coupon_id,
-// //         coupon_code,
-// //         coupon_content,
-// //         discount_method,
-// //         coupon_discount,
-// //         coupon_start_time,
-// //         coupon_end_time,
-// //         valid
-// //       FROM coupon
-// //       WHERE valid = 1
-// //       ORDER BY coupon_end_time DESC
-// //       `
-// //     )
-
-// //     // 查無資料的處理
-// //     if (coupons.length === 0) {
-// //       return res.json({
-// //         status: 'success',
-// //         data: {
-// //           coupons: [], // 回傳空陣列
-// //         },
-// //         message: '目前沒有優惠券',
-// //       })
-// //     }
-
-// //     // 成功回應
-// //     return res.json({
-// //       status: 'success',
-// //       data: {
-// //         coupons: coupons, // 回傳所有優惠券資料
-// //       },
-// //     })
-// //   } catch (error) {
-// //     console.error('Error:', error)
-// //     return res.status(500).json({
-// //       status: 'error',
-// //       message: '伺服器錯誤',
-// //     })
-// //   }
-// // })
-
-// // export default router
-
-// import express from 'express'
-// const router = express.Router()
-// import db from '##/configs/mysql.js'
-// import multer from 'multer'
-
-// const upload = multer()
-
-// // 獲取所有有效的優惠券資訊 (valid=1)
-// router.get('/', async (req, res) => {
-//   try {
-//     // SQL 查詢，加入多重排序條件
-//     const [coupons] = await db.query(
-//       `
-//       SELECT
-//         coupon_id,
-//         coupon_code,
-//         coupon_content,
-//         discount_method,
-//         coupon_discount,
-//         coupon_start_time,
-//         coupon_end_time,
-//         valid
-//       FROM coupon
-//       WHERE valid = 1
-//       ORDER BY
-//         coupon_end_time DESC,    -- 先依結束時間降序（最近到期的優先）
-//         coupon_discount DESC,    -- 再依折扣金額降序（金額大的優先）
-//         coupon_start_time DESC   -- 最後依開始時間降序（最新的優先）
-//       `
-//     )
-
-//     // 查無資料的處理
-//     if (coupons.length === 0) {
-//       return res.json({
-//         status: 'success',
-//         data: {
-//           coupons: []
-//         },
-//         message: '目前沒有可用的優惠券'
-//       })
-//     }
-
-//     // 成功回應
-//     return res.json({
-//       status: 'success',
-//       data: {
-//         coupons: coupons
-//       }
-//     })
-//   } catch (error) {
-//     console.error('Error:', error)
-//     return res.status(500).json({
-//       status: 'error',
-//       message: '伺服器錯誤'
-//     })
-//   }
-// })
-
-// export default router
-
 import express from 'express'
 const router = express.Router()
 import db from '##/configs/mysql.js'
@@ -190,7 +73,7 @@ router.put('/update', async (req, res) => {
       SET valid = ? 
       WHERE coupon_id = ?
       `,
-      [0, coupon_id]
+      [0, coupon_id] // 將 valid 設置為 0，表示已領取
     )
 
     console.log('更新結果:', result)
@@ -208,7 +91,7 @@ router.put('/update', async (req, res) => {
       message: '優惠券已標記為已領取',
       data: {
         coupon_id,
-        valid: 0,
+        valid: 0, // 將 valid 設置為 0，表示已領取
         updated_at: new Date(),
       },
     })

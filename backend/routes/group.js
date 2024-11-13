@@ -6,13 +6,13 @@ import db from '../configs/mysql.js'
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import cors from 'cors'
-import jsonwebtoken from 'jsonwebtoken'
+import { checkAuth } from './auth.js'
 import 'dotenv/config.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-// 確保上傳目錄存在
+// 設定上傳目錄
 const uploadDir = path.join(__dirname, '../public/uploads/groups')
 try {
   if (!fs.existsSync(uploadDir)) {
@@ -22,16 +22,15 @@ try {
   console.error('Error creating upload directory:', error)
 }
 
-// CORS 設定
-router.use(
-  cors({
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    credentials: true,
-  })
-)
+// 設定 CORS
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  credentials: true,
+}
+router.use(cors(corsOptions))
 
-// multer設定
+// 設定 multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, uploadDir)
@@ -60,32 +59,6 @@ const upload = multer({
     cb(new Error('只允許上傳 .jpg, .jpeg, .png, .gif 格式的圖片'))
   },
 })
-
-// 檢查認證的中間件
-const checkAuth = (req, res, next) => {
-  try {
-    // 從 cookie 獲取 token
-    const token = req.cookies.accessToken
-
-    if (!token) {
-      return res.status(401).json({
-        status: 'error',
-        message: '請先登入',
-      })
-    }
-
-    // 解析 token
-    const decoded = jsonwebtoken.verify(token, process.env.ACCESS_TOKEN_SECRET)
-    req.user = decoded
-    next()
-  } catch (error) {
-    console.error('認證錯誤:', error)
-    return res.status(401).json({
-      status: 'error',
-      message: '認證失敗，請重新登入',
-    })
-  }
-}
 
 // GET - 取得所有群組
 router.get('/all', async function (req, res) {

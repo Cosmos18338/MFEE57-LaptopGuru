@@ -1,39 +1,35 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { Form, Button } from 'react-bootstrap'  // 記得引入這行
+import { Form, Button } from 'react-bootstrap'
 import Coupon from './index'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { useAuth } from '@/hooks/use-auth'
 
 const MySwal = withReactContent(Swal)
 
 export default function CouponUser() {
   const router = useRouter()
+  const { auth } = useAuth() // 獲取 auth 對象
+  const userId = auth?.userData?.user_id // 取得用戶ID
+
   const [couponDataList, setCouponDataList] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
 
-  // 處理搜尋表單提交
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    // 可以在這裡加入其他搜尋邏輯
-  }
-
-  // 處理輸入變化
-  const handleInputChange = (e) => {
-    setSearchTerm(e.target.value)
-  }
-
-  // 跳轉到購物車
-  const handleCartCoupon = (couponId) => {
-    router.push(`/coupon/test?id=${couponId}`)
-  }
-
-  const userId = 1
+  // 除錯用
+  console.log('當前auth狀態:', auth)
+  console.log('用戶ID:', userId)
 
   // 獲取使用者優惠券資料
   const getUserCoupons = async () => {
+    if (!userId) {
+      setError('請先登入')
+      setLoading(false)
+      return
+    }
+
     try {
       const res = await fetch(`http://localhost:3005/api/coupon-user/${userId}`)
 
@@ -57,6 +53,7 @@ export default function CouponUser() {
         throw new Error(resData.message || '獲取資料失敗')
       }
     } catch (err) {
+      console.error('錯誤:', err)
       setError(err.message)
       MySwal.fire({
         title: '錯誤',
@@ -68,9 +65,54 @@ export default function CouponUser() {
     }
   }
 
+  // 處理搜尋表單提交
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    // 可以在這裡加入其他搜尋邏輯
+  }
+
+  // 處理輸入變化
+  const handleInputChange = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  // 跳轉到購物車
+  const handleCartCoupon = (couponId) => {
+    if (!userId) {
+      MySwal.fire({
+        title: '請先登入',
+        text: '需要登入才能使用優惠券',
+        icon: 'warning',
+      })
+      router.push('/member/login')
+      return
+    }
+    router.push(`/coupon/test?id=${couponId}`)
+  }
+
   useEffect(() => {
-    getUserCoupons()
-  }, [])
+    if (userId) {
+      getUserCoupons()
+    } else {
+      setLoading(false)
+    }
+  }, [userId]) // 加入 userId 作為依賴項
+
+  // 未登入時的顯示
+  if (!userId) {
+    return (
+      <div className="container text-center py-5">
+        <h3>請先登入以查看您的優惠券</h3>
+        <Button
+          variant="primary"
+          onClick={() => router.push('/member/login')}
+          style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+        >
+          前往登入
+        </Button>
+      </div>
+    )
+  }
 
   // 搜尋過濾邏輯
   const filteredCoupons = couponDataList.filter((coupon) => {
@@ -82,6 +124,7 @@ export default function CouponUser() {
     )
   })
 
+  // 載入中顯示
   if (loading) {
     return (
       <div className="d-flex justify-content-center align-items-center min-vh-50">
@@ -92,6 +135,7 @@ export default function CouponUser() {
     )
   }
 
+  // 錯誤顯示
   if (error) {
     return (
       <div className="alert alert-danger" role="alert">
@@ -99,7 +143,6 @@ export default function CouponUser() {
       </div>
     )
   }
-
   return (
     <div className="container ">
       {/* 新的搜尋表單 */}
@@ -121,7 +164,11 @@ export default function CouponUser() {
             <Button
               variant="primary"
               type="submit"
-              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+              style={{
+                backgroundColor: '#805AF5',
+                borderColor: '#805AF5',
+                color: 'white',
+              }}
             >
               搜尋
             </Button>
@@ -149,15 +196,8 @@ export default function CouponUser() {
           filteredCoupons.map((coupon) => (
             <div
               key={coupon.id}
-              className="col-md-6"
+              className="col-md-6 coupon-item"
               onClick={() => handleCartCoupon(coupon.coupon_id)}
-              style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease',
-                ':hover': {
-                  transform: 'translateY(-5px)'
-                }
-              }}
             >
               <Coupon
                 coupon_id={coupon.coupon_id}

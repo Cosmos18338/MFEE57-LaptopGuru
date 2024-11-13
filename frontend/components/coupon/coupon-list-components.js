@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { Form, Button } from 'react-bootstrap'
-import Coupon from './index'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import Coupon from '.'
+import Coupon2 from './index2'
+import { useAuth } from '@/hooks/use-auth'
 
 const MySwal = withReactContent(Swal)
 
@@ -11,8 +13,14 @@ export default function CouponList() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [mounted, setMounted] = useState(false)
+  const { auth } = useAuth()
+  const userId = auth?.userData?.user_id
+  const [claimedCoupons, setClaimedCoupons] = useState(new Set())
 
-  // 獲取優惠券資料
+  console.log('當前auth狀態:', auth)
+  console.log('用戶ID:', userId)
+
   const getCouponData = async () => {
     try {
       const res = await fetch('http://localhost:3005/api/coupon')
@@ -20,6 +28,11 @@ export default function CouponList() {
 
       if (resData.data?.coupons) {
         setCouponDataList(resData.data.coupons)
+        // 初始化 claimedCoupons 集合
+        const claimedIds = resData.data.coupons
+          .filter((coupon) => coupon.valid === 0)
+          .map((coupon) => coupon.coupon_id)
+        setClaimedCoupons(new Set(claimedIds))
       }
     } catch (err) {
       setError('獲取優惠券資料失敗')
@@ -29,52 +42,63 @@ export default function CouponList() {
     }
   }
 
-  // 領取優惠券函數
   const handleClaimCoupon = async (couponId) => {
+    if (!userId) {
+      MySwal.fire({
+        icon: 'warning',
+        title: '請先登入',
+        text: '需要登入才能領取優惠券',
+      })
+      window.location.href = 'http://localhost:3000/member/login'
+      return
+    }
+
     try {
       const addResponse = await fetch(
-        'http://localhost:3005/api/coupon-user/add',
+        `http://localhost:3005/api/coupon-user/add/${userId}`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            user_id: 1,
             coupon_id: couponId,
-            valid: 1,
+            valid: 0, // 設置為已領取
           }),
         }
       )
 
+      try {
+        const response = await fetch(`/api/coupon/update`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ coupon_id: couponId }),
+        })
+
+        const result = await response.json()
+
+        if (response.ok) {
+          console.log(result.message)
+        } else {
+          console.error(result.message)
+        }
+      } catch (error) {
+        console.error('領取失敗:', error)
+      }
+
       const addResult = await addResponse.json()
 
       if (addResult.status === 'success') {
-        const updateResponse = await fetch(
-          'http://localhost:3005/api/coupon/update',
-          {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              coupon_id: couponId,
-            }),
-          }
-        )
+        setClaimedCoupons((prev) => new Set([...prev, couponId]))
 
-        const updateResult = await updateResponse.json()
-
-        if (updateResult.status === 'success') {
-          MySwal.fire({
-            icon: 'success',
-            title: '領取成功！',
-            text: '優惠券已加入您的帳戶',
-          })
-          getCouponData()
-        } else {
-          throw new Error('更新優惠券狀態失敗')
-        }
+        MySwal.fire({
+          icon: 'success',
+          title: '領取成功！',
+          text: '優惠券已加入您的帳戶',
+        })
+        getCouponData()
       } else {
         MySwal.fire({
           icon: 'error',
@@ -93,16 +117,15 @@ export default function CouponList() {
   }
 
   useEffect(() => {
+    setMounted(true)
     getCouponData()
   }, [])
 
-  // 處理搜尋表單提交
   const handleSubmit = (e) => {
     e.preventDefault()
     // 可以加入其他搜尋邏輯
   }
 
-  // 搜尋過濾邏輯
   const filteredCoupons = couponDataList.filter((coupon) => {
     const searchContent = searchTerm.toLowerCase()
     return (
@@ -151,7 +174,11 @@ export default function CouponList() {
             <Button
               variant="primary"
               type="submit"
-              style={{ backgroundColor: '#805AF5', borderColor: '#805AF5' }}
+              style={{
+                backgroundColor: '#805AF5',
+                borderColor: '#805AF5',
+                color: 'white',
+              }}
               className="me-2"
             >
               搜尋
@@ -180,28 +207,30 @@ export default function CouponList() {
           filteredCoupons.map((coupon) => (
             <div
               key={coupon.coupon_id}
-              className="col-md-6"
+              className="col-md-6 coupon-item"
               onClick={() => handleClaimCoupon(coupon.coupon_id)}
-              style={{ 
-                cursor: 'pointer',
-                transition: 'transform 0.2s ease',
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)'
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)'
-              }}
             >
-              <Coupon
-                coupon_id={coupon.coupon_id}
-                coupon_code={coupon.coupon_code}
-                coupon_content={coupon.coupon_content}
-                coupon_discount={coupon.coupon_discount}
-                discount_method={coupon.discount_method}
-                coupon_start_time={coupon.coupon_start_time}
-                coupon_end_time={coupon.coupon_end_time}
-              />
+              {coupon.valid === 0 ? (
+                <Coupon2
+                  coupon_id={coupon.coupon_id}
+                  coupon_code={coupon.coupon_code}
+                  coupon_content={coupon.coupon_content}
+                  coupon_discount={coupon.coupon_discount}
+                  discount_method={coupon.discount_method}
+                  coupon_start_time={coupon.coupon_start_time}
+                  coupon_end_time={coupon.coupon_end_time}
+                />
+              ) : (
+                <Coupon
+                  coupon_id={coupon.coupon_id}
+                  coupon_code={coupon.coupon_code}
+                  coupon_content={coupon.coupon_content}
+                  coupon_discount={coupon.coupon_discount}
+                  discount_method={coupon.discount_method}
+                  coupon_start_time={coupon.coupon_start_time}
+                  coupon_end_time={coupon.coupon_end_time}
+                />
+              )}
             </div>
           ))
         )}
