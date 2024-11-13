@@ -33,12 +33,25 @@ router.get('/:user_id', async (req, res) => {
     else if (totalSpent < 70000) {nextLevelRequired = 70000 - totalSpent}
     else if (totalSpent < 100000) {nextLevelRequired = 100000 - totalSpent}
     
+
+    const [userCreated] = await db.query(
+      'SELECT created_at FROM users WHERE user_id = ?',
+      [user_id]
+    )
+    // 計算距離三年的天數
+    const createdDate = new Date(userCreated[0].created_at)
+    // 已經取得created_at為什麼還要再.created_at這時 userCreated 是一個陣列，其中第一個元素是包含 created_at 屬性的物件，所以要用：userCreated[0].created_at  // 取得實際的日期值
+
+    const threeYearsLater = new Date(createdDate)
+    threeYearsLater.setFullYear(createdDate.getFullYear() + 3)
+    const daysRemaining = Math.ceil((threeYearsLater - new Date()) / (1000 * 60 * 60 * 24))
     res.json({
       // currentLevel: userResults[0].level,
       totalSpent: totalSpent,
-      nextLevelRequired: nextLevelRequired
+      nextLevelRequired: nextLevelRequired,
+      created_at: userCreated[0].created_at,
+      daysToThreeYears: daysRemaining
     })
-    
   } catch (error) {
     console.error('Error fetching membership data:', error)
     res.status(500).json({ message: 'Internal server error' })
