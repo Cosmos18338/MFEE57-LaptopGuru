@@ -264,7 +264,7 @@ export default function CartIndex() {
                   }}
                 />
               </div>
-              <h5>地址</h5>
+              <h5>運送方式</h5>
               <div className="text-center mb-2">
                 <select
                   className="form-select border-primary"
