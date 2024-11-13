@@ -211,4 +211,9 @@ export default function LogIn(props) {
     </>
   )
 }
+<<<<<<< Updated upstream
 LogIn.getLayout = (page) => page
+=======
+
+LogIn.getLayout=(page)=>page
+>>>>>>> Stashed changes
