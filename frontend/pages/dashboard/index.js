@@ -13,6 +13,7 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
+// import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
@@ -28,6 +29,7 @@ export default function Test1() {
       { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
       { key: 'favorites', label: '收藏清單' },
+      // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
@@ -70,6 +72,8 @@ export default function Test1() {
         return <MembershipLevels />
       case 'EditPassword':
         return <EditPassword />
+      // case 'MarioGame':
+      //   return <MarioGame />
       default:
         return <UserProfile />
     }
@@ -98,7 +102,7 @@ export default function Test1() {
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
               />
               <h5 className="mb-2">{auth?.userData?.name}</h5>
-              <Link href='userInfoEdit.js'>
+              <Link href=''>
               <button
                 className="btn btn-outline-primary btn-sm mb-3"
                 style={{ color: '#805AF5', borderColor: '#805AF5' }}
