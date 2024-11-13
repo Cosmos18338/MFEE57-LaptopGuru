@@ -26,8 +26,8 @@ export default function Test1() {
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
-      { key: 'processing', label: '處理中' },
-      { key: 'completed', label: '已完成' },
+      { key: 'processing', label: '未付款' },
+      { key: 'completed', label: '已付款' },
     ],
     'coupon-record': [
       { key: 'available', label: '優惠卷' },
@@ -162,7 +162,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <BuylistPage />
+                  <BuylistPage orderStatus={subActiveKey} />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">

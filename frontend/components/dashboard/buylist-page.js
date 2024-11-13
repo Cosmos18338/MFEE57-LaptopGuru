@@ -3,10 +3,13 @@ import BuyList from '@/components/dashboard/buy-list'
 import { useAuth } from '@/hooks/use-auth'
 
 export default function BuylistPage(props) {
+  const { orderStatus } = props
   const [order, setOrder] = useState([])
+  const [whereClause, setWhereClause] = useState(orderStatus)
   const { auth } = useAuth()
   const { userData } = auth
-  const user_id = userData.user_id
+  // const user_id = userData.user_id
+  const user_id = userData.user_id ? userData.user_id : 0
 
   const getOrder = async () => {
     const res = await fetch(`http://localhost:3005/api/buy-list/${user_id}`)
