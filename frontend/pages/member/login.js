@@ -9,6 +9,8 @@ import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
+
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -146,13 +148,27 @@ export default function LogIn(props) {
                       className={`form-control ${styles.inputs}`}
                       required // 添加必填
                     />
-                    <MdLockOutline
+                    {/* 這個button是 眼睛*/}
+                    <button
+                      type="button"
+                      className="btn position-absolute end-0 top-50 translate-middle-y border-0 ${styles[eye-icon]}"
+                      onClick={() => setShowpassword(!showpassword)}
+                      style={{ background: 'none', zIndex: 2 }}
+                    >
+                      {showpassword ? (
+                        <AiOutlineEyeInvisible size={20} color="#E0B0FF" />
+                      ) : (
+                        <AiOutlineEye size={20} color="#E0B0FF" />
+                      )}
+                    </button>
+
+                    {/* <MdLockOutline
                       className={`${styles['input-icon']}`}
                       size={22}
                       style={{ color: '#E0B0FF', cursor: 'pointer' }}
-                    />
+                    /> */}
                   </div>
-                  <div className='form-text'>
+                  {/* <div className="form-text">
                     <input
                       type="checkbox"
                       name=""
@@ -165,7 +181,7 @@ export default function LogIn(props) {
                       }}
                     />
                     <span className="text-white">顯示密碼</span>
-                  </div>
+                  </div> */}
 
                   <div
                     id="Error_message"
