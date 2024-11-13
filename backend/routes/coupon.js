@@ -73,7 +73,7 @@ router.put('/update', async (req, res) => {
       SET valid = ? 
       WHERE coupon_id = ?
       `,
-      [0, coupon_id]
+      [0, coupon_id] // 將 valid 設置為 0，表示已領取
     )
 
     console.log('更新結果:', result)
@@ -91,7 +91,7 @@ router.put('/update', async (req, res) => {
       message: '優惠券已標記為已領取',
       data: {
         coupon_id,
-        valid: 0,
+        valid: 0, // 將 valid 設置為 0，表示已領取
         updated_at: new Date(),
       },
     })
@@ -101,6 +101,41 @@ router.put('/update', async (req, res) => {
       status: 'error',
       message: '系統錯誤',
       error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+    })
+  }
+})
+
+router.get('/:coupon_id', async (req, res) => {
+  const coupon_id = req.params.coupon_id
+
+  try {
+    const [coupon] = await db.query(
+      `
+      SELECT * FROM coupon WHERE coupon_id = ?`,
+      [coupon_id]
+    )
+
+    if (coupon.length === 0) {
+      return res.json({
+        status: 'success',
+        data: {
+          coupon: null,
+        },
+        message: '找不到該優惠券',
+      })
+    }
+
+    return res.json({
+      status: 'success',
+      data: {
+        coupon: coupon[0],
+      },
+    })
+  } catch (error) {
+    console.error('Error:', error)
+    return res.status(500).json({
+      status: 'error',
+      message: '伺服器錯誤',
     })
   }
 })

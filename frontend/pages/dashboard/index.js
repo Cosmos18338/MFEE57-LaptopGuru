@@ -9,6 +9,7 @@ import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
 import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
+import BuylistPage from '@/components/dashboard/buylist-page'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
@@ -162,8 +163,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <h4>購買清單</h4>
-                  <CardExample />
+                  <BuylistPage />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">

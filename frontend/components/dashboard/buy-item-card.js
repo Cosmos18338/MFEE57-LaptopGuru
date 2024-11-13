@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 
-export default function BuyItemCard(props) {
+export default function BuyItemCard(item) {
+  const product_img = item.item.product_img_path
+  const product_name = item.item.product_name
+  const price = item.item.list_price
+  const quantity = item.item.quantity
+  const subtotal = quantity * price
+
   return (
     <>
       <div className="card p-3 border-primary mb-3">
@@ -17,13 +24,13 @@ export default function BuyItemCard(props) {
         <div className="row align-items-center mb-2">
           <div className="col-2">
             <div className="cart-photo">
-              <img src="" alt="" width={500} height={500} />
+              <Image src={`/product/${product_img}`} width={500} height={500} />
             </div>
           </div>
-          <div className="col-4">XXX</div>
-          <div className="col-2">1000元</div>
-          <div className="col-2">1</div>
-          <div className="col-2">1000元</div>
+          <div className="col-4">{product_name}</div>
+          <div className="col-2">{price} 元</div>
+          <div className="col-2">{quantity}</div>
+          <div className="col-2">{subtotal}元</div>
         </div>
       </div>
     </>
