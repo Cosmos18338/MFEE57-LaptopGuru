@@ -164,7 +164,7 @@ export default function LogIn(props) {
                         })
                       }}
                     />
-                    <span className="text-white">點擊切換顯示密碼與否</span>
+                    <span className="text-white">顯示密碼</span>
                   </div>
 
                   <div

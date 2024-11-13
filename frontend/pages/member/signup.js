@@ -28,8 +28,10 @@ export default function Signup() {
     }
 
     return Object.entries(rules)
-      .filter(([rules, valid]) => !valid)
-      .map(([rules]) => messages[rule])
+      .filter(([rule, valid]) => !valid)
+      // !valid 意思是找出值是 false 的規則
+      .map(([rule]) => messages[rule])
+      // 用 rule 當作 key 去 messages 物件找對應的訊息
   }
 
   const router = useRouter()
