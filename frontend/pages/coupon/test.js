@@ -80,8 +80,6 @@ export default function Checkout() {
           )}
         </div>
       </div>
-      <CouponList/>
-
       <CouponBtn 
         price={selectedProduct.list_price}
         setCouponValue={setCoupon}

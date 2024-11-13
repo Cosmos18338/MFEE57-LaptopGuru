@@ -143,7 +143,7 @@ export default function Test1() {
                 <Nav.Link eventKey="shopping-record">購買清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="favorites">蒐藏清單</Nav.Link>
+                <Nav.Link eventKey="favorites">收藏清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
