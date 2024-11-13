@@ -7,15 +7,15 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
-
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
-  const [subActiveKey, setSubActiveKey] =useState("")
-// 狀態用一樣的就好
+  const [subActiveKey, setSubActiveKey] = useState('')
+  // 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
@@ -57,14 +57,14 @@ export default function Test1() {
     }
   }
 
-  const renderHome=(key)=>{
-    switch(key){
+  const renderHome = (key) => {
+    switch (key) {
       case 'profile':
-        return <UserProfile/>
+        return <UserProfile />
       case 'membership':
-        return <MembershipLevels/>
+        return <MembershipLevels />
       default:
-      return <UserProfile/>
+        return <UserProfile />
     }
   }
 
@@ -182,7 +182,7 @@ export default function Test1() {
               <Tab.Pane eventKey="activity-record">
                 <div>
                   <h4>活動列表</h4>
-                  {/* <EventManagement /> */}
+                  <EventManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="group-record">
