@@ -44,7 +44,7 @@ export default function Header(props) {
       setTimeout(() => {
         router.push('/member/login')
         // 導向登入頁
-      }, 2000)
+      }, 1000)
     } catch (error) {
       console.error('登出失敗:', error)
       Swal.fire({
@@ -70,7 +70,9 @@ export default function Header(props) {
             <Link className={`text-light me-3`} href="/product">
               商品
             </Link>
-            <a className={`text-light me-3`}>比較</a>
+            <Link className={`text-light me-3`} href="/product/compare">
+              比較
+            </Link>
             <Link className={`text-light me-3`} href="/event">
               活動
             </Link>

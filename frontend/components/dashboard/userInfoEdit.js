@@ -29,10 +29,10 @@ export default function UserProfile() {
   // const [currentPassword,
   //   newPassword]=useState({password:''})
 
-const [passwordErrors, setPasswordErrors] = useState({
-  newPassword1: '',
-  newPassword2: ''
-});
+  const [passwordErrors, setPasswordErrors] = useState({
+    newPassword1: '',
+    newPassword2: '',
+  })
 
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
@@ -181,7 +181,7 @@ const [passwordErrors, setPasswordErrors] = useState({
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
-            valid: userData.valid??1,
+            valid: userData.valid ?? 1,
             // email: userData.email || '',
           })
 
@@ -236,7 +236,7 @@ const [passwordErrors, setPasswordErrors] = useState({
       Swal.fire('錯誤', '請輸入密碼', 'error')
       return
     }
-
+// createObjectURL(file) 這個是瀏覽器端還沒有傳送到伺服器用previewURL,setPreviewURL 暫時性的預覽長得很像一個網址可以直接用網址就可以看到那張圖。改成用useEffect主要是因為createObjectURL會占掉記憶體空間，用revokeObjectURL(objectURL)
     try {
       const responsePwdSend = await fetch(
         `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
@@ -326,6 +326,7 @@ const [passwordErrors, setPasswordErrors] = useState({
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+    // 類似陣列特性的物件
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         Swal.fire('錯誤', '檔案不能超過5MB', 'error')
@@ -361,7 +362,7 @@ const [passwordErrors, setPasswordErrors] = useState({
       }
       const dataToSubmit = {
         ...editableUser,
-        // email: auth?.userData?.email || editableUser.email, 
+        // email: auth?.userData?.email || editableUser.email,
         // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
       }
       delete dataToSubmit.password // 移除 password 欄位

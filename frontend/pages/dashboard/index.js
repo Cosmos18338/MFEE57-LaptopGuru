@@ -7,6 +7,7 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
@@ -27,8 +28,8 @@ export default function Test1() {
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
-      { key: 'processing', label: '處理中' },
-      { key: 'completed', label: '已完成' },
+      { key: 'processing', label: '未付款' },
+      { key: 'completed', label: '已付款' },
     ],
     'coupon-record': [
       { key: 'available', label: '優惠卷' },
@@ -163,7 +164,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <BuylistPage />
+                  <BuylistPage orderStatus={subActiveKey} />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
@@ -183,7 +184,7 @@ export default function Test1() {
               <Tab.Pane eventKey="activity-record">
                 <div>
                   <h4>活動列表</h4>
-                  {/* <EventManagement /> */}
+                  <EventManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="group-record">
