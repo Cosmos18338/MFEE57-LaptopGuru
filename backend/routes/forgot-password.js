@@ -5,7 +5,7 @@ import transporter from "##/configs/mail.js";
 import crypto from 'crypto'
 // import { useRouter } from 'next/router'
 import db from '##/configs/mysql.js'
-import {hashedPassword} from '../db-helpers/password-hash'
+// import {hashedPassword} from '../db-helpers/password-hash'
 // const router = useRouter()
 
 // 忘記密碼請求
