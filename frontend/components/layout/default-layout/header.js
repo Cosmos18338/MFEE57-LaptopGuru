@@ -44,7 +44,7 @@ export default function Header(props) {
       setTimeout(() => {
         router.push('/member/login')
         // 導向登入頁
-      }, 2000)
+      }, 1000)
     } catch (error) {
       console.error('登出失敗:', error)
       Swal.fire({

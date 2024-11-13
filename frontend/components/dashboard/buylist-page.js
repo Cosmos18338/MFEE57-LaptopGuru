@@ -6,10 +6,16 @@ export default function BuylistPage(props) {
   const { orderStatus } = props
   const [order, setOrder] = useState([])
   const [whereClause, setWhereClause] = useState(orderStatus)
+  const [user_id, setUser_id] = useState('0')
   const { auth } = useAuth()
   const { userData } = auth
   // const user_id = userData.user_id
-  const user_id = userData.user_id ? userData.user_id : 0
+
+  useEffect(() => {
+    if (userData) {
+      setUser_id(userData.user_id)
+    }
+  }, [userData])
 
   const getOrder = async () => {
     const res = await fetch(`http://localhost:3005/api/buy-list/${user_id}`)

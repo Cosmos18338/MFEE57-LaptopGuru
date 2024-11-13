@@ -236,7 +236,7 @@ export default function UserProfile() {
       Swal.fire('錯誤', '請輸入密碼', 'error')
       return
     }
-
+// createObjectURL(file) 這個是瀏覽器端還沒有傳送到伺服器用previewURL,setPreviewURL 暫時性的預覽長得很像一個網址可以直接用網址就可以看到那張圖。改成用useEffect主要是因為createObjectURL會占掉記憶體空間，用revokeObjectURL(objectURL)
     try {
       const responsePwdSend = await fetch(
         `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
@@ -326,6 +326,7 @@ export default function UserProfile() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+    // 類似陣列特性的物件
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         Swal.fire('錯誤', '檔案不能超過5MB', 'error')

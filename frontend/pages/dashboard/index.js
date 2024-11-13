@@ -7,6 +7,7 @@ import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
 
@@ -181,7 +182,7 @@ export default function Test1() {
               <Tab.Pane eventKey="activity-record">
                 <div>
                   <h4>活動列表</h4>
-                  {/* <EventManagement /> */}
+                  <EventManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="group-record">

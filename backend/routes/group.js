@@ -19,7 +19,7 @@ try {
     fs.mkdirSync(uploadDir, { recursive: true })
   }
 } catch (error) {
-  console.error('Error creating upload directory:', error)
+  console.error('建立上傳目錄失敗:', error)
 }
 
 // 設定 CORS
@@ -291,7 +291,7 @@ router.post('/', checkAuth, upload.single('group_img'), async (req, res) => {
         description: description.trim(),
         creator_id,
         max_members: maxMembersNum,
-        group_img: group_img ? `http://localhost:3005${group_img}` : null,
+        group_img: group_img || null,
         group_time,
       },
     })
@@ -472,6 +472,39 @@ router.delete('/:id', checkAuth, async (req, res) => {
   } finally {
     if (connection) connection.release()
   }
+})
+
+// 添加錯誤處理中間件
+router.use((err, req, res, next) => {
+  console.error('群組路由錯誤:', err)
+
+  // 處理檔案上傳相關錯誤
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(400).json({
+        status: 'error',
+        message: '檔案大小不能超過 5MB',
+      })
+    }
+    return res.status(400).json({
+      status: 'error',
+      message: '檔案上傳失敗',
+    })
+  }
+
+  // 處理檔案不存在錯誤
+  if (err.code === 'ENOENT') {
+    return res.status(404).json({
+      status: 'error',
+      message: '找不到檔案',
+    })
+  }
+
+  // 一般錯誤處理
+  res.status(500).json({
+    status: 'error',
+    message: err.message || '伺服器錯誤',
+  })
 })
 
 export default router
