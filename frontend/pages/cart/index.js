@@ -8,6 +8,8 @@ import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+import CouponBtn from '@/components/coupon/coupon-btn'
+import { useDiscount } from '@/hooks/use-coupon-discount'
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值
@@ -16,12 +18,11 @@ export default function CartIndex() {
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
-  // const [total, setTotal] = useState(0)
+  const [coupon, setCoupon] = useState('')
   const [order, setOrder] = useState({
     order_id: '',
     amount: '',
   })
-  const [couponAll, setCouponAll] = useState([])
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
 
@@ -65,22 +66,6 @@ export default function CartIndex() {
       showConfirmButton: false,
       timer: 1500,
     })
-  }
-
-  const searchCoupon = async () => {
-    const [result] = await fetch(
-      `http://localhost:3005/api/coupon/${user_id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await result.json()
-    const coupons = data.data
-    setCouponAll(coupons)
   }
 
   // 處理7-11選擇
@@ -180,20 +165,6 @@ export default function CartIndex() {
     }
   }, [user_id])
 
-  // useEffect(() => {
-  //   searchCoupon()
-  // }, [user_id])
-
-  // useEffect(() => {
-  //   if (cartdata.length > 0) {
-  //     let total = 0
-  //     cartdata.forEach((item) => {
-  //       total += item.list_price * item.quantity
-  //       setTotal(total)
-  //     })
-  //   }
-  // }, [cartdata])
-
   const total = cartdata
     ? cartdata.reduce((acc, v) => acc + Number(v.quantity) * v.list_price, 0)
     : 0
@@ -255,13 +226,7 @@ export default function CartIndex() {
             </div>
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="text-center mb-2">
-                <select className="form-select border-primary">
-                  <option value="" selected disabled>
-                    選擇運送方式
-                  </option>
-                  <option value="宅配">宅配</option>
-                  <option value="7-11">7-11</option>
-                </select>
+                <CouponBtn />
               </div>
               <div className="text-center mb-2">
                 <select
