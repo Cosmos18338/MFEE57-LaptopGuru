@@ -12,8 +12,8 @@ export default function ForgetPasswordForm() {
         setError('請輸入電子郵件地址')
         return
       }
-      const response = await axios.get(
-        `http://localhost:3005/api/forgot-password/`,email
+      const response = await axios.post(
+        `http://localhost:3005/api/forgot-password/`,{email}
       )
       if (response.data.status === 'success') {
         setMessage('已發送重設密碼信件到您的信箱')
@@ -35,6 +35,7 @@ export default function ForgetPasswordForm() {
       {error && <div className="alert alert-danger">{error}</div>}
 
         輸入你的會員電子郵件地址，按下&quot;取得驗証碼&ldquo;按鈕後，我們會將密碼重設指示寄送給你。
+        {/* 先讓他寄信成功 */}
       </p>
       <form>
         <div className="row mb-3">
