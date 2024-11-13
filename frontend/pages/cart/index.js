@@ -1,13 +1,13 @@
-import React, { use } from 'react'
+import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import BuyCard from '@/components/cart/buy-card'
-import { useRouter } from 'next/router'
 import Cookies from 'js-cookie'
 import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+import CouponBtn from '@/components/coupon/coupon-btn'
 
 const accessToken = Cookies.get('accessToken')
 console.log(accessToken) // 顯示 accessToken 的值
@@ -16,14 +16,21 @@ export default function CartIndex() {
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
-  // const [total, setTotal] = useState(0)
+  const [phone, setPhone] = useState(userData.phone)
   const [order, setOrder] = useState({
     order_id: '',
     amount: '',
   })
-  const [couponAll, setCouponAll] = useState([])
+  const [receiver, setReceiver] = useState(userData.name)
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
+
+  const [couponDetails, setCouponDetails] = useState({
+    coupon_id: '',
+    coupon_code: '',
+    coupon_discount: 0,
+    finalPrice: 0,
+  })
 
   const user_id = userData.user_id ? userData.user_id : ''
   const country = userData.country ? userData.country : ''
@@ -67,29 +74,13 @@ export default function CartIndex() {
     })
   }
 
-  const searchCoupon = async () => {
-    const [result] = await fetch(
-      `http://localhost:3005/api/coupon/${user_id}`,
-      {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      }
-    )
-
-    const data = await result.json()
-    const coupons = data.data
-    setCouponAll(coupons)
-  }
-
   // 處理7-11選擇
   const { store711, openWindow } = useShip711StoreOpener(
     'http://localhost:3005/api/shipment/711',
     { autoCloseMins: 3 } // x分鐘沒完成選擇會自動關閉，預設5分鐘。
   )
 
-  // 產生訂單
+  //產生訂單
   const createOrder = async () => {
     if (cartdata == null) {
       MySwal.fire({
@@ -123,6 +114,30 @@ export default function CartIndex() {
       }
     }
 
+    if (receiver == '') {
+      setReceiver(userData.name)
+    }
+
+    if (phone == '') {
+      setPhone(userData.phone)
+    }
+
+    const check = await MySwal.fire({
+      title: '確認訂單後將無法修改',
+      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${couponDetails.coupon_code}<br>金額: ${couponDetails.finalPrice}元`,
+      icon: 'warning',
+      showCancelButton: true,
+
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '前往結帳',
+      cancelButtonText: '取消',
+    })
+
+    if (!check.isConfirmed) {
+      return
+    }
+
     const result = await fetch(`http://localhost:3005/api/cart/order`, {
       method: 'POST',
       headers: {
@@ -130,8 +145,10 @@ export default function CartIndex() {
       },
       body: JSON.stringify({
         user_id: user_id,
-        amount: total,
-        coupon_id: '',
+        receiver: receiver,
+        phone: phone,
+        amount: couponDetails.finalPrice,
+        coupon_id: couponDetails.coupon_id,
         detail: cartdata,
         address: address,
       }),
@@ -145,10 +162,7 @@ export default function CartIndex() {
       setCartdata([])
       setAddress('')
       localStorage.removeItem('store711')
-      if (window.confirm('確認要導向至ECPay進行付款?')) {
-        // 先連到node伺服器後，導向至ECPay付款頁面
-        window.location.href = `http://localhost:3005/api/ecpay-test-only?orderId=${order_id}`
-      }
+      window.location.href = `http://localhost:3005/api/ecpay-test-only/?orderId=${order_id}&amount=${couponDetails.finalPrice}`
     }
   }
 
@@ -180,23 +194,18 @@ export default function CartIndex() {
     }
   }, [user_id])
 
-  // useEffect(() => {
-  //   searchCoupon()
-  // }, [user_id])
-
-  // useEffect(() => {
-  //   if (cartdata.length > 0) {
-  //     let total = 0
-  //     cartdata.forEach((item) => {
-  //       total += item.list_price * item.quantity
-  //       setTotal(total)
-  //     })
-  //   }
-  // }, [cartdata])
-
   const total = cartdata
     ? cartdata.reduce((acc, v) => acc + Number(v.quantity) * v.list_price, 0)
     : 0
+
+  useEffect(() => {
+    setCouponDetails({
+      coupon_id: '',
+      coupon_code: '',
+      coupon_discount: 0,
+      finalPrice: total,
+    })
+  }, [total])
 
   return (
     <>
@@ -209,7 +218,7 @@ export default function CartIndex() {
         </div>
       </div>
 
-      <div className="row">
+      <div className="row mb-3">
         <div className="col-9 cart h-100">
           {cartdata && cartdata.length > 0 ? (
             cartdata.map((item) => (
@@ -230,39 +239,32 @@ export default function CartIndex() {
           ) : (
             <p>購物車是空的</p>
           )}
-        </div>
-        <div className="col bill h-50">
-          <div className="card p-3 border-primary">
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="col-6 text-primary">
-                <img src="/diamond.svg" />
-                清單資訊
+          {cartdata && cartdata.length > 0 ? (
+            <div className="border border-primary rounded w-50 p-3">
+              <h3>確認訂單細節</h3>
+              <h5>收件人</h5>
+              <div className="mb-2">
+                <input
+                  type="text"
+                  className="border-primary form-control"
+                  value={receiver}
+                  onChange={(e) => {
+                    setReceiver(e.target.value)
+                  }}
+                />
               </div>
-            </div>
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="row">
-                <div className="col">商品總計</div>
-                <div className="col-auto">{total}元</div>
+              <h5>收件人連絡電話</h5>
+              <div className="mb-2">
+                <input
+                  type="text"
+                  className="border-primary form-control"
+                  value={phone}
+                  onChange={(e) => {
+                    setPhone(e.target.value)
+                  }}
+                />
               </div>
-              <div className="row">
-                <div className="col">運費總計</div>
-                <div className="col-auto">
-                  {ship == '' && '0'}
-                  {ship == '7-11' && '60'}
-                  {ship == '宅配' && '200'}元
-                </div>
-              </div>
-            </div>
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="text-center mb-2">
-                <select className="form-select border-primary">
-                  <option value="" selected disabled>
-                    選擇運送方式
-                  </option>
-                  <option value="宅配">宅配</option>
-                  <option value="7-11">7-11</option>
-                </select>
-              </div>
+              <h5>運送方式</h5>
               <div className="text-center mb-2">
                 <select
                   className="form-select border-primary"
@@ -308,7 +310,7 @@ export default function CartIndex() {
                     </div>
                     <div className="text-center">
                       <button
-                        className="btn btn-primary text-light w-50"
+                        className="btn btn-primary text-light"
                         onClick={(e) => {
                           e.preventDefault()
                           handleAddress(store711.storeaddress)
@@ -335,28 +337,77 @@ export default function CartIndex() {
                   </>
                 )}
               </div>
+
+              <button
+                className="btn btn-primary text-light"
+                onClick={() => {
+                  createOrder()
+                  // router.push(`/cart/double-check?order_id=${order.order_id}`)
+                }}
+              >
+                前往結帳
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className="col bill h-50">
+          <div className="card p-3 border-primary">
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className="col-6 text-primary">
+                <img src="/diamond.svg" />
+                清單資訊
+              </div>
+            </div>
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className="row">
+                <div className="col">商品總計</div>
+                <div className="col-auto">{total}元</div>
+              </div>
+              <div className="row">
+                <div className="col">運費總計</div>
+                <div className="col-auto">
+                  {ship == '' && '0'}
+                  {ship == '7-11' && '60'}
+                  {ship == '宅配' && '200'}元
+                </div>
+              </div>
+            </div>
+            <div className="row border-bottom border-primary mb-2 pb-2">
+              <div className="text-center mb-2">
+                <CouponBtn price={total} setCouponValue={setCouponDetails} />
+              </div>
+              <div>
+                <input
+                  type="text"
+                  className="form-control border-primary"
+                  value={couponDetails.coupon_code}
+                  disabled
+                />
+              </div>
             </div>
             <div>
               <div className="discount row w-100 mb-2">
                 <div className="col">折價</div>
-                <div className="col-auto">200元</div>
+                <div className="col-auto">
+                  {couponDetails.coupon_discount}元
+                </div>
               </div>
               <div className="total row w-100 mb-2">
                 <div className="col">總計</div>
-                <div className="col-auto">{total}元</div>
+                <div className="col-auto">{couponDetails.finalPrice}元</div>
               </div>
               <div className="d-flex justify-content-center">
-                <button
+                {/* <button
                   className="btn btn-primary w-50 text-light"
-                  onClick={async (e) => {
-                    e.preventDefault()
-
-                    await createOrder()
-                    // console.log(address)
+                  onClick={() => {
+                    createOrder()
+                    router.push(`/cart/double-check?order_id=${order.order_id}`)
                   }}
                 >
-                  結帳
-                </button>
+                  產生訂單
+                </button> */}
               </div>
             </div>
           </div>

@@ -1,18 +1,25 @@
-
 import express from 'express'
-
 const router = express.Router()
 import transporter from "##/configs/mail.js";
 import crypto from 'crypto'
-// import { useRouter } from 'next/router'
 import db from '##/configs/mysql.js'
+import 'dotenv/config.js'
 
-// const router = useRouter()
+import {generateHash} from '../db-helpers/password-hash.js'
 
+function generateTempPassword(length = 8) {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let tempPassword = ''
+  for (let i = 0; i < length; i++) {
+    tempPassword += chars.charAt(Math.floor(Math.random() * chars.length))
+  }
+  return tempPassword
+}
 // 忘記密碼請求
-router.post('/forgot-password', async (req, res) => {
-    try {
-      const { email } = req.body;
+router.post('/send', async (req, res) => {
+  try {
+    const { email } = req.body;
+    console.log(email);
   
       // 檢查信箱是否存在
       const [users] = await db.query(
@@ -25,8 +32,9 @@ router.post('/forgot-password', async (req, res) => {
       }
   
       // 生成臨時密碼
-      const tempPassword = crypto.randomBytes(4).toString('hex');
-      const hashedPassword = await bcrypt.hash(tempPassword, 10);
+      const tempPassword = generateTempPassword()
+      const hashedPassword = await generateHash(tempPassword)
+   
   
       // 更新資料庫中的密碼
       await db.query(
@@ -34,6 +42,13 @@ router.post('/forgot-password', async (req, res) => {
         [hashedPassword, email]
       );
   
+      if (result.affectedRows === 0) {
+        return res.status(500).json({
+          status: 'error',
+          message: '密碼更新失敗'
+        });
+      }
+
       // 發送郵件
       const mailOptions = {
         from: process.env.EMAIL_USER,
@@ -49,10 +64,10 @@ router.post('/forgot-password', async (req, res) => {
   
       await transporter.sendMail(mailOptions);
   
-      res.json({ message: '新密碼已發送至您的信箱' });
+      res.json({ status: 'success', message: '新密碼已發送至您的信箱' });
     } catch (error) {
       console.error('忘記密碼處理錯誤:', error);
-      res.status(500).json({ message: '伺服器錯誤' });
+      res.status(500).json({ status: 'error', message: '伺服器錯誤' ,error: process.env.NODE_ENV === 'development' ? error.message : undefined});
     }
   });
   

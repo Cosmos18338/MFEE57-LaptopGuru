@@ -24,6 +24,13 @@ export default function ProductCard({ onSendMessage, product_id }) {
     if (result.status === 'success') {
       setIsChecked(true)
     }
+
+    if (
+      localStorage.getItem('compareProduct').split(',')?.[0] == product_id ||
+      localStorage.getItem('compareProduct').split(',')?.[1] == product_id
+    ) {
+      setIsCompared(true)
+    }
   }
   // 初始化
   init()
@@ -48,11 +55,29 @@ export default function ProductCard({ onSendMessage, product_id }) {
   //比較按鈕的狀態
   const [isCompared, setIsCompared] = useState(false)
   const toggleCompare = () => {
-    // 點擊按鈕時傳送訊息到父元件
+    const productID = String(product_id) // 確保 product_id 是字串格式
+
+    // 取得目前的比較清單或初始化為空陣列
+    let compareProduct = localStorage.getItem('compareProduct')
+      ? localStorage.getItem('compareProduct').split(',')
+      : []
+
     if (isCompared) {
+      // 從比較清單中移除產品 ID
+      compareProduct = compareProduct.filter((id) => id !== productID)
+      localStorage.setItem('compareProduct', compareProduct.join(','))
       onSendMessage('取消比較！')
       setIsCompared(false)
     } else {
+      // 檢查比較清單是否已滿
+      if (compareProduct.length >= 2) {
+        onSendMessage('比較清單已滿！')
+        return
+      }
+
+      // 添加產品 ID 到比較清單
+      compareProduct.push(productID)
+      localStorage.setItem('compareProduct', compareProduct.join(','))
       onSendMessage('加入比較！')
       setIsCompared(true)
     }

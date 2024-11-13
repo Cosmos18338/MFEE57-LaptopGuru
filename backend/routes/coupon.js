@@ -104,4 +104,39 @@ router.get('/', async (req, res) => {
 //   }
 // })
 
+router.get('/:coupon_id', async (req, res) => {
+  const coupon_id = req.params.coupon_id
+
+  try {
+    const [coupon] = await db.query(
+      `
+      SELECT * FROM coupon WHERE coupon_id = ?`,
+      [coupon_id]
+    )
+
+    if (coupon.length === 0) {
+      return res.json({
+        status: 'success',
+        data: {
+          coupon: null,
+        },
+        message: '找不到該優惠券',
+      })
+    }
+
+    return res.json({
+      status: 'success',
+      data: {
+        coupon: coupon[0],
+      },
+    })
+  } catch (error) {
+    console.error('Error:', error)
+    return res.status(500).json({
+      status: 'error',
+      message: '伺服器錯誤',
+    })
+  }
+})
+
 export default router

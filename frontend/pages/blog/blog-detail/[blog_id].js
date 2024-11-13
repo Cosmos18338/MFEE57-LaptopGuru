@@ -62,23 +62,28 @@ export default function BlogId() {
         <div className="d-flex flex-column">
           <div>
             <p className="mb-5 mt-5 display-5 fw-bold  BlogDetailSectionContentAreaTitle">
-              部落格標題
+              部落格標題：{blogData.blog_title}
             </p>
-            <p className="fs-5 BlogDetailSectionContentAreaTitle">
+            {/* <p className="fs-5 BlogDetailSectionContentAreaTitle">
               {blogData.blog_title}
-            </p>
+            </p> */}
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold "> 部落格分類</p>
-            <p className="fs-5">開箱文</p>
+            <p className="display-5 fw-bold ">
+              {' '}
+              部落格分類：{blogData.blog_type}
+            </p>
+            {/* <p className="fs-5">開箱文</p> */}
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold ">
-            <p className="display-5 fw-bold ">品牌</p>
-            <p>123</p>
+            <p className="display-5 fw-bold ">品牌：{blogData.blog_brand}</p>
+            {/* <p>123</p> */}
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold">購買機型</p>
-            <p>123</p>
+            <p className="display-5 fw-bold">
+              購買機型：{blogData.blog_brand_model}
+            </p>
+            {/* <p>123</p> */}
           </div>
         </div>
 
