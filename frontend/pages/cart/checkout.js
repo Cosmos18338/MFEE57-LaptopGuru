@@ -14,7 +14,7 @@ export default function Checkout(props) {
       handleUpdate(order_id)
       MySwal.fire({
         icon: 'success',
-        title: `訂單編號: ${order_id}已建立成功`,
+        title: `訂單編號: ${order_id}已付款成功`,
         showConfirmButton: false,
         timer: 3000,
       })

@@ -4,7 +4,7 @@ import * as crypto from 'crypto'
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  // const amount = req.query.amount
+  const amount = req.query.amount
   const Id = req.query.orderId
 
   //綠界全方位金流技術文件：
@@ -21,7 +21,7 @@ router.get('/', function (req, res, next) {
   //二、輸入參數
   const TotalAmount = 1000
   const TradeDesc = '商店線上付款'
-  const ItemName = 'xx商店購買一批'
+  const ItemName = '線上付款'
   const ReturnURL = 'https://www.ecpay.com.tw'
   const OrderResultURL = `http:localhost:3000/cart/checkout/?ID=${Id}` //前端成功頁面
   const ChoosePayment = 'ALL'
