@@ -47,7 +47,7 @@ export default function BlogUserOverview() {
           >
             <img
               src={
-                blog.blog_image ||
+                `http://localhost:3005${blog.blog_image}` ||
                 'https://th.bing.com/th/id/OIP.V5ThX7OGGxexxzFbYvHtBwHaFJ?rs=1&pid=ImgDetMain'
               }
               className="card-img-top w-25 h-100 object-fit-cover BlogUserOverviewCardImg"
@@ -69,7 +69,7 @@ export default function BlogUserOverview() {
                     版主：Jack&nbsp;
                   </p>
                 </div>
-                <div className="d-flex justify-content-between pe-5">
+                <div className="d-flex justify-content-between pe-5 mt-5">
                   <p>{blog.blog_type}</p>
                   <p>{blog.blog_created_date}</p>
                 </div>

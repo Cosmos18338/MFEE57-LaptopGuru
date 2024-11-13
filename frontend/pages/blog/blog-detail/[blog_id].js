@@ -54,7 +54,7 @@ export default function BlogId() {
       <section className="BlogDetailSectionContentArea mt-5">
         <div className="d-flex align-items-center justify-content-center mb-5">
           <img
-            className="w-50 h-50 ratio"
+            className="w-100 h-100 ratio"
             src={`http://localhost:3005${blogData.blog_image}`}
             alt
           />
