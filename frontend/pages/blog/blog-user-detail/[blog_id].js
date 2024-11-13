@@ -32,7 +32,7 @@ export default function BlogId() {
       <ArticleDetailMainArea />
       <div className=" mt-5 mb-5">
         <Link
-          href="/blog/blog-user-overview/1"
+          href="http://localhost:3000/dashboard"
           className="text-decoration-none fs-5"
         >
           <p className="fs-5 fw-bold">

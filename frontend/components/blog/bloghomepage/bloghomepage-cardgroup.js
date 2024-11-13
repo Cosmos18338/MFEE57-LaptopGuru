@@ -66,7 +66,7 @@ export default function BloghomepageCardgroup() {
                         ? `http://localhost:3005${data.blog_image}`
                         : 'http://localhost:3005/blog-images/nolaptopupload.jpeg'
                     }
-                    className="w-100 h-100 object-fit-cover"
+                    className="w-100 h-100 ratio object-fit-cover position-center"
                     alt="..."
                     style={{ objectPosition: 'center' }}
                   />
