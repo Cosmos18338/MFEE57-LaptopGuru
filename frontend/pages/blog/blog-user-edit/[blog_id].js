@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Blogedit() {
   const router = useRouter()
@@ -53,6 +54,19 @@ export default function Blogedit() {
     }))
   }
 
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+
+  // 如果沒有登入就導向首頁或登入頁
+  if (!userData) {
+    router.push('http://localhost:3000/member/login') // 或是 router.push('/')
+    return null // 返回 null 避免渲染其他內容
+  }
+  // -------------------使用者-------------------
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -60,6 +74,7 @@ export default function Blogedit() {
       const formDataToSend = new FormData()
 
       // 加入所有欄位
+      formDataToSend.append('user_id', formData.user_id)
       formDataToSend.append('blog_type', formData.blog_type)
       formDataToSend.append('blog_title', formData.blog_title)
       formDataToSend.append('blog_content', formData.blog_content)

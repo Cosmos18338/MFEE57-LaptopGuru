@@ -58,6 +58,7 @@ router.get('/blogcardgroup', async (req, res) => {
 router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
   try {
     const {
+      user_id,
       blog_type,
       blog_title,
       blog_content,
@@ -73,6 +74,7 @@ router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
 
     // 創建要插入的資料物件
     const blogData = {
+      user_id,
       blog_type,
       blog_title,
       blog_content,
@@ -217,10 +219,11 @@ router.put(
   upload.single('blog_image'),
   async (req, res) => {
     try {
-      console.log('收到的資料:', req.body)
-      console.log('收到的檔案:', req.file)
+      // console.log('收到的資料:', req.body)
+      // console.log('收到的檔案:', req.file)
 
       const {
+        user_id,
         blog_type,
         blog_title,
         blog_content,
@@ -241,13 +244,14 @@ router.put(
 
       const sql = `
         UPDATE blogoverview 
-        SET blog_type=?, blog_title=?, blog_content=?, 
+        SET user_id=?, blog_type=?, blog_title=?, blog_content=?, 
             blog_brand=?, blog_brand_model=?, blog_keyword=?, 
             blog_image=?
         WHERE blog_id=?
       `
 
       await db.query(sql, [
+        user_id,
         blog_type,
         blog_title,
         blog_content,
@@ -279,23 +283,24 @@ router.put('/blog-delete/:blog_id', async (req, res) => {
   }
 })
 
-router.get('/blog_detail/:blog_id', async (req, res) => {
-  try {
-    const [blogDetail] = await db.query(
-      'SELECT * FROM blogoverview WHERE blog_id = ?',
-      [req.params.blog_id]
-    )
+//重複的
+// router.get('/blog_detail/:blog_id', async (req, res) => {
+//   try {
+//     const [blogDetail] = await db.query(
+//       'SELECT * FROM blogoverview WHERE blog_id = ?',
+//       [req.params.blog_id]
+//     )
 
-    if (!blogDetail) {
-      return res.status(404).json({ message: '找不到該文章' })
-    }
+//     if (!blogDetail) {
+//       return res.status(404).json({ message: '找不到該文章' })
+//     }
 
-    res.json(blogDetail)
-  } catch (error) {
-    console.error('部落格查詢錯誤:', error)
-    res.status(500).json({ message: '伺服器錯誤' })
-  }
-})
+//     res.json(blogDetail)
+//   } catch (error) {
+//     console.error('部落格查詢錯誤:', error)
+//     res.status(500).json({ message: '伺服器錯誤' })
+//   }
+// })
 
 router.get('/blog_user_overview/:user_id', async (req, res) => {
   try {

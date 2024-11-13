@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 import Link from 'next/link'
 import { IoArrowBackCircleOutline } from 'react-icons/io5'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogId() {
   const router = useRouter()
@@ -20,6 +21,18 @@ export default function BlogId() {
         .catch((error) => console.error('Error fetching blog data:', error))
     }
   }, [blog_id]) // 當 blog_id 改變時重新執行 useEffect
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+
+  // 如果沒有登入就導向首頁或登入頁
+  if (!userData) {
+    router.push('http://localhost:3000/member/login') // 或是 router.push('/')
+    return null // 返回 null 避免渲染其他內容
+  }
 
   if (!blogData) {
     return <p>Loading...</p> // 當資料還沒載入時顯示 loading

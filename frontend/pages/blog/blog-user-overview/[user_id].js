@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogUserOverview() {
   const router = useRouter()
   const [blogData, setBlogData] = useState([])
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+  // -------------------使用者-------------------
 
   useEffect(() => {
     // 從 URL 最後一段取得 user_id

@@ -3,9 +3,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { Upload } from 'lucide-react'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+
+  // 如果沒有登入就導向首頁或登入頁
+  if (!userData) {
+    router.push('http://localhost:3000/member/login') // 或是 router.push('/')
+    return null // 返回 null 避免渲染其他內容
+  }
+  // -------------------使用者-------------------
 
   const brands = [
     ['ROG', 'DELL', 'Acer', 'Raser'],
@@ -24,6 +38,7 @@ export default function Blogcreated(props) {
   }
 
   // 狀態定義
+
   const [blog_type, setType] = useState('')
   const [blog_title, setTitle] = useState('')
   const [blog_content, setContent] = useState('')
@@ -39,6 +54,7 @@ export default function Blogcreated(props) {
     e.preventDefault()
 
     const formData = new FormData()
+    formData.append('user_id', user_id)
     formData.append('blog_type', blog_type)
     formData.append('blog_title', blog_title)
     formData.append('blog_content', blog_content)
