@@ -15,8 +15,6 @@ import usersRouter from './routes/users.js'
 import eventsRouter from './routes/events.js'
 import couponRouter from './routes/coupon.js'
 import couponUserRouter from './routes/coupon-user.js'
-import { createServer } from 'http'
-import { initializeWebSocket } from './configs/websocket.js'
 import chatRoutes from './routes/chat.js'
 
 import forgotPasswordRouter from './routes/forgot-password.js'
@@ -145,11 +143,6 @@ const uploadDir = path.join(__dirname, 'public', 'uploads', 'groups')
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
-
-const server = createServer(app)
-
-// 初始化 WebSocket
-initializeWebSocket(server)
 
 // 使用聊天室路由
 app.use('/api/chat', chatRoutes)
