@@ -4,18 +4,23 @@ import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
 import CardExample from '@/components/bootstrap/cards'
 import UserProfile from '@/components/dashboard/userInfoEdit'
-import MembershipLevels from './membership-levels'
+import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
+import GroupManagement from '@/components/group/GroupManagement'
+
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
+  const [subActiveKey, setSubActiveKey] =useState("")
+// 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
     home: [
+      { key: 'profile', label: '檔案管理' },
       { key: 'favorites', label: '收藏清單' },
       { key: 'membership', label: '會員等級' },
     ],
@@ -49,6 +54,17 @@ export default function Test1() {
   const handleSideNavClick = (key) => {
     if (activeKey === 'coupon-record') {
       setCouponActiveKey(key)
+    }
+  }
+
+  const renderHome=(key)=>{
+    switch(key){
+      case 'profile':
+        return <UserProfile/>
+      case 'membership':
+        return <MembershipLevels/>
+      default:
+      return <UserProfile/>
     }
   }
 
@@ -89,22 +105,16 @@ export default function Test1() {
               {getCurrentSideNav().map((item) => (
                 <Nav.Item key={item.key}>
                   <Nav.Link
-                    onClick={() => handleSideNavClick(item.key)}
+                    onClick={() => {
+                      handleSideNavClick(item.key)
+                      setSubActiveKey(item.key)
+                    }}
                     className={`text-center ${
                       activeKey === 'coupon-record' &&
                       couponActiveKey === item.key
                         ? 'active'
                         : ''
                     }`}
-                    // style={{
-                    //   cursor: 'pointer',
-                    //   color: '#805AF5',
-                    //   backgroundColor:
-                    //     activeKey === 'coupon-record' &&
-                    //     couponActiveKey === item.key
-                    //       ? '#f0ebff'
-                    //       : 'transparent',
-                    // }}
                   >
                     {item.label}
                   </Nav.Link>
@@ -146,7 +156,8 @@ export default function Test1() {
             <Tab.Content>
               <Tab.Pane eventKey="home">
                 <div className="row justify-content-end">
-                  <UserProfile />
+                  {/* <UserProfile /> */}
+                  {renderHome(subActiveKey)}
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
@@ -177,7 +188,7 @@ export default function Test1() {
               <Tab.Pane eventKey="group-record">
                 <div>
                   <h4>揪團列表</h4>
-                  {/* <GroupManagement /> */}
+                  <GroupManagement />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="favorites">

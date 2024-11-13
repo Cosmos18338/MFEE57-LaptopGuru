@@ -29,10 +29,10 @@ export default function UserProfile() {
   // const [currentPassword,
   //   newPassword]=useState({password:''})
 
-  const [passwordState, setPasswordState]=useState({
-    currentPassword:'',
-    newPassword:''
-  })
+const [passwordErrors, setPasswordErrors] = useState({
+  newPassword1: '',
+  newPassword2: ''
+});
 
   const [profilePic, setProfilePic] = useState(
     'https://via.placeholder.com/220x220'
@@ -274,7 +274,13 @@ export default function UserProfile() {
   const confirmPwdReset = async () => {
     try {
       // 檢查新密碼是否有值
-      if (!editableUser.newPassword) {
+      if (!editableUser.newPassword1) {
+        newErrors.confirmpassword = '確認密碼為必填'
+      } else if (editableUser.newPassword1 !== editableUser.newPassword2) {
+        newErrors.newPassword = '密碼與確認密碼不相符'
+      }
+
+      if (!editableUser.newPassword1) {
         Swal.fire('錯誤', '請輸入新密碼', 'error')
         return
       }
@@ -283,8 +289,8 @@ export default function UserProfile() {
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
         {
-          currentPassword: editableUser.currentPassword,
-          newPassword: editableUser.newPassword,
+          newPassword1: editableUser.newPassword1,
+          newPassword2: editableUser.newPassword2,
         }
       )
 
@@ -355,7 +361,8 @@ export default function UserProfile() {
       }
       const dataToSubmit = {
         ...editableUser,
-        email: auth?.userData?.email || editableUser.email, // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
+        // email: auth?.userData?.email || editableUser.email, 
+        // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
       }
       delete dataToSubmit.password // 移除 password 欄位
       delete dataToSubmit.currentPassword // 移除 currentPassword 欄位
@@ -862,8 +869,8 @@ export default function UserProfile() {
                                 type="text"
                                 id="newPassword1"
                                 className="form-control"
-                                name="newPassword"
-                                value={editableUser.newPassword}
+                                name="newPassword1"
+                                value={editableUser.newPassword1}
                                 onChange={handleInputChange}
                                 placeholder="請輸入新密碼"
                               />
@@ -873,15 +880,17 @@ export default function UserProfile() {
                                 type="text"
                                 id="newPassword2"
                                 className="form-control mb-3"
-                                name="newPassword"
-                                value={editableUser.newPassword}
+                                name="newPassword2"
+                                value={editableUser.newPassword2}
                                 onChange={handleInputChange}
+                                min={8}
                                 placeholder="請確認新密碼"
                               />
                               <button
                                 type="button"
                                 className="btn btn-secondary text-white"
                                 onClick={confirmPwdReset}
+                                min={8}
                               >
                                 確認修改
                               </button>
