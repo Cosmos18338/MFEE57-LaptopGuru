@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import BuyList from '@/components/dashboard/buy-list'
 import { useAuth } from '@/hooks/use-auth'
 
-export default function Test(props) {
+export default function BuylistPage(props) {
   const [order, setOrder] = useState([])
   const { auth } = useAuth()
   const { userData } = auth
