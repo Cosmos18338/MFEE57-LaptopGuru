@@ -87,7 +87,7 @@ export default function CouponUser() {
       router.push('/member/login')
       return
     }
-    router.push(`/coupon/test?id=${couponId}`)
+    router.push(`/cart?id=${couponId}`)
   }
 
   useEffect(() => {
