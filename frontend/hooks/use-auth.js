@@ -85,9 +85,7 @@ export const AuthProvider = ({ children }) => {
   // 隱私頁面路由，未登入時會，檢查後跳轉至登入頁
   const protectedRoutes = [
     '/dashboard/index',
-    '/test/user/profile',
-    '/test/user/profile-password',
-    '/dashboard',
+    '/coupon/coupon-user'
   ]
   const login = async (email, password) => {
     try {
@@ -153,7 +151,7 @@ export const AuthProvider = ({ children }) => {
           level:''
           // 共13 col
         })
-        router.push('/');  // 導向首頁
+
       }
   
     } catch (error) {
@@ -161,8 +159,6 @@ export const AuthProvider = ({ children }) => {
       // 處理錯誤
     }
   };
-
-  
   // 檢查會員認証用
   // 每次重新到網站中，或重新整理，都會執行這個函式，用於向伺服器查詢取回原本登入會員的資料
   const handleCheckAuth = async () => {
