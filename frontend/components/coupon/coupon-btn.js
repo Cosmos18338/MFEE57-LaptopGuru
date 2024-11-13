@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, use } from 'react'
 import { useRouter } from 'next/router'
 import { Form, Button } from 'react-bootstrap'
 import Coupon from '@/components/coupon'
@@ -9,7 +9,7 @@ import { useDiscount } from '@/hooks/use-coupon-discount'
 
 const MySwal = withReactContent(Swal)
 
-export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
+export default function CouponBtn({ price, setCouponValue }) {
   const router = useRouter()
   const { auth } = useAuth()
   const userId = auth?.userData?.user_id
@@ -141,21 +141,19 @@ export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
       if (result.isConfirmed) {
         // const updateSuccess = await updateCouponStatus(coupon.coupon_id)
         // if (updateSuccess) {
-        //   setAppliedCoupon(coupon)
-        //   setCouponValue({
-        //     ...coupon,
-        //     discountAmount,
-        //     finalPrice,
-        //   })
-        //   setSearchTerm('')
-        //   MySwal.fire({
-        //     title: '成功',
-        //     text: '優惠券已套用',
-        //     icon: 'success',
-        //   })
-        // }
-
         setAppliedCoupon(coupon)
+        setCouponValue({
+          ...coupon,
+          discountAmount,
+          finalPrice,
+        })
+        setSearchTerm('')
+        MySwal.fire({
+          title: '成功',
+          text: '優惠券已套用',
+          icon: 'success',
+        })
+        // }
       }
     } catch (error) {
       console.error('處理優惠券選擇失敗:', error)
@@ -203,7 +201,7 @@ export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
     <div>
       <button
         type="button"
-        className="btn btn-primary"
+        className="btn btn-primary text-light "
         data-bs-toggle="modal"
         data-bs-target="#staticBackdrop"
         onClick={handleClick}
