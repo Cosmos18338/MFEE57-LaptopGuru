@@ -106,7 +106,6 @@ export default function CouponPage() {
               {/* 優惠卷 */}
               <Tab.Pane eventKey="coupon-record">
                 <div className="container">
-                  <p>現有優惠卷</p>
                   <CouponUser />
 
                   {/* 分頁 */}

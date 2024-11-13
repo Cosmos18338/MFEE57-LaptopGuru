@@ -188,7 +188,7 @@ export default function Signup() {
               </h3>
             </div>
             <div
-              className={`${styles.right} align-item-center col ${styles['signup-right']}`}
+              className={`${styles.right} align-item-center col ${styles['signup-right']} text-white`}
             >
               <div className={`${styles.tabs} d-flex justify-content-between`}>
                 <Link
@@ -365,7 +365,7 @@ export default function Signup() {
                     )}
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-100">
+                  <button type="submit" className="btn btn-primary w-100 text-white">
                     送出
                   </button>
                 </div>

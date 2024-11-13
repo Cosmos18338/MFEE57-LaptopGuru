@@ -251,9 +251,10 @@ export default function UserProfile() {
       // 嘗試把輸入的值丟回去後做處理
       // 檢查後端回應的 status 是否為 'pwdmatch'
       // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
+      // 用fetch不能response.data.data
       const data = await responsePwdSend.json()
       console.log('回應資料:', data) // 除錯用
-
+      // axios.才要responsePwdSend.data,用fetch只要
       if (data.status === 'pwdmatch') {
         Swal.fire('成功', '密碼與資料表相符', 'success')
         setShowNewPasswordInput(true)
@@ -284,13 +285,13 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'resetPwd success') {
-        Swal.fire('成功', '密碼更新成功', 'success')
+        Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
         // 重置表單
-        setEditableUser((prev) => ({
-          ...prev,
-          currentPassword: '',
-          newPassword: '',
-        }))
+        // setEditableUser(prev => ({
+        //   ...prev,
+        //   currentPassword: '',
+        //   newPassword: ''
+        // }));
         setShowNewPasswordInput(false)
       }
     } catch (error) {
@@ -807,7 +808,7 @@ export default function UserProfile() {
                         </label>
                       </Accordion.Header>
                       <Accordion.Body>
-                        <div className="">
+                        <div className="mb-3">
                           <input
                             type={showpassword ? 'text' : 'password'}
                             className="form-control"
@@ -816,25 +817,27 @@ export default function UserProfile() {
                             placeholder="請輸入當前密碼"
                             onChange={handleInputChange}
                           />
-                        </div>
-                        <div className="mb-3 form-text">
+                          {/* <span>
                           要先輸入密碼正確，才能輸入新的密碼
-                        </div>
-                        <div className="d-flex justify-content-between align-items-center">
-                          <div className="">
-                            <input
-                              type="checkbox"
-                              id="showpassword"
-                              checked={showpassword}
-                              onChange={() => setShowpassword(!showpassword)}
-                              className="form-check-input"
-                            />
-                            顯示密碼
+                          </span> */}
+                          <div className="form-text">
+                            要先輸入密碼正確，才能輸入新的密碼
                           </div>
-                          <div>
+
+                          <div className="d-flex justify-content-between align-itmes-center">
+                            <div>
+                              <input
+                                type="checkbox"
+                                id="showpassword"
+                                checked={showpassword}
+                                onChange={() => setShowpassword(!showpassword)}
+                                className="form-check-input"
+                              />{' '}
+                              顯示密碼
+                            </div>
                             <button
                               type="button"
-                              className="btn btn-primary text-light"
+                              className="btn btn-primary text-white"
                               onClick={pwdCheck}
                             >
                               送出檢查
@@ -842,26 +845,37 @@ export default function UserProfile() {
                           </div>
                         </div>
                         {showNewPasswordInput && (
-                          <div className="mb-3 row">
-                            <div className="col-8">
+                          <>
+                            <div className="mb-3">
                               <input
                                 type="text"
+                                id="newPassword1"
                                 className="form-control"
                                 name="newPassword"
                                 value={editableUser.newPassword}
                                 onChange={handleInputChange}
+                                placeholder="請輸入新密碼"
                               />
                             </div>
-                            <div className="col-4">
+                            <div className="mb-3">
+                              <input
+                                type="text"
+                                id="newPassword2"
+                                className="form-control mb-3"
+                                name="newPassword"
+                                value={editableUser.newPassword}
+                                onChange={handleInputChange}
+                                placeholder="請確認新密碼"
+                              />
                               <button
                                 type="button"
-                                className="btn btn-secondary"
+                                className="btn btn-secondary text-white"
                                 onClick={confirmPwdReset}
                               >
                                 確認修改
                               </button>
                             </div>
-                          </div>
+                          </>
                         )}
                       </Accordion.Body>
                     </Accordion.Item>
