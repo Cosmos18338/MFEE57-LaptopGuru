@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogComment({ blog_id }) {
   const [blogComment, setBlogComment] = useState([])
@@ -31,15 +32,17 @@ export default function BlogComment({ blog_id }) {
     }
   }, [blog_id])
 
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+
   // 处理提交评论
   const handleSubmit = async () => {
     if (!newComment.trim()) {
       alert('請輸入留言內容')
       return
     }
-
-    // 假设用户ID从某处获取，这里暂时写死
-    const user_id = 1 // 这里需要替换为实际的用户ID
 
     const commentData = {
       blog_id: blog_id,
@@ -68,11 +71,11 @@ export default function BlogComment({ blog_id }) {
         alert('留言成功！')
         router.reload()
       } else {
-        alert('留言失敗，請稍後再試')
+        alert('你沒登入吧！')
       }
     } catch (error) {
       console.error('Error posting comment:', error)
-      alert('發生錯誤，請稍後再試')
+      alert('你沒登入吧！')
     }
   }
 
@@ -103,24 +106,27 @@ export default function BlogComment({ blog_id }) {
         </div>
       ))}
 
-      <div className="mb-5 BlogDetailComment">
-        <div className="m-5">
-          <p className="fs-5">新增你的留言，留下你的寶貴意見！</p>
-          <hr />
-          <textarea
-            className="w-100 h-200"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
+      {/* 只有登入才顯示留言框 */}
+      {userData && (
+        <div className="mb-5 BlogDetailComment">
+          <div className="m-5">
+            <p className="fs-5">新增你的留言，留下你的寶貴意見！</p>
+            <hr />
+            <textarea
+              className="w-100 h-200"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+          </div>
+          <button
+            className="BlogEditButtonDelete ms-5 mb-5"
+            type="button"
+            onClick={handleSubmit}
+          >
+            送出
+          </button>
         </div>
-        <button
-          className="BlogEditButtonDelete ms-5 mb-5"
-          type="button"
-          onClick={handleSubmit}
-        >
-          送出
-        </button>
-      </div>
+      )}
     </>
   )
 }

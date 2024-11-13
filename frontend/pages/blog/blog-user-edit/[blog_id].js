@@ -7,12 +7,9 @@ import { useAuth } from '@/hooks/use-auth'
 export default function Blogedit() {
   const router = useRouter()
   const { blog_id } = router.query
-
-  const brands = [
-    ['ROG', 'DELL', 'Acer', 'Raser'],
-    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
-  ]
-
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  // -------------------使用者------------------
   // 使用同一個表單管理功能，把 const blog_type = useState('') 都全部去除
   const [formData, setFormData] = useState({
     blog_type: '',
@@ -24,6 +21,25 @@ export default function Blogedit() {
     blog_image: null,
     blog_valid_value: '1',
   })
+
+  // 2. 用戶驗證，如果沒有登入就導向首頁或登入頁
+  if (!auth?.userData) {
+    router.push('http://localhost:3000/member/login')
+    return null
+  }
+  // -------------------使用者-------------------
+  const { userData } = auth
+  // -------------------使用者-------------------
+
+  const user_id = userData.user_id
+  console.log(user_id)
+
+  // -------------------使用者-------------------
+
+  const brands = [
+    ['ROG', 'DELL', 'Acer', 'Raser'],
+    ['GIGABYTE', 'MSI', 'HP', 'ASUS'],
+  ]
 
   useEffect(() => {
     console.log('1. blog_id:', blog_id) // 檢查 blog_id
@@ -44,7 +60,6 @@ export default function Blogedit() {
   }, [blog_id])
 
   // 如果要檢查 formData 的變化，可以加一個新的 useEffect
-  useEffect(() => {}, [formData])
 
   // 統一的表單處理函數
   const handleChange = (name, value) => {
@@ -54,19 +69,6 @@ export default function Blogedit() {
     }))
   }
 
-  // -------------------使用者-------------------
-  const { auth } = useAuth()
-  const { userData } = auth
-  const user_id = userData.user_id
-  console.log(user_id)
-
-  // 如果沒有登入就導向首頁或登入頁
-  if (!userData) {
-    router.push('http://localhost:3000/member/login') // 或是 router.push('/')
-    return null // 返回 null 避免渲染其他內容
-  }
-  // -------------------使用者-------------------
-
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
@@ -74,7 +76,7 @@ export default function Blogedit() {
       const formDataToSend = new FormData()
 
       // 加入所有欄位
-      formDataToSend.append('user_id', formData.user_id)
+      formDataToSend.append('user_id', user_id)
       formDataToSend.append('blog_type', formData.blog_type)
       formDataToSend.append('blog_title', formData.blog_title)
       formDataToSend.append('blog_content', formData.blog_content)
