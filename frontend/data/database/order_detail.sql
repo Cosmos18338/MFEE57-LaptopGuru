@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-11-08 09:22:24
+-- 產生時間： 2024-11-13 07:05:19
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -37,6 +37,15 @@ CREATE TABLE `order_detail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
+-- 傾印資料表的資料 `order_detail`
+--
+
+INSERT INTO `order_detail` (`id`, `user_id`, `order_id`, `product_id`, `product_price`, `quantity`) VALUES
+(1, 2, '7a80d1b3-4892-46f6-bfb9-ceaf0e6621c4', 275, 105900, 1),
+(4, 2, '595c1954-5e4b-4643-9e42-d2e7a74e16bb', 275, 105900, 1),
+(5, 2, '20002a31-1aba-45fb-b615-a8050eefe590', 275, 105900, 1);
+
+--
 -- 已傾印資料表的索引
 --
 
@@ -54,7 +63,7 @@ ALTER TABLE `order_detail`
 -- 使用資料表自動遞增(AUTO_INCREMENT) `order_detail`
 --
 ALTER TABLE `order_detail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

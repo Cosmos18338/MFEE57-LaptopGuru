@@ -144,6 +144,7 @@ export default function CouponBtn({ price, setCouponValue }) {
         setAppliedCoupon(coupon)
         setCouponValue({
           ...coupon,
+          coupon_code: coupon.coupon_code,
           discountAmount,
           finalPrice,
         })
