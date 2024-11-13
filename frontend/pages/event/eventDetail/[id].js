@@ -101,8 +101,16 @@ const EventDetail = () => {
   // 修改後的 handleGroupAction 函數
   const handleGroupAction = (actionType) => {
     if (actionType === 'create') {
-      // 跳轉到開團找人頁面
-      router.push('/group/groupCreat')
+      // 跳轉到開團找人頁面，並傳遞活動資訊
+      router.push({
+        pathname: '/group/groupCreat',
+        query: {
+          eventId: id,
+          eventName: event.name,
+          eventStartTime: event.eventStartTime,
+          eventEndTime: event.eventEndTime,
+        },
+      })
     } else {
       // 跳轉到揪團列表頁面
       router.push('/group')
