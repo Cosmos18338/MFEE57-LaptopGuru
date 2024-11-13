@@ -1,7 +1,6 @@
 import express from 'express'
 import db from '##/configs/mysql.js'
 const router = express.Router()
-
 // 取得單一產品概略資料和圖片路徑
 router.get('/card/:product_id', async (req, res) => {
   try {
@@ -32,32 +31,32 @@ router.get('/list', async (req, res) => {
     if (category && category_value) {
       switch (category) {
         case 'product_brand':
-          where.push('product_brand = ?')
-          params.push(category_value)
+          where.push('product_brand LIKE ?')
+          params.push(`%${category_value}%`)
           break
         case 'affordance':
-          where.push('affordance = ?')
-          params.push(category_value)
+          where.push('affordance LIKE ?')
+          params.push(`%${category_value}%`)
           break
         case 'product_size':
-          where.push('product_size = ?')
-          params.push(category_value)
+          where.push('product_size LIKE ?')
+          params.push(`%${category_value}%`)
           break
         case 'product_display_card':
-          where.push('product_display_card = ?')
-          params.push(category_value)
+          where.push('product_display_card LIKE ?')
+          params.push(`%${category_value}%`)
           break
         case 'product_CPU':
-          where.push('product_CPU = ?')
-          params.push(category_value)
+          where.push('product_CPU LIKE ?')
+          params.push(`%${category_value}%`)
           break
         case 'product_RAM':
-          where.push('product_RAM = ?')
-          params.push(category_value)
+          where.push('product_RAM LIKE ?')
+          params.push(`%${category_value}%`)
           break
-        case 'product_hardisk_valume':
-          where.push('product_hardisk_valume = ?')
-          params.push(category_value)
+        case 'product_hardisk_volume':
+          where.push('product_hardisk_volume LIKE ?')
+          params.push(`%${category_value}%`)
           break
       }
     }

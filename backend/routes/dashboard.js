@@ -110,44 +110,19 @@ try{
 router.put('/:user_id/pwdReset', async (req, res) => {
   try {
     const { user_id } = req.params
-    const { currentPassword, newPassword } = req.body
+    const { newPassword1, newPassword2 } = req.body
 
     // 驗證參數
-    if (!currentPassword || !newPassword) {
+    if (!newPassword1|| !newPassword2) {
       return res.status(400).json({
         status: 'error',
         message: '缺少必要參數',
       })
     }
+    // 如果上述新密碼 密碼1跟密碼2都一致的話，做以下的動作
 
-    // 先檢查當前密碼是否正確
-    const [users] = await db.query(
-      'SELECT password FROM users WHERE user_id = ?',
-      [user_id]
-    )
-
-    if (users.length === 0) {
-      return res.status(404).json({
-        status: 'error',
-        message: '找不到該用戶',
-      })
-    }
-
-    // 驗證當前密碼
-    const isCurrentPasswordValid = await compareHash(
-      currentPassword,
-      users[0].password
-    )
-
-    if (!isCurrentPasswordValid) {
-      return res.status(400).json({
-        status: 'error',
-        message: '當前密碼不正確',
-      })
-    }
-
-    // 產生新密碼的雜湊值
-    const hashedPassword = await generateHash(newPassword)
+    // 用新密碼2。產生新密碼的雜湊值
+    const hashedPassword = await generateHash(newPassword2)
 
     // 更新密碼
     const [result] = await db.query(
