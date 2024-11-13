@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogComment({ blog_id }) {
   const [blogComment, setBlogComment] = useState([])
-  const [newComment, setNewComment] = useState('') // 新增评论的状态
+  const [newComment, setNewComment] = useState('')
   const router = useRouter()
 
-  // 获取时间戳的函数
+  // Single auth destructuring
+  const { auth } = useAuth()
+  const { userData, isAuth } = auth || {}
+  const user_id = userData?.user_id
+
   function getTimestamp() {
     const now = new Date()
     const year = now.getFullYear()
@@ -18,32 +23,36 @@ export default function BlogComment({ blog_id }) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 
-  // 获取评论列表
   useEffect(() => {
     if (blog_id) {
       fetch(`http://localhost:3005/api/blog/blog-comment/${blog_id}`)
         .then((response) => response.json())
         .then((data) => {
-          setBlogComment(data)
-          console.log('撈取資料正常')
+          const commentArray = Array.isArray(data) ? data : []
+          setBlogComment(commentArray)
+          console.log('撈取資料正常:', commentArray)
         })
-        .catch((error) => console.error('Error fetching blog data:', error))
+        .catch((error) => {
+          console.error('Error fetching blog data:', error)
+          setBlogComment([])
+        })
     }
   }, [blog_id])
 
-  // 处理提交评论
   const handleSubmit = async () => {
     if (!newComment.trim()) {
       alert('請輸入留言內容')
       return
     }
 
-    // 假设用户ID从某处获取，这里暂时写死
-    const user_id = 1 // 这里需要替换为实际的用户ID
+    if (!isAuth) {
+      alert('你沒登入吧！')
+      return
+    }
 
     const commentData = {
-      blog_id: blog_id,
-      user_id: user_id,
+      blog_id,
+      user_id,
       blog_content: newComment,
       blog_created_date: getTimestamp(),
     }
@@ -61,22 +70,21 @@ export default function BlogComment({ blog_id }) {
       )
 
       if (response.ok) {
-        // 提交成功后刷新评论列表
         const newData = await response.json()
-        setBlogComment([...blogComment, newData])
-        setNewComment('') // 清空输入框
+        setBlogComment((prevComments) => [...prevComments, newData])
+        setNewComment('')
         alert('留言成功！')
-        router.reload()
       } else {
-        alert('留言失敗，請稍後再試')
+        alert('留言失敗，請稍後再試！')
       }
     } catch (error) {
       console.error('Error posting comment:', error)
-      alert('發生錯誤，請稍後再試')
+      alert('發生錯誤，請稍後再試！')
     }
   }
 
-  if (!blogComment) {
+  // Single loading check
+  if (!Array.isArray(blogComment)) {
     return <p>Loading comments...</p>
   }
 
@@ -91,11 +99,14 @@ export default function BlogComment({ blog_id }) {
               <div className="overflow-hidden BlogDetailCommentImg">
                 <img
                   className="w-100 h-100 object-fit-cover"
-                  src="https://th.bing.com/th/id/R.88c444f63f40cfa9b49801f826befa80?rik=QAme0H3xbxieEQ&pid=ImgRaw&r=0"
-                  alt=""
+                  src={
+                    comment.image_path
+                      ? `http://localhost:3005${comment.image_path}`
+                      : 'https://th.bing.com/th/id/R.88c444f63f40cfa9b49801f826befa80?rik=QAme0H3xbxieEQ&pid=ImgRaw&r=0'
+                  }
+                  alt={comment.name || '匿名用戶'}
                 />
               </div>
-              <p>要換成名字和大頭貼的話要去撈 user 資料表</p>
               <p>於 {comment.blog_created_date} 留言</p>
             </div>
             <div className="w-100 h-100 mt-5 mb-5">{comment.blog_content}</div>
@@ -103,24 +114,26 @@ export default function BlogComment({ blog_id }) {
         </div>
       ))}
 
-      <div className="mb-5 BlogDetailComment">
-        <div className="m-5">
-          <p className="fs-5">新增你的留言，留下你的寶貴意見！</p>
-          <hr />
-          <textarea
-            className="w-100 h-200"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-          />
+      {isAuth && userData && (
+        <div className="mb-5 BlogDetailComment">
+          <div className="m-5">
+            <p className="fs-5">新增你的留言，留下你的寶貴意見！</p>
+            <hr />
+            <textarea
+              className="w-100 h-200"
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+            />
+          </div>
+          <button
+            className="BlogEditButtonDelete ms-5 mb-5"
+            type="button"
+            onClick={handleSubmit}
+          >
+            送出
+          </button>
         </div>
-        <button
-          className="BlogEditButtonDelete ms-5 mb-5"
-          type="button"
-          onClick={handleSubmit}
-        >
-          送出
-        </button>
-      </div>
+      )}
     </>
   )
 }

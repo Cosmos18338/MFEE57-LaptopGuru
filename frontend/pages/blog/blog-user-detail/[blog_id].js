@@ -3,91 +3,110 @@ import { useRouter } from 'next/router'
 import ArticleDetailMainArea from '@/components/blog/blogdetail/blogdetail-mainarea'
 import Link from 'next/link'
 import { IoArrowBackCircleOutline } from 'react-icons/io5'
+import { useAuth } from '@/hooks/use-auth'
 
-export default function BlogId() {
+export default function BlogUserDetail() {
   const router = useRouter()
-  const { blog_id } = router.query // 動態獲取 blog_id
+  const { blog_id } = router.query
   const [blogData, setBlogData] = useState(null)
+  const { auth } = useAuth()
+  const { userData, isAuth } = auth || {}
 
   useEffect(() => {
     if (blog_id) {
-      fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`) // 這裡替換為你實際的 API 路徑
+      fetch(`http://localhost:3005/api/blog/blog-user-detail/${blog_id}`)
         .then((response) => response.json())
         .then((data) => {
-          setBlogData(data.data) // 設定資料
+          setBlogData(data.data)
           console.log('撈取資料正常')
-        })
-        .catch((error) => console.error('Error fetching blog data:', error))
-    }
-  }, [blog_id]) // 當 blog_id 改變時重新執行 useEffect
+          console.log(
+            'Blog user_id:',
+            data.data.user_id,
+            'Type:',
+            typeof data.data.user_id
+          )
+          console.log(
+            'Current user_id:',
+            userData?.user_id,
+            'Type:',
+            typeof userData?.user_id
+          )
 
+          // 將兩個 ID 轉換為字符串進行比較
+          const blogUserId = String(data.data.user_id)
+          const currentUserId = String(userData?.user_id)
+
+          if (!isAuth) {
+            console.log('用戶未登入')
+            router.push('/blog')
+            return
+          }
+
+          if (!userData) {
+            console.log('無用戶數據')
+            router.push('/blog')
+            return
+          }
+
+          if (blogUserId !== currentUserId) {
+            console.log('用戶ID不匹配')
+            console.log('Blog user_id:', blogUserId)
+            console.log('Current user_id:', currentUserId)
+            router.push('/blog')
+            return
+          }
+
+          console.log('驗證通過！')
+        })
+        .catch((error) => {
+          console.error('Error fetching blog data:', error)
+          router.push('/blog')
+        })
+    }
+  }, [blog_id, userData, isAuth, router])
+
+  // 加載中的狀態
   if (!blogData) {
-    return <p>Loading...</p> // 當資料還沒載入時顯示 loading
+    return <p>Loading...</p>
   }
-  // 確認一下圖片路徑
-  console.log(`確認一下圖片路徑`)
-  console.log(`http://localhost:3005${blogData.blog_image}`)
-  console.log(blogData)
-  console.log('blogData裡面沒有 blog_id，這點等之後完全綁使用者後解決')
 
   return (
     <>
       <ArticleDetailMainArea />
-      <div className=" mt-5 mb-5">
-        <Link
-          href="/blog/blog-user-overview/1"
-          className="text-decoration-none fs-5" // 移除底線
-        >
-          <p>
-            <IoArrowBackCircleOutline /> 返回部落格總覽
+      <div className="mt-5 mb-5">
+        <Link href="/dashboard" className="text-decoration-none fs-5">
+          <p className="fs-5 fw-bold">
+            <IoArrowBackCircleOutline /> 返回使用者總覽
           </p>
         </Link>
       </div>
 
-      {/* <div>
-        <div className="mt-5">
-          <div className="mb-5">
-            <p className="fs-5 fw-bold">購買機型</p>
-          </div>
-          <div className="mb-5">
-            <p className="fs-5 fw-bold">Swift 14 AI AMD</p>
-          </div>
-          <div className="w-100 h-25 overflow-hidden m-auto">
-            <img
-              className="object-fit-cover w-100 h-100"
-              src="https://images.acer.com/is/image/acer/acer-laptop-swift-14-ai-amd-designed-to-unfold-your-potential:KSP-with-Specs-XL"
-              alt
-            />
-          </div>
-        </div> */}
       <section className="BlogDetailSectionContentArea mt-5">
         <div className="d-flex align-items-center justify-content-center mb-5">
           <img
-            className="w-100 h-100 ratio"
+            className="w-50 h-50 ratio"
             src={`http://localhost:3005${blogData.blog_image}`}
-            alt
+            alt={blogData.blog_title}
           />
         </div>
         <div className="d-flex flex-column">
           <div>
-            <p className="mb-5 mt-5 display-5 fw-bold  BlogDetailSectionContentAreaTitle">
-              部落格標題
-            </p>
-            <p className="fs-5 fw-bold BlogDetailSectionContentAreaTitle">
-              {blogData.blog_title}
+            <p className="mb-5 mt-5 display-5 fw-bold BlogDetailSectionContentAreaTitle">
+              部落格標題：{blogData.blog_title}
             </p>
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold "> 部落格分類</p>
-            <p className="fs-5 fw-bold">{blogData.blog_type}</p>
+            <p className="display-5 fw-bold">
+              部落格分類：{blogData.blog_type}
+            </p>
           </div>
-          <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold ">
-            <p className="display-5 fw-bold ">品牌</p>
-            <p className="fs-5 fw-bold">{blogData.blog_brand}</p>
+          <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold">
+            <p className="display-5 fw-bold">品牌：{blogData.blog_brand}</p>
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold">購買機型</p>
-            <p>{blogData.blog_brand_model}</p>
+            <p className="display-5 fw-bold">
+              購買機型：{blogData.blog_brand_model}
+            </p>
           </div>
         </div>
 
@@ -96,11 +115,18 @@ export default function BlogId() {
           <p className="fs-5 BlogDetailText">{blogData.blog_content}</p>
         </div>
 
-        <Link href={`/blog/blog-user-edit/${blog_id}`}>
-          <button className="BlogEditButtonDelete" type="button">
-            前往編輯！
-          </button>
-        </Link>
+        <div className="d-flex gap-5">
+          <Link href={`/blog/blog-detail/${blog_id}`}>
+            <button className="BlogEditButtonSubmit" type="button">
+              前往部落格頁面
+            </button>
+          </Link>
+          <Link href={`/blog/blog-user-edit/${blog_id}`}>
+            <button className="BlogEditButtonDelete" type="button">
+              前往編輯！
+            </button>
+          </Link>
+        </div>
       </section>
     </>
   )

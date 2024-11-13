@@ -1,33 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/use-auth'
 
-export default function BlogUserOverview() {
-  // 1. 所有的 hooks
-  const router = useRouter()
+// 改為接收props的組件
+export default function BlogUserOverview({ specificUserId = null }) {
   const { auth } = useAuth()
-  const { isAuth } = auth
-
+  const { isAuth, userData } = auth
   const [blogData, setBlogData] = useState([])
 
-  // 2. 登入驗證的 Effect
-  // useEffect(() => {
-  //   if (!isAuth) {
-  //     router.push('http://localhost:3000/member/login')
-  //   }
-  // }, [isAuth, router])
-
-  // 3. 資料讀取的 Effect
   useEffect(() => {
-    // 改用 isAuth 判斷
     if (!isAuth) return
 
-    const pathParts = router.asPath.split('/')
-    const user_id = pathParts[pathParts.length - 1]
+    // 使用 specificUserId（如果有提供），否則使用當前登入用戶的 ID
+    const targetUserId = specificUserId || userData?.user_id
 
-    if (user_id) {
-      fetch(`http://localhost:3005/api/blog/blog_user_overview/${user_id}`)
+    if (targetUserId) {
+      fetch(`http://localhost:3005/api/blog/blog_user_overview/${targetUserId}`)
         .then((response) => response.json())
         .then((data) => {
           console.log('API回傳的資料:', data)
@@ -38,24 +26,19 @@ export default function BlogUserOverview() {
           console.error('錯誤:', error)
         })
     }
-  }, [router.asPath, isAuth])
+  }, [isAuth, userData, specificUserId])
 
-  // 4. 立即驗證阻擋
   if (!isAuth) {
     return null
   }
 
-  // 5. 取得使用者資料
-  const { userData } = auth
-  const user_id = userData.user_id
-  console.log(user_id)
-
-  // 6. Loading 判斷
   if (!blogData || blogData.length === 0) {
-    return <p>Loading...</p>
+    return (
+      <div className="d-flex justify-content-center align-items-center">
+        <p>尚無發文紀錄</p>
+      </div>
+    )
   }
-
-  // 7. return JSX
 
   return (
     <div className="container d-flex flex-column gap-5">
@@ -65,11 +48,7 @@ export default function BlogUserOverview() {
           href={`/blog/blog-user-detail/${blog.blog_id}`}
           style={{ textDecoration: 'none', cursor: 'pointer' }}
         >
-          <div
-            key={blog.blog_id}
-            className="card d-flex flex-row BlogUserOverviewCard"
-            href={`/blog/blog-detail/${blog.blog_id}`}
-          >
+          <div className="card d-flex flex-row BlogUserOverviewCard">
             <img
               src={
                 `http://localhost:3005${blog.blog_image}` ||
@@ -91,7 +70,7 @@ export default function BlogUserOverview() {
                   className="d-flex justify-content-between pe-5"
                 >
                   <p className="card-text BlogUserOverviewCardType">
-                    版主：Jack&nbsp;
+                    版主：{blog.user_name}&nbsp;
                   </p>
                 </div>
                 <div className="d-flex justify-content-between pe-5 mt-3">
@@ -103,10 +82,6 @@ export default function BlogUserOverview() {
           </div>
         </Link>
       ))}
-
-      {/* {user_id === blog.user_id && (
-        <button className="edit-button">編輯</button>
-      )} */}
     </div>
   )
 }

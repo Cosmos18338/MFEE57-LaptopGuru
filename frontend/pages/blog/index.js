@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import ArticleSectionContainer from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import Link from 'next/link'
+import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const ITEMS_PER_PAGE = 6
+
+  // -------------------使用者-------------------
+  const { auth } = useAuth()
+  const { userData } = auth
+  const user_id = userData.user_id
+  console.log(user_id)
+  // -------------------使用者-------------------
 
   // 統一的過濾狀態
   const [filters, setFilters] = useState({
@@ -159,25 +167,38 @@ export default function BlogSearchPage() {
         {/* 搜尋列 */}
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-        <Link href={`/blog/blog-created`}>
-          <div className="d-flex flex-row-reverse mb-5">
-            <button
-              type="button"
-              className="btn text-white BlogIndexCreatedButton"
-            >
-              新增發文！
-            </button>
-          </div>
-        </Link>
+        {userData?.user_id ? (
+          <Link href="/blog/blog-created">
+            <div className="d-flex flex-row-reverse mb-5">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                新增發文！
+              </button>
+            </div>
+          </Link>
+        ) : (
+          <Link href="http://localhost:3000/member/login">
+            <div className="d-flex flex-row-reverse mb-5">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                登入後發文
+              </button>
+            </div>
+          </Link>
+        )}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="position-relative">
-          <div className="d-flex flex-column align-items-center justify-content-center gap-5">
+          <div className="d-flex flex-column align-items-center justify-content-center gap-3">
             <div className="row">
               {blogs.map((blog) => (
-                <div className="col-md-12 col-lg-6 mb-3" key={blog.blog_id}>
+                <div className="col-md-12 col-lg-6 mb-5" key={blog.blog_id}>
                   <Link href={`/blog/blog-detail/${blog.blog_id}`} passHref>
-                    <div className="card d-flex flex-row BlogCard">
+                    <div className="card d-flex flex-row BlogCard shadow">
                       <img
                         src={
                           blog.blog_image
