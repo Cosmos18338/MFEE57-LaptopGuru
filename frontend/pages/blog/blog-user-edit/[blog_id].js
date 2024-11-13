@@ -144,6 +144,7 @@ export default function Blogedit() {
               className="form-control form-control-lg"
               type="text"
               placeholder="標題"
+              style={{ width: '200%' }}
               value={formData.blog_title}
               onChange={(e) => handleChange('blog_title', e.target.value)}
             />
@@ -160,9 +161,10 @@ export default function Blogedit() {
           </div>
           <div>
             <textarea
-              className="form-control BlogCreatedTextArea"
+              className="form-control"
               value={formData.blog_content}
               onChange={(e) => handleChange('blog_content', e.target.value)}
+              style={{ width: '430%' }}
               rows="20"
               placeholder="請輸入內文"
             />

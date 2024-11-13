@@ -121,7 +121,7 @@ export default function Signup() {
 
 
       const response = await axios.post(
-        'http://localhost:3005/api/signup',
+        `http://localhost:3005/api/signup`,
         user
       )
 
