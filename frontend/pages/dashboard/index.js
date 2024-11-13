@@ -10,6 +10,7 @@ import CouponUser from '@/components/coupon/coupon-user-components'
 import EventManagement from '@/components/event/EventManagement'
 import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
+import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
 
@@ -142,6 +143,9 @@ export default function Test1() {
                 <Nav.Link eventKey="shopping-record">購買清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
+                <Nav.Link eventKey="favorites">蒐藏清單</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
               </Nav.Item>
               <Nav.Item>
@@ -195,8 +199,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="favorites">
                 <div>
-                  <h4>收藏清單</h4>
-                  <p>這裡是收藏清單的內容。</p>
+                  <Favorites />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="membership">

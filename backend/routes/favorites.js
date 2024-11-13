@@ -56,4 +56,21 @@ router.delete('/:user_id/:product_id', async (req, res) => {
   }
 })
 
+//取得收藏清單
+router.get('/:user_id', async (req, res) => {
+  const { user_id } = req.params
+  try {
+    const [rows] = await db.query(
+      'SELECT * FROM favorite_management WHERE user_id = ?',
+      [user_id]
+    )
+    if (!rows.length) {
+      return res.json({ status: 'error', message: '找不到收藏清單' })
+    }
+    return res.json({ status: 'success', data: { favorite: rows } })
+  } catch (error) {
+    console.error('取得收藏清單失敗:', error)
+    return res.json({ status: 'error', message: '取得收藏清單失敗' })
+  }
+})
 export default router

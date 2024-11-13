@@ -4,11 +4,61 @@ import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
 
-export default function Blogedit() {
+export default function BlogUserEdit() {
   const router = useRouter()
   const { blog_id } = router.query
   const { auth } = useAuth()
   const { userData } = auth
+
+  useEffect(() => {
+    if (blog_id) {
+      // 先檢查用戶身份
+      if (!auth.isAuth) {
+        console.log('用戶未登入')
+        router.push('/dashboard')
+        return
+      }
+
+      if (!userData) {
+        console.log('無用戶數據')
+        router.push('/dashboard')
+        return
+      }
+
+      // 獲取文章數據並驗證
+      fetch(`http://localhost:3005/api/blog/blog-edit/${blog_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+        .then((r) => r.json())
+        .then((data) => {
+          console.log('從後端收到的資料:', data)
+
+          // 驗證文章作者是否為當前用戶
+          const blogUserId = String(data.user_id)
+          const currentUserId = String(userData.user_id)
+
+          if (blogUserId !== currentUserId) {
+            console.log('用戶ID不匹配')
+            router.push('/dashboard')
+            return
+          }
+
+          // 驗證通過，設置表單數據
+          setFormData({
+            ...data,
+            originalImage: data.blog_image,
+            blog_image: data.blog_image,
+          })
+        })
+        .catch((error) => {
+          console.log('錯誤:', error)
+          router.push('/dashboard')
+        })
+    }
+  }, [blog_id, userData, auth.isAuth, router])
 
   const [formData, setFormData] = useState({
     blog_type: '',

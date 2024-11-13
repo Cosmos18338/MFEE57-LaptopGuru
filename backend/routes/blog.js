@@ -106,8 +106,6 @@ router.post('/blog-created', upload.single('blog_image'), async (req, res) => {
 })
 
 router.get('/blog-user-detail/:blog_id', async (req, res) => {
-  console.log('apple')
-
   try {
     const blogId = req.params.blog_id // 從 URL 參數中獲取 blog_id
 
@@ -146,8 +144,6 @@ router.get('/blog-user-detail/:blog_id', async (req, res) => {
 })
 
 router.get('/blog-detail/:blog_id', async (req, res) => {
-  console.log('apple')
-
   try {
     const blogId = req.params.blog_id // 從 URL 參數中獲取 blog_id
 
@@ -208,7 +204,7 @@ router.get('/blog-edit/:blog_id', async (req, res) => {
       'SELECT * FROM blogoverview WHERE blog_id = ?',
       [req.params.blog_id]
     )
-    console.log('後端返回的資料:', rows[0]) // 檢查資料
+    // console.log('後端返回的資料:', rows[0]) // 檢查資料
     res.json(rows[0])
   } catch (error) {
     res.status(500).json({ error: '獲取失敗' })
@@ -306,9 +302,12 @@ router.put('/blog-delete/:blog_id', async (req, res) => {
 
 router.get('/blog_user_overview/:user_id', async (req, res) => {
   try {
-    // 不要解構第一個元素，直接取得整個結果
     const [rows] = await db.query(
-      'SELECT * FROM blogoverview WHERE user_id = ? AND blog_valid_value = 1 ORDER BY blog_created_date DESC',
+      `SELECT b.*, u.name as user_name 
+       FROM blogoverview b
+       JOIN users u ON b.user_id = u.user_id 
+       WHERE b.user_id = ? AND b.blog_valid_value = 1 
+       ORDER BY b.blog_created_date DESC`,
       [req.params.user_id]
     )
 
@@ -328,7 +327,7 @@ router.get('/blog_user_overview/:user_id', async (req, res) => {
 // GET 評論路由
 router.get('/blog-comment/:blog_id', async (req, res) => {
   try {
-    console.log('收到查詢請求，blog_id:', req.params.blog_id) // 加入偵錯訊息
+    // console.log('收到查詢請求，blog_id:', req.params.blog_id) // 加入偵錯訊息
 
     const [blogComment] = await db.query(
       `SELECT 
@@ -342,7 +341,7 @@ router.get('/blog-comment/:blog_id', async (req, res) => {
       [req.params.blog_id]
     )
 
-    console.log('查詢結果:', blogComment) // 加入偵錯訊息
+    // console.log('查詢結果:', blogComment) // 加入偵錯訊息
 
     // 修改這裡的判斷邏輯
     // if (!blogComment) {
