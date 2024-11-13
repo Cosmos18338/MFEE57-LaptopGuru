@@ -4,10 +4,14 @@ import { useAuth } from '@/hooks/use-auth'
 
 export default function BlogComment({ blog_id }) {
   const [blogComment, setBlogComment] = useState([])
-  const [newComment, setNewComment] = useState('') // 新增评论的状态
+  const [newComment, setNewComment] = useState('')
   const router = useRouter()
 
-  // 获取时间戳的函数
+  // Single auth destructuring
+  const { auth } = useAuth()
+  const { userData, isAuth } = auth || {}
+  const user_id = userData?.user_id
+
   function getTimestamp() {
     const now = new Date()
     const year = now.getFullYear()
@@ -19,33 +23,21 @@ export default function BlogComment({ blog_id }) {
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   }
 
-  // 2. 修改加載判斷邏輯
   useEffect(() => {
     if (blog_id) {
       fetch(`http://localhost:3005/api/blog/blog-comment/${blog_id}`)
         .then((response) => response.json())
         .then((data) => {
-          // 確保 data 是陣列
           const commentArray = Array.isArray(data) ? data : []
           setBlogComment(commentArray)
           console.log('撈取資料正常:', commentArray)
         })
         .catch((error) => {
           console.error('Error fetching blog data:', error)
-          setBlogComment([]) // 錯誤時設為空陣列
+          setBlogComment([])
         })
     }
   }, [blog_id])
-
-  const { auth } = useAuth()
-  const { userData } = auth
-  const user_id = userData.user_id
-  console.log(user_id)
-
-  // 3. 修改 loading 判斷
-  if (!Array.isArray(blogComment)) {
-    return <p>Loading comments...</p>
-  }
 
   const handleSubmit = async () => {
     if (!newComment.trim()) {
@@ -53,9 +45,14 @@ export default function BlogComment({ blog_id }) {
       return
     }
 
+    if (!isAuth) {
+      alert('你沒登入吧！')
+      return
+    }
+
     const commentData = {
-      blog_id: blog_id,
-      user_id: user_id,
+      blog_id,
+      user_id,
       blog_content: newComment,
       blog_created_date: getTimestamp(),
     }
@@ -74,21 +71,20 @@ export default function BlogComment({ blog_id }) {
 
       if (response.ok) {
         const newData = await response.json()
-        // 直接更新現有的評論列表
         setBlogComment((prevComments) => [...prevComments, newData])
-        setNewComment('') // 清空輸入框
+        setNewComment('')
         alert('留言成功！')
-        // 移除 router.reload()
       } else {
-        alert('你沒登入吧！')
+        alert('留言失敗，請稍後再試！')
       }
     } catch (error) {
       console.error('Error posting comment:', error)
-      alert('你沒登入吧！')
+      alert('發生錯誤，請稍後再試！')
     }
   }
 
-  if (!blogComment) {
+  // Single loading check
+  if (!Array.isArray(blogComment)) {
     return <p>Loading comments...</p>
   }
 
@@ -111,7 +107,6 @@ export default function BlogComment({ blog_id }) {
                   alt={comment.name || '匿名用戶'}
                 />
               </div>
-              {/* <p>{comment.name || '匿名用戶'}</p> */}
               <p>於 {comment.blog_created_date} 留言</p>
             </div>
             <div className="w-100 h-100 mt-5 mb-5">{comment.blog_content}</div>
@@ -119,8 +114,7 @@ export default function BlogComment({ blog_id }) {
         </div>
       ))}
 
-      {/* 只有登入才顯示留言框 */}
-      {userData && (
+      {isAuth && userData && (
         <div className="mb-5 BlogDetailComment">
           <div className="m-5">
             <p className="fs-5">新增你的留言，留下你的寶貴意見！</p>

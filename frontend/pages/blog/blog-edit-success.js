@@ -13,7 +13,7 @@ export default function Blogdeletesuccess() {
 
     // 3秒後跳轉
     const redirect = setTimeout(() => {
-      router.push('/blog/blog-user-overview/1')
+      router.push('http://localhost:3000/dashboard')
     }, 5000)
 
     // 清理計時器
@@ -32,7 +32,7 @@ export default function Blogdeletesuccess() {
       <div className="text-center mt-3">
         <button
           className="btn btn-primary"
-          onClick={() => router.push('/blog')}
+          onClick={() => router.push('http://localhost:3000/dashboard')}
         >
           回到使用者
         </button>
