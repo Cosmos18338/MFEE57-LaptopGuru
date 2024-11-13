@@ -8,14 +8,14 @@ import MembershipLevels from '@/components/dashboard/membership-levels'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
 import GroupManagement from '@/components/group/GroupManagement'
-
+import BuylistPage from '@/components/dashboard/buylist-page'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
-  const [subActiveKey, setSubActiveKey] =useState("")
-// 狀態用一樣的就好
+  const [subActiveKey, setSubActiveKey] = useState('')
+  // 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
@@ -57,14 +57,14 @@ export default function Test1() {
     }
   }
 
-  const renderHome=(key)=>{
-    switch(key){
+  const renderHome = (key) => {
+    switch (key) {
       case 'profile':
-        return <UserProfile/>
+        return <UserProfile />
       case 'membership':
-        return <MembershipLevels/>
+        return <MembershipLevels />
       default:
-      return <UserProfile/>
+        return <UserProfile />
     }
   }
 
@@ -162,8 +162,7 @@ export default function Test1() {
               </Tab.Pane>
               <Tab.Pane eventKey="shopping-record">
                 <div>
-                  <h4>購買清單</h4>
-                  <CardExample />
+                  <BuylistPage />
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="coupon-record">
