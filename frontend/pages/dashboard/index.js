@@ -5,9 +5,8 @@ import { useAuth } from '@/hooks/use-auth'
 import CardExample from '@/components/bootstrap/cards'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from './membership-levels'
-import CouponQuery from '@/components/coupon/coupon-query-components'
+// import CouponQuery from '@/components/coupon/coupon-query-components'
 import CouponList from '../coupon/test'
-
 
 export default function Dashboard() {
   const { auth, setAuth } = useAuth()
@@ -19,7 +18,6 @@ export default function Dashboard() {
           {/* Left Sidebar */}
           <div className="col-md-3">
             <div className="text-center mb-4">
-         
               <img
                 src={
                   auth?.userData?.image_path ||
@@ -109,7 +107,6 @@ export default function Dashboard() {
                 <div>
                   <h4>優惠券</h4>
                   <p>這裡是優惠券的內容。</p>
-
                 </div>
               </Tab.Pane>
               <Tab.Pane eventKey="blog-record">

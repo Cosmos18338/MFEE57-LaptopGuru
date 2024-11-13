@@ -24,27 +24,29 @@ export default function Test(props) {
     setOrder(data.data)
   }
 
-  const getOrderDetail = async () => {
-    const res = await fetch(
-      `http://localhost:3005/api/buy-list/detail/${user_id}`
-    )
-    const data = await res.json()
-    setOrderDetail(data.data)
-  }
+  // const getOrderDetail = async () => {
+  //   const res = await fetch(
+  //     `http://localhost:3005/api/buy-list/detail/${user_id}`
+  //   )
+  //   const data = await res.json()
+  //   setOrderDetail(data.data)
+  // }
 
   useEffect(() => {
     getOrder()
   }, [user_id])
 
-  useEffect(() => {
-    if (order.length > 0) {
-      getOrderDetail()
-    }
-  }, [order, user_id])
+  // useEffect(() => {
+  //   if (order.length > 0) {
+  //     getOrderDetail()
+  //   }
+  // }, [order, user_id])
 
   return (
     <>
-      <div>123</div>
+      {order.map((item, index) => {
+        return <BuyList key={index} order={item} />
+      })}
     </>
   )
 }
