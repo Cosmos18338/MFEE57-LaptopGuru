@@ -35,7 +35,7 @@ export default function UserProfile() {
   })
 
   const [profilePic, setProfilePic] = useState(
-    'https://via.placeholder.com/220x220'
+    editableUser.image_path ||'https://via.placeholder.com/220x220' 
   )
   const [showpassword, setShowpassword] = useState(false)
   const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
