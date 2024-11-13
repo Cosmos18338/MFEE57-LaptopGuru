@@ -157,6 +157,19 @@ export default function BlogSearchPage() {
           </form>
         </div>
         {/* 搜尋列 */}
+        {/* 新增按鈕 */}
+        {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
+        <Link href={`/blog/blog-created`}>
+          <div className="d-flex flex-row-reverse mb-5">
+            <button
+              type="button"
+              className="btn text-white BlogIndexCreatedButton"
+            >
+              新增發文！
+            </button>
+          </div>
+        </Link>
+        {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="position-relative">
           <div className="d-flex flex-column align-items-center justify-content-center gap-5">

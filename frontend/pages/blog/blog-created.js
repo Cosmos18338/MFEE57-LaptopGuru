@@ -147,7 +147,8 @@ export default function Blogcreated(props) {
           </div>
           <div>
             <textarea
-              className="form-control BlogCreatedTextArea"
+              className="form-control"
+              style={{ width: '430%' }}
               value={blog_content}
               onChange={(e) => setContent(e.target.value)}
               rows="20"

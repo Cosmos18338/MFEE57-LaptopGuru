@@ -7,12 +7,12 @@ export default function BlogDetailMainArea(props) {
         <div className="d-flex">
           <div className="row">
             <div className="ArticleSectionTitle">
-              <p className="text-light">Article</p>
+              <p className="text-light">Blog</p>
             </div>
             <div className="ArticleSectionIntroduction">
               <p className="text-light h5">
-                各種筆電官方品牌發文 <br />
-                最新的官方品牌情報在 GURU！
+                購買筆電的完美體驗 <br />
+                GURU！
               </p>
             </div>
           </div>
