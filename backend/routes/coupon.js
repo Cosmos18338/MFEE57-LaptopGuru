@@ -73,7 +73,7 @@ router.put('/update', async (req, res) => {
       SET valid = ? 
       WHERE coupon_id = ?
       `,
-      [0, coupon_id]
+      [0, coupon_id] // 將 valid 設置為 0，表示已領取
     )
 
     console.log('更新結果:', result)
@@ -91,7 +91,7 @@ router.put('/update', async (req, res) => {
       message: '優惠券已標記為已領取',
       data: {
         coupon_id,
-        valid: 0,
+        valid: 0, // 將 valid 設置為 0，表示已領取
         updated_at: new Date(),
       },
     })
