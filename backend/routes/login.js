@@ -19,9 +19,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       'SELECT user_id, email, password FROM users WHERE email = ?',
       [email]
     )
-    const [coupon] = await db.query(
-      'UPDATE coupon SET valid = 1'  // 這會更新所有資料
-    )
+
     // 這邊實際上是帳號錯誤
     if (row.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤' })
