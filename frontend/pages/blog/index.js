@@ -12,7 +12,7 @@ export default function BlogSearchPage() {
 
   // -------------------使用者-------------------
   const { auth } = useAuth()
-  const { userData, isAuth } = auth // 加上 isAuth 的解構
+  const { userData } = auth
   const user_id = userData.user_id
   console.log(user_id)
   // -------------------使用者-------------------
@@ -167,31 +167,38 @@ export default function BlogSearchPage() {
         {/* 搜尋列 */}
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-        <div className="d-flex flex-row-reverse mb-5">
-          <Link
-            href={
-              isAuth
-                ? '/blog/blog-created'
-                : 'http://localhost:3000/member/login'
-            }
-          >
-            <button
-              type="button"
-              className="btn text-white BlogIndexCreatedButton"
-            >
-              {isAuth ? '新增發文！' : '登入後發文'}
-            </button>
+        {userData?.user_id ? (
+          <Link href="/blog/blog-created">
+            <div className="d-flex flex-row-reverse mb-5">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                新增發文！
+              </button>
+            </div>
           </Link>
-        </div>
+        ) : (
+          <Link href="http://localhost:3000/member/login">
+            <div className="d-flex flex-row-reverse mb-5">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                登入後發文
+              </button>
+            </div>
+          </Link>
+        )}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="position-relative">
-          <div className="d-flex flex-column align-items-center justify-content-center gap-5">
+          <div className="d-flex flex-column align-items-center justify-content-center gap-3">
             <div className="row">
               {blogs.map((blog) => (
-                <div className="col-md-12 col-lg-6 mb-3" key={blog.blog_id}>
+                <div className="col-md-12 col-lg-6 mb-5" key={blog.blog_id}>
                   <Link href={`/blog/blog-detail/${blog.blog_id}`} passHref>
-                    <div className="card d-flex flex-row BlogCard">
+                    <div className="card d-flex flex-row BlogCard shadow">
                       <img
                         src={
                           blog.blog_image

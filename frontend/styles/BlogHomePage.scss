@@ -32,6 +32,8 @@
 .BlogSearchBox {
   padding-top: 10rem;
   padding-bottom: 10rem;
+  // margin-left: -1rem;
+  // margin-right: -1rem;
   background: transparent;
 }
 
@@ -76,6 +78,8 @@
     #271948 100%
   );
 }
+
+/* --------------點擊 search 變成漸層-------------- */
 
 .ArticleBrandSearch {
   /* width: 90rem; */
@@ -231,6 +235,7 @@
 .BlogCard {
   background-color: #805af5;
   height: 15rem;
+  width: 35rem;
   border-radius: 1rem 0 1rem 0;
 }
 .BlogCardImg {
@@ -482,6 +487,12 @@
     flex-direction: column;
     gap: 18rem;
     margin: -3rem !important;
+  }
+  .BlogCard {
+    background-color: #805af5;
+    height: 11rem;
+    width: 28rem;
+    border-radius: 1rem 0 1rem 0;
   }
 }
 

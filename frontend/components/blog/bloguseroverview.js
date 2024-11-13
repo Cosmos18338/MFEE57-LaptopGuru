@@ -70,7 +70,7 @@ export default function BlogUserOverview({ specificUserId = null }) {
                   className="d-flex justify-content-between pe-5"
                 >
                   <p className="card-text BlogUserOverviewCardType">
-                    版主：Jack&nbsp;
+                    版主：{blog.user_name}&nbsp;
                   </p>
                 </div>
                 <div className="d-flex justify-content-between pe-5 mt-3">
