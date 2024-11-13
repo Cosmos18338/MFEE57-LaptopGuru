@@ -24,6 +24,11 @@ export default function BuylistPage(props) {
 
   return (
     <>
+      {order.length === 0 && (
+        <div className="text-center mt-5">
+          <h2>目前沒有訂單</h2>
+        </div>
+      )}
       {order.map((item, index) => {
         return <BuyList key={index} order={item} />
       })}

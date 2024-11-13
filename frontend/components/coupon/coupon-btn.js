@@ -87,16 +87,19 @@ export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
     }
 
     try {
-      const res = await fetch(`http://localhost:3005/api/coupon-user/update/${userId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          coupon_id: couponId,
-          valid: 0,
-        }),
-      })
+      const res = await fetch(
+        `http://localhost:3005/api/coupon-user/update/${userId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            coupon_id: couponId,
+            valid: 0,
+          }),
+        }
+      )
 
       const data = await res.json()
 
@@ -136,22 +139,23 @@ export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
       })
 
       if (result.isConfirmed) {
-        const updateSuccess = await updateCouponStatus(coupon.coupon_id)
+        // const updateSuccess = await updateCouponStatus(coupon.coupon_id)
+        // if (updateSuccess) {
+        //   setAppliedCoupon(coupon)
+        //   setCouponValue({
+        //     ...coupon,
+        //     discountAmount,
+        //     finalPrice,
+        //   })
+        //   setSearchTerm('')
+        //   MySwal.fire({
+        //     title: '成功',
+        //     text: '優惠券已套用',
+        //     icon: 'success',
+        //   })
+        // }
 
-        if (updateSuccess) {
-          setAppliedCoupon(coupon)
-          setCouponValue({
-            ...coupon,
-            discountAmount,
-            finalPrice,
-          })
-          setSearchTerm('')
-          MySwal.fire({
-            title: '成功',
-            text: '優惠券已套用',
-            icon: 'success',
-          })
-        }
+        setAppliedCoupon(coupon)
       }
     } catch (error) {
       console.error('處理優惠券選擇失敗:', error)
@@ -185,7 +189,7 @@ export default function CouponBtn({ price = 0, setCouponValue = () => {} }) {
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: '前往登入',
-        cancelButtonText: '取消'
+        cancelButtonText: '取消',
       }).then((result) => {
         if (result.isConfirmed) {
           router.push('/member/login')
