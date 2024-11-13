@@ -21,7 +21,6 @@ router.get('/', async (req, res) => {
         coupon_end_time,
         valid
       FROM coupon
-      WHERE valid = 1
       ORDER BY coupon_id ASC  /* 依照 ID 順序排列，ASC 是升序（從小到大） */
       `
     )
@@ -53,56 +52,56 @@ router.get('/', async (req, res) => {
   }
 })
 
-router.put('/update', async (req, res) => {
-  try {
-    const { coupon_id } = req.body
+// router.put('/update', async (req, res) => {
+//   try {
+//     const { coupon_id } = req.body
 
-    // 基本參數驗證
-    if (!coupon_id) {
-      return res.status(400).json({
-        status: 'error',
-        message: '缺少必要參數',
-        receivedData: req.body,
-      })
-    }
+//     // 基本參數驗證
+//     if (!coupon_id) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: '缺少必要參數',
+//         receivedData: req.body,
+//       })
+//     }
 
-    // 更新 coupon 表的 valid 為 0
-    const [result] = await db.query(
-      `
-      UPDATE coupon 
-      SET valid = ? 
-      WHERE coupon_id = ?
-      `,
-      [0, coupon_id] // 將 valid 設置為 0，表示已領取
-    )
+//     // 更新 coupon 表的 valid 為 0
+//     const [result] = await db.query(
+//       `
+//       UPDATE coupon
+//       SET valid = ?
+//       WHERE coupon_id = ?
+//       `,
+//       [1, coupon_id] // 將 valid 設置為 0，表示已領取
+//     )
 
-    console.log('更新結果:', result)
+//     console.log('更新結果:', result)
 
-    if (result.affectedRows === 0) {
-      return res.status(400).json({
-        status: 'error',
-        message: '更新失敗，找不到優惠券',
-      })
-    }
+//     if (result.affectedRows === 0) {
+//       return res.status(400).json({
+//         status: 'error',
+//         message: '更新失敗，找不到優惠券',
+//       })
+//     }
 
-    // 回傳成功結果
-    res.json({
-      status: 'success',
-      message: '優惠券已標記為已領取',
-      data: {
-        coupon_id,
-        valid: 0, // 將 valid 設置為 0，表示已領取
-        updated_at: new Date(),
-      },
-    })
-  } catch (error) {
-    console.error('詳細錯誤信息:', error)
-    res.status(500).json({
-      status: 'error',
-      message: '系統錯誤',
-      error: process.env.NODE_ENV === 'development' ? error.message : undefined,
-    })
-  }
-})
+//     // 回傳成功結果
+//     res.json({
+//       status: 'success',
+//       message: '優惠券已標記為已領取',
+//       data: {
+//         coupon_id,
+//         valid: 0, // 將 valid 設置為 0，表示已領取
+//         updated_at: new Date(),
+//       },
+//     })
+//   } catch (error) {
+//     console.error('詳細錯誤信息:', error)
+//     res.status(500).json({
+//       status: 'error',
+//       message: '系統錯誤',
+//       error: process.env.NODE_ENV === 'development' ? error.message : undefined,
+//     })
+//   }
+// })
 
 export default router
