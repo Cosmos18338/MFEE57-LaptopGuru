@@ -124,7 +124,9 @@ export default function CartIndex() {
 
     const check = await MySwal.fire({
       title: '確認訂單後將無法修改',
-      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${couponDetails.coupon_code}<br>金額: ${couponDetails.finalPrice}元`,
+      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${
+        couponDetails.coupon_code
+      }<br>金額: NT ${couponDetails.finalPrice.toLocaleString()}元`,
       icon: 'warning',
       showCancelButton: true,
 
@@ -153,6 +155,19 @@ export default function CartIndex() {
         address: address,
       }),
     })
+
+    if (couponDetails.coupon_id !== '') {
+      const couponResult = await fetch(
+        `http://localhost:3005/api/coupon-user/update/${user_id}/${couponDetails.coupon_id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: '已使用' }),
+        }
+      )
+    }
 
     const data = await result.json()
     const order_id = data.order_id
@@ -371,12 +386,12 @@ export default function CartIndex() {
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="row">
                 <div className="col">商品總計</div>
-                <div className="col-auto">{total}元</div>
+                <div className="col-auto">NT {total.toLocaleString()}元</div>
               </div>
               <div className="row">
                 <div className="col">運費總計</div>
                 <div className="col-auto">
-                  {ship == '' && '0'}
+                  NT {ship == '' && '0'}
                   {ship == '7-11' && '60'}
                   {ship == '宅配' && '200'}元
                 </div>
@@ -399,12 +414,14 @@ export default function CartIndex() {
               <div className="discount row w-100 mb-2">
                 <div className="col">折價</div>
                 <div className="col-auto">
-                  {couponDetails.coupon_discount}元
+                  NT {(+couponDetails.coupon_discount).toLocaleString()}元
                 </div>
               </div>
               <div className="total row w-100 mb-2">
                 <div className="col">總計</div>
-                <div className="col-auto">{couponDetails.finalPrice}元</div>
+                <div className="col-auto">
+                  NT {couponDetails.finalPrice.toLocaleString()}元
+                </div>
               </div>
               <div className="d-flex justify-content-center">
                 {/* <button
