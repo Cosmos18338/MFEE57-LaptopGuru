@@ -1,16 +1,28 @@
 import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import EventButton from '@/components/event/EventButton'
 import GroupBanner from '@/components/group/GroupBanner'
 import GroupDetailModal from '@/components/group/GroupDetailModal'
 import GroupJoin from '@/components/group/GroupJoin'
+import GroupNavbar from '@/components/group/GroupNavbar'
 
 const Group = () => {
+  const searchParams = useSearchParams()
+  const eventId = searchParams.get('eventId')
+  const eventName = searchParams.get('eventName')
+
   // 分頁狀態
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(30)
   const [groups, setGroups] = useState([])
+  const [filteredGroups, setFilteredGroups] = useState([])
   const [loading, setLoading] = useState(true)
+
+  // 搜尋和篩選狀態
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortOrder, setSortOrder] = useState('newest') // 'newest' 或 'oldest'
+  const [filterEvent, setFilterEvent] = useState(eventId || 'all')
 
   // Modal 狀態
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -21,29 +33,78 @@ const Group = () => {
     fetchGroups()
   }, [currentPage])
 
+  // 當搜尋條件、排序或篩選改變時，重新過濾群組
+  useEffect(() => {
+    filterAndSortGroups()
+  }, [searchTerm, sortOrder, filterEvent, groups])
+
   const fetchGroups = async () => {
     try {
       const response = await fetch('http://localhost:3005/api/group/all', {
-        credentials: 'include', // 加入這行以發送 cookies
+        credentials: 'include',
       })
       const data = await response.json()
 
       if (data.status === 'success') {
-        setGroups(data.data.groups || []) // 添加空數組作為fallback
-        // 假設每頁8筆資料
-        setTotalPages(Math.ceil((data.data.groups?.length || 0) / 8))
+        setGroups(data.data.groups || [])
+        filterAndSortGroups()
       } else {
         console.error('獲取群組失敗:', data.message)
         setGroups([])
-        setTotalPages(1)
+        setFilteredGroups([])
       }
     } catch (error) {
       console.error('獲取群組失敗:', error)
       setGroups([])
-      setTotalPages(1)
+      setFilteredGroups([])
     } finally {
       setLoading(false)
     }
+  }
+
+  // 過濾和排序群組
+  const filterAndSortGroups = () => {
+    let result = [...groups]
+
+    // 搜尋過濾
+    if (searchTerm) {
+      result = result.filter(
+        (group) =>
+          group.group_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          group.description.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    }
+
+    // 活動篩選
+    if (filterEvent && filterEvent !== 'all') {
+      result = result.filter((group) => group.event_id === filterEvent)
+    }
+
+    // 時間排序
+    result.sort((a, b) => {
+      const timeA = new Date(a.creat_time).getTime()
+      const timeB = new Date(b.creat_time).getTime()
+      return sortOrder === 'newest' ? timeB - timeA : timeA - timeB
+    })
+
+    setFilteredGroups(result)
+    setTotalPages(Math.ceil(result.length / 8))
+    setCurrentPage(1) // 重置頁碼
+  }
+
+  // 搜尋處理
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value)
+  }
+
+  // 排序處理
+  const handleSort = (e) => {
+    setSortOrder(e.target.value)
+  }
+
+  // 篩選處理
+  const handleFilter = (e) => {
+    setFilterEvent(e.target.value)
   }
 
   // 詳情 Modal 控制函數
@@ -58,6 +119,8 @@ const Group = () => {
       creator_name: groupData.creator_name,
       creator_id: groupData.creator_id,
       users: groupData.members || [],
+      eventId: groupData.event_id,
+      eventName: groupData.event_name,
     })
     setIsModalOpen(true)
     document.body.style.overflow = 'hidden'
@@ -124,30 +187,46 @@ const Group = () => {
   // 計算當前頁面應顯示的群組
   const getCurrentPageGroups = () => {
     const startIndex = (currentPage - 1) * 8
-    return groups.slice(startIndex, startIndex + 8)
+    return filteredGroups.slice(startIndex, startIndex + 8)
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return (
+      <div className="text-center p-5">
+        <div className="spinner-border" role="status">
+          <span className="visually-hidden">載入中...</span>
+        </div>
+      </div>
+    )
   }
 
   return (
     <div className="group-wrapper">
       <div className="group-container">
         {/* 導航區域 */}
-        <nav className="group-nav-section">
+        <nav className="group-nav-section mb-2">
           <div className="group-nav-container">
             <h1 className="group-nav-title">揪團列表</h1>
-            <Link href="/group/groupCreat" style={{ textDecoration: 'none' }}>
-              <EventButton>開團</EventButton>
-            </Link>
+            <Link
+              href={
+                eventId
+                  ? `/group/groupCreat?eventId=${eventId}&eventName=${eventName}`
+                  : '/group/groupCreat'
+              }
+              style={{ textDecoration: 'none' }}
+            ></Link>
           </div>
         </nav>
 
+        {/* 搜尋和篩選區域 */}
+        <GroupNavbar />
+
         {/* 內容區域 */}
         <div className="group-content">
-          {groups.length === 0 ? (
-            <div className="no-groups-message">目前沒有揪團資料</div>
+          {filteredGroups.length === 0 ? (
+            <div className="no-groups-message">
+              {loading ? '載入中...' : '找不到符合條件的揪團'}
+            </div>
           ) : (
             <div className="group-banner-grid">
               {getCurrentPageGroups().map((group) => (
@@ -163,6 +242,8 @@ const Group = () => {
                       maxMembers: group.max_members,
                       description: group.description,
                       image: group.group_img,
+                      eventId: group.event_id,
+                      eventName: group.event_name,
                     }}
                     onOpenDetail={() => handleOpenModal(group)}
                     onOpenJoin={() => handleOpenJoinModal(group)}
@@ -173,7 +254,7 @@ const Group = () => {
           )}
 
           {/* 分頁導航 */}
-          {groups.length > 0 && (
+          {filteredGroups.length > 0 && (
             <nav className="group-pagination-container">
               <ul className="group-pagination-list">
                 {/* 上一頁按鈕 */}

@@ -17,6 +17,7 @@ export default function CouponList() {
   const { auth } = useAuth()
   const userId = auth?.userData?.user_id
   const [claimedCoupons, setClaimedCoupons] = useState(new Set())
+  const [userCoupons, setUserCoupons] = useState([])
 
   console.log('當前auth狀態:', auth)
   console.log('用戶ID:', userId)
@@ -63,29 +64,25 @@ export default function CouponList() {
           },
           body: JSON.stringify({
             coupon_id: couponId,
-            valid: 0, // 設置為已領取
+            // valid: 0, // 設置為已領取
           }),
         }
       )
 
-      try {
-        const response = await fetch(`/api/coupon/update`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ coupon_id: couponId }),
-        })
-
-        const result = await response.json()
-
-        if (response.ok) {
-          console.log(result.message)
-        } else {
-          console.error(result.message)
+      const getUserCoupons = async (userId) => {
+        try {
+          const res = await fetch(`http://localhost:3005/api/coupon-user/${userId}`)
+          const data = await res.json()
+          
+          if (data.status === 'success') {
+            return data.data
+          } else {
+            throw new Error(data.message)
+          }
+        } catch (error) {
+          console.error('獲取使用者優惠券失敗:', error)
+          return []
         }
-      } catch (error) {
-        console.error('領取失敗:', error)
       }
 
       const addResult = await addResponse.json()
@@ -116,10 +113,34 @@ export default function CouponList() {
     }
   }
 
+  const getUserCoupons = async () => {
+    if (!userId) return
+    
+    try {
+      const res = await fetch(`http://localhost:3005/api/coupon-user/${userId}`)
+      const data = await res.json()
+
+      if (data.status === 'success') {
+        setUserCoupons(data.data)
+      }
+    } catch (err) {
+      console.error('獲取使用者優惠券失敗:', err)
+    }
+  }
+
+  // 判斷使用者是否已擁有特定優惠券
+  const isUserHasCoupon = (couponId) => {
+    return userCoupons.some(userCoupon => userCoupon.coupon_id === couponId)
+  }
+
+
   useEffect(() => {
     setMounted(true)
     getCouponData()
-  }, [])
+    if (userId) {
+      getUserCoupons()
+    }
+  }, [userId])
 
   const handleSubmit = (e) => {
     e.preventDefault()
@@ -204,35 +225,40 @@ export default function CouponList() {
             </p>
           </div>
         ) : (
-          filteredCoupons.map((coupon) => (
-            <div
-              key={coupon.coupon_id}
-              className="col-md-6 coupon-item"
-              onClick={() => handleClaimCoupon(coupon.coupon_id)}
-            >
-              {coupon.valid === 0 ? (
-                <Coupon2
-                  coupon_id={coupon.coupon_id}
-                  coupon_code={coupon.coupon_code}
-                  coupon_content={coupon.coupon_content}
-                  coupon_discount={coupon.coupon_discount}
-                  discount_method={coupon.discount_method}
-                  coupon_start_time={coupon.coupon_start_time}
-                  coupon_end_time={coupon.coupon_end_time}
-                />
-              ) : (
-                <Coupon
-                  coupon_id={coupon.coupon_id}
-                  coupon_code={coupon.coupon_code}
-                  coupon_content={coupon.coupon_content}
-                  coupon_discount={coupon.coupon_discount}
-                  discount_method={coupon.discount_method}
-                  coupon_start_time={coupon.coupon_start_time}
-                  coupon_end_time={coupon.coupon_end_time}
-                />
-              )}
-            </div>
-          ))
+          filteredCoupons.map((coupon) => {
+            const hasThisCoupon = isUserHasCoupon(coupon.coupon_id)
+            
+            return (
+              <div
+                key={coupon.coupon_id}
+                className="col-md-6 coupon-item"
+                onClick={() => !hasThisCoupon && handleClaimCoupon(coupon.coupon_id)}
+                style={{ cursor: hasThisCoupon ? 'default' : 'pointer' }}
+              >
+                {hasThisCoupon ? (
+                  <Coupon2
+                    coupon_id={coupon.coupon_id}
+                    coupon_code={coupon.coupon_code}
+                    coupon_content={coupon.coupon_content}
+                    coupon_discount={coupon.coupon_discount}
+                    discount_method={coupon.discount_method}
+                    coupon_start_time={coupon.coupon_start_time}
+                    coupon_end_time={coupon.coupon_end_time}
+                  />
+                ) : (
+                  <Coupon
+                    coupon_id={coupon.coupon_id}
+                    coupon_code={coupon.coupon_code}
+                    coupon_content={coupon.coupon_content}
+                    coupon_discount={coupon.coupon_discount}
+                    discount_method={coupon.discount_method}
+                    coupon_start_time={coupon.coupon_start_time}
+                    coupon_end_time={coupon.coupon_end_time}
+                  />
+                )}
+              </div>
+            )
+          })
         )}
       </div>
     </div>

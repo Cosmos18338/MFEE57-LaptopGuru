@@ -4,6 +4,7 @@ import withReactContent from 'sweetalert2-react-content'
 import CouponBtn from '@/components/coupon/coupon-btn'
 // import { useRouter } from 'next/router'
 import Coupon2 from '@/components/coupon/index2'
+import CouponList from '@/components/coupon/coupon-list-components'
 
 const MySwal = withReactContent(Swal)
 
@@ -79,7 +80,6 @@ export default function Checkout() {
           )}
         </div>
       </div>
-
       <CouponBtn 
         price={selectedProduct.list_price}
         setCouponValue={setCoupon}
