@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }) => {
   })
 
   // 我的最愛清單使用
+  // 變數 函式後面的函式 更改前面變數的內容
   const [favorites, setFavorites] = useState([])
 
   // 得到我的最愛
