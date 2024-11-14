@@ -431,7 +431,6 @@ export default function Detail() {
                   </button>
                   <div className={styles.articleCheckbox}>
                     <input
-                      onClick={toggleCompare}
                       onChange={toggleCompare}
                       checked={isCompared}
                       type="checkbox"
@@ -539,7 +538,7 @@ export default function Detail() {
               ))}
             </div>
           </section>
-          <BackToTop />
+          {/* <BackToTop /> */}
         </div>
         {/* 顯示所有的訊息 */}
         <div className="alert-container">
