@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
@@ -13,14 +13,17 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
+import {LoadingSpinner} from '@/components/dashboard/loading-spinner'
 // import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
-  const { auth, setAuth } = useAuth()
+  const { auth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
+  // 需要加入這個state
+  const [isLoading, setIsLoading] = useState(true)
   const [subActiveKey, setSubActiveKey] = useState('')
-  // 狀態用一樣的就好
+  // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
@@ -63,6 +66,16 @@ export default function Test1() {
       setCouponActiveKey(key)
     }
   }
+  useEffect(()=>{
+    console.log('Dashboard mounted');
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      console.log('Loading complete');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+    
+  },[])
 
   const renderHome = (key) => {
     switch (key) {
@@ -79,8 +92,18 @@ export default function Test1() {
     }
   }
 
+  useEffect(() => {
+    if (refresh) {
+      setRefresh(false)
+    }
+  }, [refresh])
+
   return (
-    <div className="container">
+    <>
+    <LoadingSpinner loading={isLoading} />
+    {!isLoading && (
+      // 你的主要內容
+      <div className="container">
       <div className="row">
         <Tab.Container
           id="dashboard-tabs"
@@ -102,14 +125,14 @@ export default function Test1() {
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
               />
               <h5 className="mb-2">{auth?.userData?.name}</h5>
-              <Link href=''>
-              <button
-                className="btn btn-outline-primary btn-sm mb-3"
-                style={{ color: '#805AF5', borderColor: '#805AF5' }}
-              >
-                <FaPenFancy />
-                編輯個人簡介
-              </button>
+              <Link href="">
+                <button
+                  className="btn btn-outline-primary btn-sm mb-3"
+                  style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                >
+                  <FaPenFancy />
+                  編輯個人簡介
+                </button>
               </Link>
             </div>
 
@@ -216,5 +239,9 @@ export default function Test1() {
         </Tab.Container>
       </div>
     </div>
+
+    )}
+  </>
+    
   )
 }
