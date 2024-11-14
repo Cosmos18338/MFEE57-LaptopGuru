@@ -91,27 +91,25 @@ export default function BlogUserDetail() {
         </div>
         <div className="d-flex flex-column">
           <div>
-            <p className="mb-5 mt-5 display-5 fw-bold BlogDetailSectionContentAreaTitle">
+            <p className="mb-5 mt-5 fs-5 fw-bold BlogDetailSectionContentAreaTitle">
               部落格標題：{blogData.blog_title}
             </p>
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold">
-              部落格分類：{blogData.blog_type}
-            </p>
+            <p className="fs-5 fw-bold">部落格分類：{blogData.blog_type}</p>
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5 fw-bold">
-            <p className="display-5 fw-bold">品牌：{blogData.blog_brand}</p>
+            <p className="fs-5 fw-bold">品牌：{blogData.blog_brand}</p>
           </div>
           <div className="mb-5 mt-5 d-flex flex-column gap-5">
-            <p className="display-5 fw-bold">
+            <p className="fs-5 fw-bold">
               購買機型：{blogData.blog_brand_model}
             </p>
           </div>
         </div>
 
         <div className="mb-5 mt-5 d-flex flex-column gap-5">
-          <p className="display-5 BlogDetailText fw-bold">部落格內文</p>
+          <p className="fs-5 BlogDetailText fw-bold">部落格內文</p>
           <p className="fs-5 BlogDetailText">{blogData.blog_content}</p>
         </div>
 

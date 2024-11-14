@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import ArticleSectionContainer from '@/components/blog/bloghomepage/articlehomepage-mainarea'
+import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/use-auth'
+import Header from '@/components/layout/default-layout/header'
+import MyFooter from '@/components/layout/default-layout/my-footer'
 
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
@@ -49,7 +51,6 @@ export default function BlogSearchPage() {
         console.error('載入文章錯誤:', err)
       }
     }
-
     fetchBlogs()
   }, [currentPage, filters])
 
@@ -90,10 +91,13 @@ export default function BlogSearchPage() {
 
   return (
     <>
-      <ArticleSectionContainer />
+      <Header />
+      <BlogDetailMainArea />
+
+      {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
       <div>
         {/* 搜尋列 */}
-        <main className="BlogMain">
+        <main className="container-fluid BlogMain">
           <div className="BlogSearchBox">
             <div className="d-flex justify-content-center">
               <input
@@ -110,7 +114,7 @@ export default function BlogSearchPage() {
           </div>
         </main>
         {/* 分類選擇 */}
-        <div className="BlogTypeSearch bg-transparent">
+        <div className="container BlogTypeSearch bg-transparent">
           <div className="d-flex justify-content-around gap-3 flex-wrap">
             {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((type, i) => (
               <div key={type} className="BlogTypeCheckbox text-nowrap col-2">
@@ -136,7 +140,7 @@ export default function BlogSearchPage() {
         {/* 紫線 */}
 
         {/* 品牌選擇 */}
-        <div className="ArticleBrandSearch bg-transparent">
+        <div className="container ArticleBrandSearch bg-transparent">
           <form>
             <div className="row justify-content-between gap-3">
               {['Acer', 'Asus', 'Gigabyte', 'HP', 'MSI', 'Raser'].map(
@@ -169,7 +173,7 @@ export default function BlogSearchPage() {
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {userData?.user_id ? (
           <Link href="/blog/blog-created">
-            <div className="d-flex flex-row-reverse mb-5">
+            <div className="container d-flex flex-row-reverse mb-5">
               <button
                 type="button"
                 className="btn text-white BlogIndexCreatedButton"
@@ -180,7 +184,7 @@ export default function BlogSearchPage() {
           </Link>
         ) : (
           <Link href="http://localhost:3000/member/login">
-            <div className="d-flex flex-row-reverse mb-5">
+            <div className="container d-flex flex-row-reverse mb-5">
               <button
                 type="button"
                 className="btn text-white BlogIndexCreatedButton"
@@ -192,7 +196,7 @@ export default function BlogSearchPage() {
         )}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
-        <div className="position-relative">
+        <div className="container position-relative">
           <div className="d-flex flex-column align-items-center justify-content-center gap-3">
             <div className="row">
               {blogs.map((blog) => (
@@ -253,7 +257,7 @@ export default function BlogSearchPage() {
         {/* 頁數 nav */}
         {/* 更新分頁導航 */}
         {totalPages > 1 && (
-          <div className="d-flex justify-content-center my-4">
+          <div className="container d-flex justify-content-center my-4">
             <nav aria-label="Page navigation">
               <ul className="pagination">
                 <li
@@ -330,6 +334,8 @@ export default function BlogSearchPage() {
           </div>
         )}
       </div>
+      <MyFooter />
     </>
   )
 }
+BlogSearchPage.getLayout = (page) => page

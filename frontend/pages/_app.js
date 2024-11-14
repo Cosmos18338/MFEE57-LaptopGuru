@@ -14,9 +14,9 @@ import '@/styles/frontPage.scss'
 // 文章/部落格用 css
 import '@/styles/ArticleDetail.scss'
 import '@/styles/ArticleHomePage.scss'
-import '@/styles/blogcreated.scss'
+import '@/styles/BlogCreated.scss'
 import '@/styles/BlogDetail.scss'
-import '@/styles/blogedit.scss'
+import '@/styles/BlogEdit.scss'
 import '@/styles/BlogHomePage.scss'
 import '@/styles/BlogUserOverview.scss'
 

@@ -1,11 +1,12 @@
 .ArticleSectionContainer {
   // background-color: rgb(230, 52, 52);
-  background-image: url('../public/images/blog/razer-viper-v3-pro-sentinels-homepage-desktop2x.jpg');
+  background-image: url('../public/images/blog/artical2.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  height: 28rem;
+  height: 200% !important;
 }
+
 /*  --------------------------ArticleSection -------------------------- */
 .BlogHomePageSectionContainer {
   background-color: rgb(0, 0, 0);
@@ -38,7 +39,8 @@
 }
 
 .BlogMain {
-  // margin-bottom: 14.75rem;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
 }
 
 .BlogSearchInputStyle {

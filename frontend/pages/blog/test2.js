@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import BloghomepageCardgroup from '@/components/blog/bloghomepage/bloghomepage-cardgroup'
+import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 
 export default function Test2(props) {
   return (
     <>
-      <BloghomepageCardgroup />
+      <BlogDetailMainArea />
     </>
   )
 }
+Test2.getLayout = (page) => page

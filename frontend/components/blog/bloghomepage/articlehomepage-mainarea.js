@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 export default function BlogDetailMainArea(props) {
   return (
     <>
-      <div className="ArticleSectionContainer">
+      <div className=" container-fluid ArticleSectionContainer h-100">
         <div className="d-flex">
           <div className="row">
             <div className="ArticleSectionTitle">
