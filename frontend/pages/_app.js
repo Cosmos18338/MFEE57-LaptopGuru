@@ -42,6 +42,8 @@ import '../styles/group.scss'
 // groupCreat的scss
 import '../styles/groupCreat.scss'
 
+import { GroupAuthProvider } from '@/context/GroupAuthContext'
+
 export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
   useEffect(() => {
@@ -56,7 +58,9 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <LoaderProvider close={2} CustomLoader={CatLoader}>
-        <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+        <GroupAuthProvider>
+          <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+        </GroupAuthProvider>
       </LoaderProvider>
     </AuthProvider>
   )

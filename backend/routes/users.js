@@ -386,5 +386,4 @@ router.get('/chat/users/status', authenticate, async function (req, res) {
     })
   }
 })
-  
 export default router
