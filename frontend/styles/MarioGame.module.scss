@@ -7,20 +7,20 @@
 //     timeline-scope: --question-block, --world, --mario;
 //   }
   
-//   :root {
-//     --frames: 4;
-//     --mario-height: 97px;
-//     --mario-width: 72px;
-//     --block-size: 36px;
-//     --world-size: 150vw;
-//     --coin-size: 28px;
-//   }
+  // :root {
+  //   --frames: 4;
+  //   --mario-height: 97px;
+  //   --mario-width: 72px;
+  //   --block-size: 36px;
+  //   --world-size: 150vw;
+  //   --coin-size: 28px;
+  // }
   .world {
     width: 100vw;
     height: 100vh;
     overflow-x: auto;
     position: relative;
-    scroll-timeline: --world inline;
+    scroll-timeline:150vw inline;
   }
   
   .mario {
@@ -28,8 +28,8 @@
     left: 50%;
     top: 50%;
     translate: -50% -50%;
-    height: var(--mario-height);
-    width: var(--mario-width);
+    height: 97px;
+    width: 72px;
     view-timeline: --mario;
   
     .walk {
@@ -104,7 +104,7 @@
   .mario {
     .walk {
       animation-name: walk, toggle;
-      animation-timing-function: steps(calc(var(--frames) - 1));
+      animation-timing-function: steps(calc(var(4) - 1));
       animation-iteration-count: 50, 1;
       animation-timeline: --world, --question-block;
       animation-fill-mode: both;
@@ -185,8 +185,8 @@
     background-image: url("https://www.spriters-resource.com/resources/sheets/174/177030.png?updated=1655225758");
     background-size: 1068px;
     background-position: -581px -165px;
-    height: var(--coin-size);
-    width: var(--coin-size);
+    height: 28px;
+    width: 28px;
     animation: flip-coin 0.3s infinite steps(3), get-coin;
     animation-timeline: auto, view(inline 50%);
     translate: 0 -20px;
@@ -213,7 +213,7 @@
   
   .questionblock {
     view-timeline: --question-block inline;
-    view-timeline-inset: calv(var(--mario-width));
+    view-timeline-inset: 72px;
     animation: shine 1s infinite steps(1), pause-shine forwards steps(1);
     animation-timeline: auto, view(inline 50%);
   }

@@ -26,13 +26,16 @@ export default function UserProfile() {
   })
 
   const [profilePic, setProfilePic] = useState(
-    editableUser.image_path || 'https://via.placeholder.com/220x220'
+    editableUser.image_path || 'signup_login/undraw_profile_1.svg'
   )
   const [uploadStatus, setUploadStatus] = useState('')
+  // 沒有寫就是false
   const [selectedImg, setSelectedImg] = useState(null)
 
+  //裡面要放什麼
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
+  // 欄位是否要開放
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
@@ -353,7 +356,8 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！')
+        setUploadStatus('頭像更新成功！')//有文字算true,沒有算none? 
+        //除非想防風報攻擊才需要寫得很認真@@
         Swal.fire('成功', '頭像更新成功', 'success')
       }
     } catch (error) {
@@ -452,7 +456,6 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label
                           htmlFor="phone"
@@ -704,7 +707,7 @@ export default function UserProfile() {
                         >
                           更新
                         </button>
-
+{/*  */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
