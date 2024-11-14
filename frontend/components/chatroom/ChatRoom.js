@@ -2,22 +2,21 @@ import { useState } from 'react'
 import { Form } from 'react-bootstrap'
 import EventButton from '@/components/event/EventButton'
 import styles from '@/styles/Chat.module.css'
+import websocketService from '@/services/websocketService'
 
-export default function ChatRoom({ messages, currentUser, currentRoom, ws }) {
+export default function ChatRoom({ messages, currentUser, currentRoom }) {
   const [message, setMessage] = useState('')
 
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!message.trim()) return
 
-    ws.send(
-      JSON.stringify({
-        type: 'message',
-        fromID: currentUser,
-        message: message,
-        roomID: currentRoom,
-      })
-    )
+    websocketService.send({
+      type: 'message',
+      fromID: currentUser,
+      message: message,
+      roomID: currentRoom,
+    })
 
     setMessage('')
   }
@@ -27,34 +26,27 @@ export default function ChatRoom({ messages, currentUser, currentRoom, ws }) {
       {/* 訊息顯示區域 */}
       <div className={styles.messagesContainer}>
         {messages
-          .filter((msg) =>
-            currentRoom ? msg.roomID === currentRoom : !msg.roomID
-          )
+          .filter((msg) => msg.roomID === currentRoom)
           .map((msg, index) => (
             <div
-              key={index}
+              key={msg.id || index}
               className={`${styles.messageItem} ${
                 msg.fromID === currentUser ? styles.own : ''
               }`}
             >
               <div className={styles.messageContent}>
                 <div className={styles.messageHeader}>
-                  {msg.fromID === currentUser ? '你' : msg.fromID}
+                  {msg.fromID === currentUser
+                    ? '你'
+                    : msg.senderName || msg.fromID}
                 </div>
                 <div className={styles.messageText}>{msg.content}</div>
                 <div className={styles.messageTime}>
-                  {new Date().toLocaleTimeString()}
+                  {new Date(msg.timestamp).toLocaleString()}
                 </div>
               </div>
             </div>
           ))}
-      </div>
-
-      {/* 輸入區域 */}
-      <div className={styles.inputContainer}>
-        <Form onSubmit={handleSubmit} className={styles.inputForm}>
-          <div className={styles.inputWrapper}></div>
-        </Form>
       </div>
     </div>
   )
