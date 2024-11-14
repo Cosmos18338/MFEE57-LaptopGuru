@@ -431,7 +431,6 @@ export default function Detail() {
                   </button>
                   <div className={styles.articleCheckbox}>
                     <input
-                      onClick={toggleCompare}
                       onChange={toggleCompare}
                       checked={isCompared}
                       type="checkbox"
