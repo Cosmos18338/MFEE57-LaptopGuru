@@ -1088,7 +1088,7 @@ export default function List() {
           </div>
         ))}
       </div>
-      <BackToTop />
+      {/* <BackToTop /> */}
       <MyFooter />
     </>
   )
