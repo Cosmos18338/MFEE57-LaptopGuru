@@ -93,9 +93,11 @@ export default function BuyList(order) {
           </Accordion.Header>
           <Accordion.Body>
             <div className="row mb-3">
-              <div className="col-6">訂單日期: {order_date}</div>
-              <div className="col">訂單金額: {order.order.order_amount}元</div>
-              <div className="">本筆訂單使用優惠券: {coupon_code}</div>
+              <div className="col-6">訂單日期： {order_date}</div>
+              <div className="col">
+                訂單金額： NT {order.order.order_amount.toLocaleString()}元
+              </div>
+              <div className="">本筆訂單使用優惠券： {coupon_code}</div>
             </div>
             {orderDetail.map((item, index) => {
               return <BuyItemCard key={index} item={item} />
