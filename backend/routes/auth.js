@@ -10,7 +10,8 @@ const upload = multer()
 
 const accessTokenSecret = process.env.ACCESS_TOKEN_SECRET
 
-// 檢查登入狀態
+// seeion? -> 真的? 隔一段時間丟進伺服器做驗證
+// 檢查登入狀態 每次一打開頁面
 router.get('/check', authenticate, async (req, res) => {
   try {
     const [rows] = await db.query('SELECT * FROM users WHERE user_id=?', [

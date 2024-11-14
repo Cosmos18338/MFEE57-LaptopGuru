@@ -1,7 +1,7 @@
 import express from 'express'
 const router = express.Router()
 import transporter from "##/configs/mail.js";
-import crypto from 'crypto'
+// import crypto from 'crypto' crypto vs bcrypt
 import db from '##/configs/mysql.js'
 import 'dotenv/config.js'
 
@@ -18,6 +18,7 @@ function generateTempPassword(length = 8) {
 // 忘記密碼請求
 router.post('/send', async (req, res) => {
   try {
+   
     const { email } = req.body;
     console.log(email);
   
@@ -37,7 +38,7 @@ router.post('/send', async (req, res) => {
    
   
       // 更新資料庫中的密碼
-      await db.query(
+      const [result] = await db.query(
         'UPDATE users SET password = ? WHERE email = ?',
         [hashedPassword, email]
       );

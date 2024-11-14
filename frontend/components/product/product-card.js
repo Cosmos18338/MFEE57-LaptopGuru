@@ -26,8 +26,8 @@ export default function ProductCard({ onSendMessage, product_id }) {
     }
 
     if (
-      localStorage.getItem('compareProduct').split(',')?.[0] == product_id ||
-      localStorage.getItem('compareProduct').split(',')?.[1] == product_id
+      localStorage.getItem('compareProduct')?.split(',')?.[0] == product_id ||
+      localStorage.getItem('compareProduct')?.split(',')?.[1] == product_id
     ) {
       setIsCompared(true)
     }
