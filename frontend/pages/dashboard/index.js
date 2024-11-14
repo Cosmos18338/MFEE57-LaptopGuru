@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
@@ -13,14 +13,15 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
+import LoadingSpinner from '@/components/dashboard/loading-spinner'
 // import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
-  const { auth, setAuth } = useAuth()
+  const { auth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   const [subActiveKey, setSubActiveKey] = useState('')
-  // 狀態用一樣的就好
+  // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
@@ -63,6 +64,11 @@ export default function Test1() {
       setCouponActiveKey(key)
     }
   }
+  useEffect(()=>{
+    if(router.isReady){
+      setIsLoading(false)
+    }
+  },[router.isReady])
 
   const renderHome = (key) => {
     switch (key) {
