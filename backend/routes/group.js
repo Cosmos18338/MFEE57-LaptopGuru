@@ -280,6 +280,28 @@ router.post('/', checkAuth, upload.single('group_img'), async (req, res) => {
       [groupResult.insertId, creator_id, 'accepted']
     )
 
+    // 建立對應的聊天室
+    const [chatRoomResult] = await connection.query(
+      'INSERT INTO chat_rooms (name, creator_id) VALUES (?, ?)',
+      [group_name.trim(), creator_id]
+    )
+
+    if (!chatRoomResult.insertId) {
+      throw new Error('聊天室建立失敗')
+    }
+
+    // 將創建者加入聊天室
+    await connection.query(
+      'INSERT INTO chat_room_members (room_id, user_id) VALUES (?, ?)',
+      [chatRoomResult.insertId, creator_id]
+    )
+
+    // 在 group 表中記錄關聯的聊天室 ID（需要先在 group 表添加 chat_room_id 欄位）
+    await connection.query(
+      'UPDATE `group` SET chat_room_id = ? WHERE group_id = ?',
+      [chatRoomResult.insertId, groupResult.insertId]
+    )
+
     await connection.commit()
 
     res.json({
@@ -287,6 +309,7 @@ router.post('/', checkAuth, upload.single('group_img'), async (req, res) => {
       message: '群組建立成功',
       data: {
         group_id: groupResult.insertId,
+        chat_room_id: chatRoomResult.insertId,
         group_name: group_name.trim(),
         description: description.trim(),
         creator_id,
