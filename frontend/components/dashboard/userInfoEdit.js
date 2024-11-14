@@ -4,8 +4,6 @@ import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
-import Accordion from 'react-bootstrap/Accordion'
-import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
 
 export default function UserProfile() {
   const { auth, setAuth } = useAuth()
@@ -28,19 +26,16 @@ export default function UserProfile() {
   })
 
   const [profilePic, setProfilePic] = useState(
-    editableUser.image_path || 'https://via.placeholder.com/220x220'
+    editableUser.image_path || 'signup_login/undraw_profile_1.svg'
   )
-  const [showpassword, setShowpassword] = useState(false)
-  const [showpassword2, setShowpassword2] = useState(false)
-  const [showpassword3, setShowpassword3] = useState(false)
-  const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
-  const [error, setError] = useState('')
-
   const [uploadStatus, setUploadStatus] = useState('')
+  // 沒有寫就是false
   const [selectedImg, setSelectedImg] = useState(null)
 
+  //裡面要放什麼
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
+  // 欄位是否要開放
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
@@ -220,124 +215,6 @@ export default function UserProfile() {
     }
   }, [user_id])
 
-  const pwdCheck = async () => {
-    // 移除 e 參數，因為我們改用 onClick
-    const user_id = auth?.userData?.user_id
-
-    //  檢查必要條件:從勾子抓到登入後的這個user_id
-    if (!user_id) {
-      console.error('User ID 不存在')
-      return // Handle this case appropriately
-    }
-    if (!editableUser.currentPassword) {
-      Swal.fire('錯誤', '請輸入密碼', 'error')
-      return
-    }
-    // createObjectURL(file) 這個是瀏覽器端還沒有傳送到伺服器用previewURL,setPreviewURL 暫時性的預覽長得很像一個網址可以直接用網址就可以看到那張圖。改成用useEffect主要是因為createObjectURL會占掉記憶體空間，用revokeObjectURL(objectURL)
-    try {
-      const responsePwdSend = await fetch(
-        `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            currentPassword: editableUser.currentPassword,
-          }),
-        }
-      )
-
-      // 嘗試把輸入的值丟回去後做處理
-      // 檢查後端回應的 status 是否為 'pwdmatch'
-      // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
-      // 用fetch不能response.data.data
-      const data = await responsePwdSend.json()
-      console.log('回應資料:', data) // 除錯用
-      // axios.才要responsePwdSend.data,用fetch只要
-      if (data.status === 'pwdmatch') {
-        Swal.fire('成功', '密碼與資料表相符', 'success')
-        setShowNewPasswordInput(true)
-        console.log('成功')
-      } else {
-        Swal.fire('錯誤', '密碼輸入錯誤', 'error')
-      }
-    } catch (error) {
-      Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
-    }
-  }
-  const validatePassword = (password) => {
-    const minLength = 8
-    const hasUpperCase = /[A-Z]/.test(password)
-    const hasLowerCase = /[a-z]/.test(password)
-    const hasNumbers = /\d/.test(password)
-
-    if (password.length < minLength) {
-      return '密碼長度至少需要8個字元'
-    }
-    if (!hasUpperCase || !hasLowerCase) {
-      return '密碼需要包含大小寫字母'
-    }
-    if (!hasNumbers) {
-      return '密碼需要包含數字'
-    }
-    return ''
-  }
-
-  const confirmPwdReset = async () => {
-    try {
-      // 檢查新密碼是否有值
-      if (!editableUser.newPassword1) {
-        newErrors.confirmpassword = '確認密碼為必填'
-      } else if (editableUser.newPassword1 !== editableUser.newPassword2) {
-        newErrors.newPassword = '密碼與確認密碼不相符'
-      }
-      // 驗證密碼格式
-      const validationError = validatePassword(editableUser.newPassword1)
-      if (validationError) {
-        Swal.fire('錯誤', validationError, 'error')
-        return
-      }
-      if (!editableUser.newPassword1) {
-        Swal.fire('錯誤', '請輸入新密碼1', 'error')
-        return
-      }
-      if (!editableUser.newPassword2) {
-        Swal.fire('錯誤', '請輸入新密碼2', 'error')
-        return
-      }
-
-      const user_id = auth?.userData?.user_id
-      const response = await axios.put(
-        `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
-        {
-          newPassword1: editableUser.newPassword1,
-          newPassword2: editableUser.newPassword2,
-        }
-      )
-
-      if (response.data.status === 'resetPwd success') {
-        Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
-        // 清空輸入框
-        setEditableUser((prev) => ({
-          ...prev,
-          currentPassword: '',
-          newPassword1: '',
-          newPassword2: '',
-        }))
-        setShowNewPasswordInput(false)
-      }
-    } catch (error) {
-      console.error('密碼更新失敗:', error)
-      Swal.fire(
-        '錯誤',
-        error.response?.data?.message || '密碼更新失敗',
-        'error'
-      )
-    }
-  }
-
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log('輸入值型別:', typeof value) // 檢查型別
@@ -478,7 +355,8 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！')
+        setUploadStatus('頭像更新成功！') //有文字算true,沒有算none?
+        //除非想防風報攻擊才需要寫得很認真@@
         Swal.fire('成功', '頭像更新成功', 'success')
       }
     } catch (error) {
@@ -577,7 +455,6 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label
                           htmlFor="phone"
@@ -829,7 +706,7 @@ export default function UserProfile() {
                         >
                           更新
                         </button>
-
+                        {/*  */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
@@ -837,172 +714,6 @@ export default function UserProfile() {
                         )}
                       </div>
                     </form>
-                  </div>
-                </div>
-                {/* 密碼變更 */}
-                <div className="mt-5 row">
-                  <div className="col-sm-8">
-                    <Accordion defaultActiveKey="0">
-                      <Accordion.Item eventKey="0">
-                        <Accordion.Header>
-                          {' '}
-                          <label
-                            htmlFor="password"
-                            className="col-sm-3 col-form-label"
-                          >
-                            密碼修改
-                          </label>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                          {/* 最後一個按鈕按下去之後應該要清空輸入框 */}
-                          <div className="mb-3">
-                            <div className="row justify-content-center">
-                              <div className="col-md-8">
-                                <input
-                                  type={showpassword ? 'text' : 'password'}
-                                  className="form-control mb-2"
-                                  name="currentPassword"
-                                  value={editableUser.currentPassword || ''}
-                                  placeholder="請輸入當前密碼"
-                                  onChange={handleInputChange}
-                                />
-
-                                <div className="form-text mb-3">
-                                  要先輸入密碼正確，才能輸入新的密碼
-                                </div>
-
-                                {/* 顯示密碼和送出檢查按鈕 */}
-                                <div className="d-flex justify-content-between align-items-center ">
-                                  <div className="form-check">
-                                    <input
-                                      type="checkbox"
-                                      id="showpassword"
-                                      checked={showpassword}
-                                      onChange={() =>
-                                        setShowpassword(!showpassword)
-                                      }
-                                      className="form-check-input"
-                                    />
-                                    <label
-                                      className="form-check-label ms-1"
-                                      htmlFor="showpassword"
-                                    >
-                                      顯示密碼
-                                    </label>
-                                  </div>
-                                  <button
-                                    type="button"
-                                    className="btn btn-primary text-white px-3"
-                                    onClick={pwdCheck}
-                                  >
-                                    送出檢查
-                                  </button>
-                                </div>
-
-                                {/* 分隔線 */}
-                                <div className="border-bottom my-4"></div>
-                              </div>
-                            </div>
-                          </div>
-                          {/* 底下是輸入新密碼 */}
-                          {showNewPasswordInput && (
-                            <div className="row justify-content-center">
-                              <div className="col-md-8">
-                                {/* 密碼格式提示 */}
-                                <div className="alert alert-info mb-3">
-                                  <small>
-                                    密碼必須符合以下要求：
-                                    <ul className="mb-0">
-                                      <li>至少 8 個字元</li>
-                                      <li>包含大寫和小寫字母</li>
-                                      <li>包含數字</li>
-                                    </ul>
-                                  </small>
-                                </div>
-                                {/* 第一列 */}
-                                <div className="row mb-3">
-                                  <div className="col">
-                                    <input
-                                      type={showpassword2 ? 'text' : 'password'}
-                                      id="newPassword1"
-                                      className="form-control"
-                                      name="newPassword1"
-                                      value={editableUser.newPassword1}
-                                      onChange={handleInputChange}
-                                      placeholder="請輸入新密碼"
-                                    />
-                                    <div className="form-check">
-                                      <input
-                                        type="checkbox"
-                                        id="showpassword2"
-                                        checked={showpassword2}
-                                        onChange={() =>
-                                          setShowpassword2(!showpassword2)
-                                        }
-                                        className="form-check-input"
-                                      />
-                                      <label
-                                        className="form-check-label ms-1"
-                                        htmlFor="showpassword2"
-                                      >
-                                        顯示密碼
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* 第二列 */}
-                                <div className="row mb-3">
-                                  <div className="col">
-                                    <input
-                                      type={showpassword3 ? 'text' : 'password'}
-                                      id="newPassword2"
-                                      className="form-control"
-                                      name="newPassword2"
-                                      value={editableUser.newPassword2}
-                                      onChange={handleInputChange}
-                                      min={8}
-                                      placeholder="請確認新密碼"
-                                    />
-                                    <div className="form-check">
-                                      <input
-                                        type="checkbox"
-                                        id="showpassword"
-                                        checked={showpassword3}
-                                        onChange={() =>
-                                          setShowpassword3(!showpassword3)
-                                        }
-                                        className="form-check-input"
-                                      />
-                                      <label
-                                        className="form-check-label ms-1"
-                                        htmlFor="showpassword3"
-                                      >
-                                        顯示密碼
-                                      </label>
-                                    </div>
-                                  </div>
-                                </div>
-
-                                {/* 按鈕列 */}
-                                <div className="row">
-                                  <div className="col d-flex justify-content-end">
-                                    <button
-                                      type="button"
-                                      className="btn btn-secondary text-white border-0"
-                                      onClick={confirmPwdReset}
-                                      min={8}
-                                    >
-                                      確認修改
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          )}
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    </Accordion>
                   </div>
                 </div>
               </div>

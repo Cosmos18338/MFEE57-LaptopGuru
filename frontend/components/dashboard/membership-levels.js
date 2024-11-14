@@ -155,13 +155,13 @@ export default function MembershipLevels() {
         `}
       </style>
 
-      <div className="row mb-4">
+      <div className="row mb-4 ">
         <div className="col">
-          <h2 className="text-white mb-0">
+          <h2 className="text-white mb-0 d-flex justify-content-center">
             <span className="diamond"></span>
             會員等級
           </h2>
-          <div className="col-">
+          <div className="d-flex justify-content-center">
             <h3 className="text-white">
               目前是{getMembershipLevel(level_chinese)}
             </h3>
@@ -171,7 +171,7 @@ export default function MembershipLevels() {
 
       <div className="row">
         <div className="col">
-          <h3 className="text-white">累計消費: ${membershipData.totalSpent}</h3>
+          <h3 className="text-white d-flex justify-content-center">累計消費: ${membershipData.totalSpent}</h3>
           <p className="text-white">
             距離下一等級還需消費: ${membershipData.nextLevelRequired}
           </p>
@@ -190,7 +190,7 @@ export default function MembershipLevels() {
 
       <div className="row">
         <div className="col">
-          <h3 className="text-white">
+          <h3 className="text-white d-flex justify-content-center">
             註冊日期: {new Date(membershipData.created_at).toLocaleDateString()}
           </h3>
           <p className="text-white">
@@ -200,6 +200,7 @@ export default function MembershipLevels() {
             {calculateDateProgress().map((progress, index) => (
               <ProgressBar
                 key={index}
+                animated
                 striped={index % 2 === 0}
                 variant={getVariants()[index]}
                 now={progress}

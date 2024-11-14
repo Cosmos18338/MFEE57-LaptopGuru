@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
@@ -13,12 +13,14 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
+// import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
   const { auth, setAuth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   const [subActiveKey, setSubActiveKey] = useState('')
+  const [refresh, setRefresh] = useState(false)
   // 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
@@ -28,6 +30,7 @@ export default function Test1() {
       { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
       { key: 'favorites', label: '收藏清單' },
+      // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
@@ -70,10 +73,18 @@ export default function Test1() {
         return <MembershipLevels />
       case 'EditPassword':
         return <EditPassword />
+      // case 'MarioGame':
+      //   return <MarioGame />
       default:
         return <UserProfile />
     }
   }
+
+  useEffect(() => {
+    if (refresh) {
+      setRefresh(false)
+    }
+  }, [refresh])
 
   return (
     <div className="container">
@@ -98,14 +109,14 @@ export default function Test1() {
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
               />
               <h5 className="mb-2">{auth?.userData?.name}</h5>
-              <Link href='userInfoEdit.js'>
-              <button
-                className="btn btn-outline-primary btn-sm mb-3"
-                style={{ color: '#805AF5', borderColor: '#805AF5' }}
-              >
-                <FaPenFancy />
-                編輯個人簡介
-              </button>
+              <Link href="">
+                <button
+                  className="btn btn-outline-primary btn-sm mb-3"
+                  style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                >
+                  <FaPenFancy />
+                  編輯個人簡介
+                </button>
               </Link>
             </div>
 
@@ -143,7 +154,7 @@ export default function Test1() {
                 <Nav.Link eventKey="shopping-record">購買清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="favorites">蒐藏清單</Nav.Link>
+                <Nav.Link eventKey="favorites">收藏清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
