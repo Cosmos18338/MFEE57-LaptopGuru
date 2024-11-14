@@ -538,7 +538,7 @@ export default function Detail() {
               ))}
             </div>
           </section>
-          <BackToTop />
+          {/* <BackToTop /> */}
         </div>
         {/* 顯示所有的訊息 */}
         <div className="alert-container">

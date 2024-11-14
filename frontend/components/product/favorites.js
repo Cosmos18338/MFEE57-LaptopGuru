@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import ProductCardWhite from '@/components/product/product-card-white'
 import styles from '@/styles/favorities.module.scss'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 // 撈取所有收藏清單
 export default function Favorites() {
@@ -33,8 +36,13 @@ export default function Favorites() {
     }
   }, [userData])
 
-  function onSendMessage() {
-    console.log('onSendMessage')
+  function onSendMessage(message) {
+    MySwal.fire({
+      icon: 'success',
+      title: message,
+      showConfirmButton: false,
+      timer: 1000,
+    })
   }
 
   if (loading) return <div>Loading...</div> // 加載狀態
