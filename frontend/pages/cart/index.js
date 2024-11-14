@@ -16,12 +16,12 @@ export default function CartIndex() {
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
-  const [phone, setPhone] = useState(userData.phone)
+  const [phone, setPhone] = useState('')
   const [order, setOrder] = useState({
     order_id: '',
     amount: '',
   })
-  const [receiver, setReceiver] = useState(userData.name)
+  const [receiver, setReceiver] = useState('')
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
 
@@ -221,6 +221,14 @@ export default function CartIndex() {
       finalPrice: total,
     })
   }, [total])
+
+  useEffect(() => {
+    setPhone(userData.phone)
+  }, [userData.phone])
+
+  useEffect(() => {
+    setReceiver(userData.name)
+  }, [userData.name])
 
   return (
     <>
