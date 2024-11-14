@@ -16,12 +16,12 @@ export default function CartIndex() {
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
-  const [phone, setPhone] = useState(userData.phone)
+  const [phone, setPhone] = useState('')
   const [order, setOrder] = useState({
     order_id: '',
     amount: '',
   })
-  const [receiver, setReceiver] = useState(userData.name)
+  const [receiver, setReceiver] = useState('')
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
 
@@ -207,6 +207,14 @@ export default function CartIndex() {
     })
   }, [total])
 
+  useEffect(() => {
+    setPhone(userData.phone)
+  }, [userData.phone])
+
+  useEffect(() => {
+    setReceiver(userData.name)
+  }, [userData.name])
+
   return (
     <>
       <div className="tilte d-flex mb-3">
@@ -377,8 +385,7 @@ export default function CartIndex() {
             <CouponBtn price={total} setCouponValue={setCouponDetails} />
 
             <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="text-center mb-2">
-              </div>
+              <div className="text-center mb-2"></div>
               <div>
                 <input
                   type="text"
