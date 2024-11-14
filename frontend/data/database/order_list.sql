@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2024-11-14 07:48:59
+-- 產生時間： 2024-11-14 10:49:38
 -- 伺服器版本： 10.4.32-MariaDB
 -- PHP 版本： 8.2.12
 
@@ -32,6 +32,7 @@ CREATE TABLE `order_list` (
   `user_id` int(11) NOT NULL,
   `order_id` varchar(50) NOT NULL,
   `order_amount` int(11) NOT NULL,
+  `payment_method` varchar(30) NOT NULL,
   `coupon_id` int(11) DEFAULT NULL,
   `receiver` varchar(200) DEFAULT NULL,
   `phone` varchar(200) NOT NULL,
@@ -44,10 +45,10 @@ CREATE TABLE `order_list` (
 -- 傾印資料表的資料 `order_list`
 --
 
-INSERT INTO `order_list` (`id`, `user_id`, `order_id`, `order_amount`, `coupon_id`, `receiver`, `phone`, `address`, `already_pay`, `create_time`) VALUES
-(1, 2, '493149fc-c865-46a2-ae8b-27c33a1e84b1', 23900, 0, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 10:03:09'),
-(2, 2, '8e1adadf-5f4b-4f29-bc84-b756cfcb208b', 24400, 1, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 10:29:40'),
-(3, 2, 'bc1bf194-54cc-4887-ac7c-82bb6c82f5a4', 24400, 1, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 14:36:10');
+INSERT INTO `order_list` (`id`, `user_id`, `order_id`, `order_amount`, `payment_method`, `coupon_id`, `receiver`, `phone`, `address`, `already_pay`, `create_time`) VALUES
+(1, 2, '493149fc-c865-46a2-ae8b-27c33a1e84b1', 23900, 'ecpay', 0, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 10:03:09'),
+(2, 2, '8e1adadf-5f4b-4f29-bc84-b756cfcb208b', 24400, 'ecpay', 1, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 10:29:40'),
+(3, 2, 'bc1bf194-54cc-4887-ac7c-82bb6c82f5a4', 24400, 'ecpay', 1, 'test', '0987654321', '台灣台北市中正區八德路１段1號', 1, '2024-11-14 14:36:10');
 
 --
 -- 已傾印資料表的索引

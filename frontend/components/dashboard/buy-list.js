@@ -12,6 +12,7 @@ export default function BuyList(order) {
   const [coupon_code, setCouponCode] = useState('')
   const order_id = order.order.order_id
   const order_date = order.order.create_time
+  const payment_method = order.order.payment_method
   const coupon_id = order.order.coupon_id
   const receiver = order.order.receiver
   const phone = order.order.phone
@@ -105,7 +106,11 @@ export default function BuyList(order) {
               </div>
               <div className="col-6">收件人： {receiver}</div>
               <div className="col-6">聯絡電話： {phone}</div>
-              <div className="">收件地址： {address}</div>
+              <div className="col-6">收件地址： {address}</div>
+              <div className="col-6">
+                付款方式： {payment_method == 'ecpay' ? '綠界代收' : ''}
+                {payment_method == 'linepay' ? 'Line Pay' : ''}
+              </div>
             </div>
             {orderDetail.map((item, index) => {
               return <BuyItemCard key={index} item={item} />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { use, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import axiosInstance from '@/services/axios-instance'
 import { useAuth } from '@/hooks/use-auth'
@@ -40,6 +40,7 @@ export default function Order() {
     // 送至server建立訂單，packages與order id由server產生
     // products將會組合在packages屬性之下
     const res = await axiosInstance.post('/line-pay/create-order', {
+      user_id: auth.userData.user_id,
       amount: quantity1 * price1 + quantity2 * price2,
       products: [
         {
@@ -182,6 +183,16 @@ export default function Order() {
         disabled={!order.orderId}
       >
         前往付款
+      </button>
+      <hr />
+      <button
+        className="btn btn-primary"
+        onClick={() => {
+          console.log(order.orderId)
+        }}
+      >
+        {' '}
+        訂單編號
       </button>
       <hr />
       <h5>訂單明細記錄</h5>

@@ -25,9 +25,9 @@ const linePayClient = createLinePayClient({
 })
 
 // 在資料庫建立order資料(需要會員登入才能使用)
-router.post('/create-order', authenticate, async (req, res) => {
+router.post('/create-order', async (req, res) => {
   // 會員id由authenticate中介軟體提供
-  const userId = req.user.id
+  const userId = req.body.user_id
 
   //產生 orderId與packageId
   const orderId = uuidv4()
@@ -61,7 +61,7 @@ router.post('/create-order', authenticate, async (req, res) => {
 
   // 儲存到資料庫
   // await purchase_order.create(dbOrder)
-  const result = await db.query('INSERT INTO purchase_order SET ?', dbOrder)
+  const [result] = await db.query('INSERT INTO purchase_order SET ?', dbOrder)
 
   console.log(result)
 
@@ -71,30 +71,99 @@ router.post('/create-order', authenticate, async (req, res) => {
 
 // 重新導向到line-pay，進行交易(純導向不回應前端)
 // 資料格式參考 https://enylin.github.io/line-pay-merchant/api-reference/request.html#example
+// router.get('/reserve', async (req, res) => {
+//   if (!req.query.orderId) {
+//     return res.json({ status: 'error', message: 'order id不存在' })
+//   }
+
+//   const orderId = req.query.orderId
+
+//   // 設定重新導向與失敗導向的網址
+//   const redirectUrls = {
+//     confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL,
+//     cancelUrl: process.env.REACT_REDIRECT_CANCEL_URL,
+//   }
+
+//   // 從資料庫取得訂單資料
+//   // const orderRecord = await purchase_order.findByPk(orderId, {
+//   //   raw: true, // 只需要資料表中資料
+//   // })
+//   const [orderRecord] = await db.query(
+//     'SELECT order_info FROM purchase_order WHERE id = ?',
+//     [orderId]
+//   )
+
+//   // const orderRecord = await findOne('orders', { order_id: orderId })
+
+//   // order_info記錄要向line pay要求的訂單json
+//   // const order = JSON.parse(orderRecord.order_info)
+//   const order = JSON.parse(orderRecord[0].order_info)
+//   res.json(order)
+//   //const order = cache.get(orderId)
+//   console.log(`獲得訂單資料，內容如下：`)
+//   console.log(order)
+
+//   try {
+//     // 向line pay傳送的訂單資料
+//     const linePayResponse = await linePayClient.request.send({
+//       body: { ...order, redirectUrls },
+//     })
+
+//     // 深拷貝一份order資料
+//     const reservation = JSON.parse(JSON.stringify(order))
+
+//     reservation.returnCode = linePayResponse.body.returnCode
+//     reservation.returnMessage = linePayResponse.body.returnMessage
+//     reservation.transactionId = linePayResponse.body.info.transactionId
+//     reservation.paymentAccessToken =
+//       linePayResponse.body.info.paymentAccessToken
+
+//     console.log(`預計付款資料(Reservation)已建立。資料如下:`)
+//     console.log(reservation)
+
+//     // 在db儲存reservation資料
+//     // const result = await purchase_order.update(
+//     //   {
+//     //     reservation: JSON.stringify(reservation),
+//     //     transaction_id: reservation.transactionId,
+//     //   },
+//     //   {
+//     //     where: {
+//     //       id: orderId,
+//     //     },
+//     //   }
+//     // )
+//     const result = await db.query(
+//       'UPDATE purchase_order SET reservation = ?, transaction_id = ? WHERE id = ?',
+//       [JSON.stringify(reservation), reservation.transactionId, orderId]
+//     )
+
+//     // console.log(result)
+
+//     // 導向到付款頁面， line pay回應後會帶有info.paymentUrl.web為付款網址
+//     res.redirect(linePayResponse.body.info.paymentUrl.web)
+//   } catch (e) {
+//     console.log('error', e)
+//   }
+// })
+
 router.get('/reserve', async (req, res) => {
   if (!req.query.orderId) {
     return res.json({ status: 'error', message: 'order id不存在' })
   }
 
   const orderId = req.query.orderId
-
-  // 設定重新導向與失敗導向的網址
   const redirectUrls = {
-    confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL,
+    confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL + `?orderId=${orderId}`,
     cancelUrl: process.env.REACT_REDIRECT_CANCEL_URL,
   }
 
-  // 從資料庫取得訂單資料
-  const orderRecord = await purchase_order.findByPk(orderId, {
-    raw: true, // 只需要資料表中資料
-  })
+  const [orderRecord] = await db.query(
+    'SELECT order_info FROM purchase_order WHERE id = ?',
+    [orderId]
+  )
 
-  // const orderRecord = await findOne('orders', { order_id: orderId })
-
-  // order_info記錄要向line pay要求的訂單json
-  const order = JSON.parse(orderRecord.order_info)
-
-  //const order = cache.get(orderId)
+  const order = JSON.parse(orderRecord[0].order_info)
   console.log(`獲得訂單資料，內容如下：`)
   console.log(order)
 
@@ -106,7 +175,6 @@ router.get('/reserve', async (req, res) => {
 
     // 深拷貝一份order資料
     const reservation = JSON.parse(JSON.stringify(order))
-
     reservation.returnCode = linePayResponse.body.returnCode
     reservation.returnMessage = linePayResponse.body.returnMessage
     reservation.transactionId = linePayResponse.body.info.transactionId
@@ -117,24 +185,19 @@ router.get('/reserve', async (req, res) => {
     console.log(reservation)
 
     // 在db儲存reservation資料
-    const result = await purchase_order.update(
-      {
-        reservation: JSON.stringify(reservation),
-        transaction_id: reservation.transactionId,
-      },
-      {
-        where: {
-          id: orderId,
-        },
-      }
+    await db.query(
+      'UPDATE purchase_order SET reservation = ?, transaction_id = ? WHERE id = ?',
+      [JSON.stringify(reservation), reservation.transactionId, orderId]
     )
 
-    // console.log(result)
-
-    // 導向到付款頁面， line pay回應後會帶有info.paymentUrl.web為付款網址
-    res.redirect(linePayResponse.body.info.paymentUrl.web)
+    // 導向到付款頁面
+    return res.redirect(linePayResponse.body.info.paymentUrl.web)
   } catch (e) {
     console.log('error', e)
+    // 確保只有在回應未發送的情況下發送錯誤訊息
+    if (!res.headersSent) {
+      return res.json({ status: 'error', message: '無法完成付款，請稍後再試' })
+    }
   }
 })
 
@@ -145,15 +208,19 @@ router.get('/confirm', async (req, res) => {
   const transactionId = req.query.transactionId
 
   // 從資料庫取得交易資料
-  const dbOrder = await purchase_order.findOne({
-    where: { transaction_id: transactionId },
-    raw: true, // 只需要資料表中資料
-  })
+  // const dbOrder = await purchase_order.findOne({
+  //   where: { transaction_id: transactionId },
+  //   raw: true, // 只需要資料表中資料
+  // })
+  const [dbOrder] = await db.query(
+    'SELECT * FROM purchase_order WHERE transaction_id = ?',
+    [transactionId]
+  )
 
   console.log(dbOrder)
 
   // 交易資料
-  const transaction = JSON.parse(dbOrder.reservation)
+  const transaction = JSON.parse(dbOrder[0].reservation)
 
   console.log(transaction)
 
@@ -183,17 +250,26 @@ router.get('/confirm', async (req, res) => {
     }
 
     // 更新資料庫的訂單狀態
-    const result = await purchase_order.update(
-      {
+    // const result = await purchase_order.update(
+    //   {
+    //     status,
+    //     return_code: linePayResponse.body.returnCode,
+    //     confirm: JSON.stringify(linePayResponse.body),
+    //   },
+    //   {
+    //     where: {
+    //       id: dbOrder.id,
+    //     },
+    //   }
+    // )
+    const result = await db.query(
+      'UPDATE purchase_order SET status = ?, return_code = ?, confirm = ? WHERE id = ?',
+      [
         status,
-        return_code: linePayResponse.body.returnCode,
-        confirm: JSON.stringify(linePayResponse.body),
-      },
-      {
-        where: {
-          id: dbOrder.id,
-        },
-      }
+        linePayResponse.body.returnCode,
+        JSON.stringify(linePayResponse.body),
+        dbOrder.id,
+      ]
     )
 
     console.log(result)

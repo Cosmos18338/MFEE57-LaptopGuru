@@ -17,13 +17,12 @@ export default function CartIndex() {
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
   const [phone, setPhone] = useState('')
-  const [order, setOrder] = useState({
-    order_id: '',
-    amount: '',
-  })
+  const [order, setOrder] = useState({})
   const [receiver, setReceiver] = useState('')
   const [ship, setShip] = useState('')
+  const [shipPrice, setShipPrice] = useState(0)
   const [address, setAddress] = useState('')
+  const [checkoutType, setCheckoutType] = useState('ecpay')
 
   const [couponDetails, setCouponDetails] = useState({
     coupon_id: '',
@@ -62,6 +61,10 @@ export default function CartIndex() {
     })
 
     setCartdata(nextProducts)
+  }
+
+  const handleCheckoutType = (e) => {
+    setCheckoutType(e.target.value)
   }
 
   const handleAddress = (targetAddress) => {
@@ -150,6 +153,7 @@ export default function CartIndex() {
         receiver: receiver,
         phone: phone,
         amount: couponDetails.finalPrice,
+        payment_method: 'ecpay',
         coupon_id: couponDetails.coupon_id,
         detail: cartdata,
         address: address,
@@ -213,6 +217,123 @@ export default function CartIndex() {
     ? cartdata.reduce((acc, v) => acc + Number(v.quantity) * v.list_price, 0)
     : 0
 
+  // Line Pay處理
+  const createLinepayOrder = async () => {
+    const res = await fetch(`http://localhost:3005/api/line-pay/create-order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: auth.userData.user_id,
+        amount: total + (ship == '7-11' ? 60 : 200),
+        products: [
+          {
+            id: 1,
+            name: '商品總計',
+            quantity: 1,
+            price: total,
+          },
+          {
+            id: 2,
+            name: '運費',
+            quantity: 1,
+            price: ship == '7-11' ? 60 : 200,
+          },
+        ],
+      }),
+    })
+
+    console.log(res.data) //訂單物件格式(line-pay專用)
+    const data = await res.json()
+
+    if (data.status === 'success') {
+      setOrder(data.order)
+      MySwal.fire({
+        icon: 'success',
+        title: '已成功建立訂單',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+    }
+  }
+
+  const goLinePay = () => {
+    if (window.confirm('確認要導向至LINE Pay進行付款?')) {
+      // 先連到node伺服器後，導向至LINE Pay付款頁面
+      window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${order.orderId}`
+    }
+  }
+
+  const linepayOrder = async () => {
+    if (cartdata == null) {
+      MySwal.fire({
+        icon: 'error',
+        title: '購物車是空的',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    if (ship == '') {
+      MySwal.fire({
+        icon: 'error',
+        title: '請選擇運送方式',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    if (ship == '7-11') {
+      if (store711.storeid == '') {
+        MySwal.fire({
+          icon: 'error',
+          title: '請選擇7-11門市',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+        return
+      }
+    }
+
+    if (receiver == '') {
+      setReceiver(userData.name)
+    }
+
+    if (phone == '') {
+      setPhone(userData.phone)
+    }
+
+    const result = await fetch(`http://localhost:3005/api/cart/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        receiver: receiver,
+        phone: phone,
+        payment_method: 'linepay',
+        amount: couponDetails.finalPrice,
+        coupon_id: couponDetails.coupon_id,
+        detail: cartdata,
+        address: address,
+      }),
+    })
+
+    const data = await result.json()
+
+    if (data.status == 'success') {
+      setOrder({ order_id: data.order_id, amount: total })
+      setCartdata([])
+      setAddress('')
+      localStorage.removeItem('store711')
+    }
+  }
+
+  // useEffect
   useEffect(() => {
     setCouponDetails({
       coupon_id: '',
@@ -293,6 +414,11 @@ export default function CartIndex() {
                   className="form-select border-primary"
                   onChange={(e) => {
                     setShip(e.target.value)
+                    if (e.target.value === '7-11') {
+                      setShipPrice(60)
+                    } else {
+                      setShipPrice(200)
+                    }
                   }}
                 >
                   <option value="" selected disabled>
@@ -360,16 +486,79 @@ export default function CartIndex() {
                   </>
                 )}
               </div>
-
-              <button
-                className="btn btn-primary text-light"
-                onClick={() => {
-                  createOrder()
-                  // router.push(`/cart/double-check?order_id=${order.order_id}`)
-                }}
-              >
-                前往結帳
-              </button>
+              <div className="d-flex mb-2">
+                <div className="form-check me-3">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="ecpay"
+                    value={'ecpay'}
+                    checked={checkoutType === 'ecpay'}
+                    onChange={handleCheckoutType}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="ecpay"
+                    defaultChecked
+                  >
+                    綠界付款
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="linepay"
+                    value={'linepay'}
+                    checked={checkoutType === 'linepay'}
+                    onChange={handleCheckoutType}
+                  />
+                  <label className="form-check-label" htmlFor="linepay">
+                    Line Pay
+                  </label>
+                </div>
+              </div>
+              {checkoutType === 'linepay' ? (
+                <>
+                  <div className="d-flex justify-content-center mb-2">
+                    <button
+                      className="btn btn-primary text-light"
+                      onClick={async () => {
+                        await createLinepayOrder()
+                      }}
+                    >
+                      產生Line Pay訂單
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    <button
+                      className="btn btn-primary text-light"
+                      onClick={() => {
+                        linepayOrder()
+                        goLinePay()
+                      }}
+                    >
+                      前往Line Pay
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              {checkoutType === 'ecpay' ? (
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="btn btn-primary text-light"
+                    onClick={() => {
+                      createOrder()
+                    }}
+                  >
+                    前往結帳
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           ) : (
             <></>
@@ -390,14 +579,13 @@ export default function CartIndex() {
               </div>
               <div className="row">
                 <div className="col">運費總計</div>
-                <div className="col-auto">
-                  NT {ship == '' && '0'}
-                  {ship == '7-11' && '60'}
-                  {ship == '宅配' && '200'}元
-                </div>
+                <div className="col-auto">NT {shipPrice}元</div>
               </div>
             </div>
-            <CouponBtn price={total} setCouponValue={setCouponDetails} />
+            <CouponBtn
+              price={total + shipPrice}
+              setCouponValue={setCouponDetails}
+            />
 
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="text-center mb-2"></div>
@@ -420,7 +608,7 @@ export default function CartIndex() {
               <div className="total row w-100 mb-2">
                 <div className="col">總計</div>
                 <div className="col-auto">
-                  NT {couponDetails.finalPrice.toLocaleString()}元
+                  NT {(couponDetails.finalPrice + shipPrice).toLocaleString()}元
                 </div>
               </div>
               <div className="d-flex justify-content-center">
