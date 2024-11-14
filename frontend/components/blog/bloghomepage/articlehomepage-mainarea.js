@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 
-export default function BlogDetailMainArea(props) {
+export default function BlogDetailMainArea() {
   return (
     <>
-      <div className=" container-fluid ArticleSectionContainer h-100">
+      <div className=" BlogSectionContainer">
         <div className="d-flex">
           <div className="row">
             <div className="ArticleSectionTitle">
