@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
@@ -20,6 +20,7 @@ export default function Test1() {
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   const [subActiveKey, setSubActiveKey] = useState('')
+  const [refresh, setRefresh] = useState(false)
   // 狀態用一樣的就好
 
   // 定義不同頁籤對應的左側導航配置
@@ -79,6 +80,12 @@ export default function Test1() {
     }
   }
 
+  useEffect(() => {
+    if (refresh) {
+      setRefresh(false)
+    }
+  }, [refresh])
+
   return (
     <div className="container">
       <div className="row">
@@ -102,14 +109,14 @@ export default function Test1() {
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
               />
               <h5 className="mb-2">{auth?.userData?.name}</h5>
-              <Link href=''>
-              <button
-                className="btn btn-outline-primary btn-sm mb-3"
-                style={{ color: '#805AF5', borderColor: '#805AF5' }}
-              >
-                <FaPenFancy />
-                編輯個人簡介
-              </button>
+              <Link href="">
+                <button
+                  className="btn btn-outline-primary btn-sm mb-3"
+                  style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                >
+                  <FaPenFancy />
+                  編輯個人簡介
+                </button>
               </Link>
             </div>
 
