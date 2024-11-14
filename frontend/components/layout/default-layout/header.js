@@ -93,7 +93,7 @@ export default function Header(props) {
                 </div>
               </Link>
               <button
-                className="btn btn-primary text-white"
+                className="btn btn-primary text-white border-0"
                 onClick={handleLogout}
               >
                 登出
@@ -102,12 +102,12 @@ export default function Header(props) {
           ) : (
             <>
               <Link href="/member/login">
-                <button className="btn btn-primary text-white me-3">
+                <button className="btn btn-primary text-white me-3 border-0">
                   登入
                 </button>
               </Link>
               <Link href="/member/signup">
-                <button className="btn btn-primary text-white">註冊</button>
+                <button className="btn btn-primary text-white border-0">註冊</button>
               </Link>
             </>
           )}

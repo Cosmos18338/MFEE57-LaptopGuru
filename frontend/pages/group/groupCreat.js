@@ -1,15 +1,25 @@
 import { useState, useEffect } from 'react'
-import EventButton from '@/components/event/EventButton'
 import { useRouter } from 'next/router'
+import { useSearchParams } from 'next/navigation'
+import EventButton from '@/components/event/EventButton'
 
 export default function GroupCreat() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // 從 URL 獲取活動資訊
+  const eventId = searchParams.get('eventId')
+  const eventName = searchParams.get('eventName')
+  const eventStartTime = searchParams.get('eventStartTime')
+  const eventEndTime = searchParams.get('eventEndTime')
+
   const [formData, setFormData] = useState({
-    group_name: '',
+    group_name: eventName ? `${eventName}揪團` : '',
     max_members: '',
     description: '',
     image: null,
     group_time: '',
+    event_id: eventId || null,
   })
   const [imagePreview, setImagePreview] = useState('')
   const [error, setError] = useState('')
@@ -96,12 +106,44 @@ export default function GroupCreat() {
         return
       }
 
+      // 如果有活動時間限制，進行驗證
+      if (eventStartTime) {
+        const eventStart = new Date(eventStartTime)
+        const now = new Date()
+
+        // 檢查揪團時間是否在當前時間與活動開始時間之間
+        if (selectedTime < now) {
+          setError('揪團時間不能早於現在')
+          return
+        }
+
+        if (selectedTime > eventStart) {
+          setError('揪團時間必須在活動開始前')
+          return
+        }
+      }
+
+      // 驗證群組名稱長度
+      if (formData.group_name.trim().length > 20) {
+        setError('群組名稱不能超過20字')
+        return
+      }
+
+      // 驗證描述長度
+      if (formData.description.trim().length > 500) {
+        setError('群組描述不能超過500字')
+        return
+      }
+
       // 創建 FormData 對象
       const submitFormData = new FormData()
       submitFormData.append('group_name', formData.group_name.trim())
       submitFormData.append('description', formData.description.trim())
       submitFormData.append('max_members', formData.max_members)
       submitFormData.append('group_time', formData.group_time)
+      if (formData.event_id) {
+        submitFormData.append('event_id', formData.event_id)
+      }
       if (formData.image) {
         submitFormData.append('group_img', formData.image)
       }
@@ -124,11 +166,13 @@ export default function GroupCreat() {
           description: '',
           image: null,
           group_time: '',
+          event_id: null,
         })
         setImagePreview('')
 
+        // 延遲跳轉
         setTimeout(() => {
-          window.location.href = 'http://localhost:3000/group'
+          router.push('/group')
         }, 1500)
       } else {
         throw new Error(result.message || '建立群組失敗')
@@ -145,7 +189,22 @@ export default function GroupCreat() {
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
             <div className="group-creat-card p-4">
+              {/* 動態標題 */}
               <h2 className="text-center mb-4">揪團表單</h2>
+
+              {/* 活動相關資訊提示 */}
+              {eventName && (
+                <div className="alert alert-info mb-4">
+                  此揪團關聯活動：{eventName}
+                  <br />
+                  活動開始時間：{new Date(eventStartTime).toLocaleString()}
+                  <br />
+                  <small className="text-muted">
+                    提醒：揪團時間必須安排在活動開始前
+                  </small>
+                </div>
+              )}
+
               {error && (
                 <div className="alert alert-danger" role="alert">
                   {error}
@@ -190,6 +249,11 @@ export default function GroupCreat() {
                     onChange={handleInputChange}
                     className="form-control group-creat-input group-time-input"
                     min={new Date().toISOString().slice(0, 16)}
+                    max={
+                      eventStartTime
+                        ? new Date(eventStartTime).toISOString().slice(0, 16)
+                        : null
+                    }
                     required
                   />
                 </div>

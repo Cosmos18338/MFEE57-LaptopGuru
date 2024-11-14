@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import styles from '@/styles/product-card.module.scss'
+import styles from '@/styles/product-card-white.module.scss'
 import Image from 'next/image'
 import { useAuth } from '@/hooks/use-auth'
 
-export default function ProductCard({ onSendMessage, product_id }) {
+export default function ProductCardWhite({ onSendMessage, product_id }) {
   // 產品卡片的 key 值，用於比較功能的 checkbox
   const key = Math.random()
   // 從後端撈取資料
@@ -24,7 +24,6 @@ export default function ProductCard({ onSendMessage, product_id }) {
     if (result.status === 'success') {
       setIsChecked(true)
     }
-
     if (
       localStorage.getItem('compareProduct')?.split(',')?.[0] == product_id ||
       localStorage.getItem('compareProduct')?.split(',')?.[1] == product_id
@@ -58,6 +57,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
     const productID = String(product_id) // 確保 product_id 是字串格式
 
     // 取得目前的比較清單或初始化為空陣列
+
     let compareProduct = localStorage.getItem('compareProduct')
       ? localStorage.getItem('compareProduct').split(',')
       : []
@@ -222,7 +222,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
               fillRule="evenodd"
               clipRule="evenodd"
               d="M16.0102 4.82806C19.0093 1.32194 24.0104 0.378798 27.768 3.58936C31.5255 6.79991 32.0545 12.1679 29.1037 15.965C26.6503 19.122 19.2253 25.7805 16.7918 27.9356C16.5196 28.1768 16.3834 28.2972 16.2247 28.3446C16.0861 28.386 15.9344 28.386 15.7958 28.3446C15.6371 28.2972 15.5009 28.1768 15.2287 27.9356C12.7952 25.7805 5.37022 19.122 2.91682 15.965C-0.0339811 12.1679 0.430418 6.76615 4.25257 3.58936C8.07473 0.412578 13.0112 1.32194 16.0102 4.82806Z"
-              stroke="white"
+              stroke="black"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -230,7 +230,7 @@ export default function ProductCard({ onSendMessage, product_id }) {
           </svg>
           <Image
             onClick={addToCart}
-            src="/images/product/cart.svg"
+            src="/images/product/cart-black.svg"
             alt="cart"
             width={20}
             height={20}

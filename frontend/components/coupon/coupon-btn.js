@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { useAuth } from '@/hooks/use-auth'
 import { useDiscount } from '@/hooks/use-coupon-discount'
+import Coupon2 from './index2'
 
 const MySwal = withReactContent(Swal)
 
@@ -29,6 +30,7 @@ export default function CouponBtn({ price, setCouponValue }) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [usedCouponId, setUsedCouponId] = useState(null)
 
   // 獲取優惠券列表
   const getCouponData = async () => {
@@ -141,6 +143,7 @@ export default function CouponBtn({ price, setCouponValue }) {
       if (result.isConfirmed) {
         // const updateSuccess = await updateCouponStatus(coupon.coupon_id)
         // if (updateSuccess) {
+        setUsedCouponId(coupon.coupon_id)
         setAppliedCoupon(coupon)
         setCouponValue({
           ...coupon,
@@ -199,7 +202,7 @@ export default function CouponBtn({ price, setCouponValue }) {
   }
 
   const couponModal = (
-    <div>
+    <div className="d-flex justify-content-center">
       <button
         type="button"
         className="btn btn-primary text-light "
@@ -285,20 +288,40 @@ export default function CouponBtn({ price, setCouponValue }) {
                       <div
                         className="col-12 col-md-8 coupon-item"
                         key={coupon.id}
-                        onClick={() => handleCouponSelect(coupon)}
-                        style={{ cursor: 'pointer' }}
+                        onClick={() =>
+                          usedCouponId !== coupon.coupon_id &&
+                          handleCouponSelect(coupon)
+                        }
+                        style={{
+                          cursor:
+                            usedCouponId === coupon.coupon_id
+                              ? 'default'
+                              : 'pointer',
+                        }}
                       >
                         <div className="d-flex justify-content-center">
-                          <Coupon
-                            coupon_id={coupon.coupon_id}
-                            coupon_code={coupon.coupon_code}
-                            coupon_content={coupon.coupon_content}
-                            coupon_discount={coupon.coupon_discount}
-                            discount_method={coupon.discount_method}
-                            coupon_start_time={coupon.coupon_start_time}
-                            coupon_end_time={coupon.coupon_end_time}
-                            isValid={coupon.user_coupon_valid === 1}
-                          />
+                          {usedCouponId === coupon.coupon_id ? (
+                            <Coupon2
+                              coupon_id={coupon.coupon_id}
+                              coupon_code={coupon.coupon_code}
+                              coupon_content={coupon.coupon_content}
+                              coupon_discount={coupon.coupon_discount}
+                              discount_method={coupon.discount_method}
+                              coupon_start_time={coupon.coupon_start_time}
+                              coupon_end_time={coupon.coupon_end_time}
+                            />
+                          ) : (
+                            <Coupon
+                              coupon_id={coupon.coupon_id}
+                              coupon_code={coupon.coupon_code}
+                              coupon_content={coupon.coupon_content}
+                              coupon_discount={coupon.coupon_discount}
+                              discount_method={coupon.discount_method}
+                              coupon_start_time={coupon.coupon_start_time}
+                              coupon_end_time={coupon.coupon_end_time}
+                              isValid={coupon.user_coupon_valid === 1}
+                            />
+                          )}
                         </div>
                       </div>
                     ))

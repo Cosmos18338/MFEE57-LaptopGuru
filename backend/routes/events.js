@@ -336,7 +336,7 @@ router.post('/:eventId/register/individual', checkAuth, async (req, res) => {
   }
 })
 
-// 團體報名
+// 團體報名（修改後的版本）
 router.post('/:eventId/register/team', checkAuth, async (req, res) => {
   let connection
   try {
@@ -365,13 +365,14 @@ router.post('/:eventId/register/team', checkAuth, async (req, res) => {
       throw new Error('活動不存在')
     }
 
+    // 記錄活動類型以便除錯
     console.log('活動類型檢查:', {
       活動ID: eventId,
       活動類型: eventDetails[0].individual_or_team,
     })
 
-    // 修改判斷邏輯
-    if (eventDetails[0].individual_or_team !== '團隊') {
+    // 修改後的判斷邏輯，同時接受 '團體' 和 '團隊'
+    if (!['團體', '團隊'].includes(eventDetails[0].individual_or_team)) {
       throw new Error('此活動不是團體賽')
     }
 

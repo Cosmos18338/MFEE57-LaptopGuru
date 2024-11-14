@@ -374,9 +374,10 @@ export default function CartIndex() {
                 </div>
               </div>
             </div>
+            <CouponBtn price={total} setCouponValue={setCouponDetails} />
+
             <div className="row border-bottom border-primary mb-2 pb-2">
               <div className="text-center mb-2">
-                <CouponBtn price={total} setCouponValue={setCouponDetails} />
               </div>
               <div>
                 <input
