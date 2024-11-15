@@ -50,14 +50,14 @@ export default function UserProfile() {
       { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
     ],
     中部區域: [
-      { CityName: '台中市', CityEngName: 'Taichung City' },
+      { CityName: '臺中市', CityEngName: 'Taichung City' },
       { CityName: '彰化縣', CityEngName: 'Changhua County' },
       { CityName: '南投縣', CityEngName: 'Nantou County' },
       { CityName: '雲林縣', CityEngName: 'Yunlin County' },
     ],
     南部區域: [
       { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-      { CityName: '台南市', CityEngName: 'Tainan City' },
+      { CityName: '臺南市', CityEngName: 'Tainan City' },
       { CityName: '嘉義市', CityEngName: 'Chiayi City' },
       { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
       { CityName: '屏東縣', CityEngName: 'Pingtung County' },
@@ -215,7 +215,6 @@ export default function UserProfile() {
     }
   }, [user_id])
 
-
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log('輸入值型別:', typeof value) // 檢查型別
@@ -236,6 +235,7 @@ export default function UserProfile() {
       }
 
       if (!file.type.startsWith('image/')) {
+        // 這是檢查 MIME type，所有圖片文件的 MIME type 都是以 "image/" 開頭的
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
@@ -356,7 +356,7 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！')//有文字算true,沒有算none? 
+        setUploadStatus('頭像更新成功！') //有文字算true,沒有算none?
         //除非想防風報攻擊才需要寫得很認真@@
         Swal.fire('成功', '頭像更新成功', 'success')
       }
@@ -707,7 +707,7 @@ export default function UserProfile() {
                         >
                           更新
                         </button>
-{/*  */}
+                        {/*  */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
