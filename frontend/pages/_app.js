@@ -10,6 +10,8 @@ import '@/styles/footer.scss'
 
 // 首頁
 import '@/styles/frontPage.scss'
+//會員註冊
+// import '@/styles/transitions_Abby.scss'
 
 // 文章/部落格用 css
 import '@/styles/ArticleDetail.scss'
