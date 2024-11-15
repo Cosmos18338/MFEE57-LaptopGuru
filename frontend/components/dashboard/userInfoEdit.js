@@ -50,14 +50,14 @@ export default function UserProfile() {
       { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
     ],
     中部區域: [
-      { CityName: '台中市', CityEngName: 'Taichung City' },
+      { CityName: '臺中市', CityEngName: 'Taichung City' },
       { CityName: '彰化縣', CityEngName: 'Changhua County' },
       { CityName: '南投縣', CityEngName: 'Nantou County' },
       { CityName: '雲林縣', CityEngName: 'Yunlin County' },
     ],
     南部區域: [
       { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-      { CityName: '台南市', CityEngName: 'Tainan City' },
+      { CityName: '臺南市', CityEngName: 'Tainan City' },
       { CityName: '嘉義市', CityEngName: 'Chiayi City' },
       { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
       { CityName: '屏東縣', CityEngName: 'Pingtung County' },
