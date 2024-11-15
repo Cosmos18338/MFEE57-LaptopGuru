@@ -31,7 +31,6 @@ export default function Test1() {
       { key: 'profile', label: '檔案管理' },
       { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
-      { key: 'favorites', label: '收藏清單' },
       // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
@@ -91,12 +90,6 @@ export default function Test1() {
         return <UserProfile />
     }
   }
-
-  // useEffect(() => {
-  //   if (refresh) {
-  //     setRefresh(false)
-  //   }
-  // }, [refresh])
 
   return (
     <>

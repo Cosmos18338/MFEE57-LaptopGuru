@@ -235,6 +235,7 @@ export default function UserProfile() {
       }
 
       if (!file.type.startsWith('image/')) {
+        // 這是檢查 MIME type，所有圖片文件的 MIME type 都是以 "image/" 開頭的
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
