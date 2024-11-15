@@ -570,6 +570,87 @@
   background: rgba(128, 90, 213, 0.5);
 }
 
+/* 申請相關樣式 */
+.badge {
+  background-color: #ff4444;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-size: 12px;
+  margin-left: 5px;
+}
+
+.requestsList {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 40, 0.6);
+}
+
+.requestItem {
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background: rgba(20, 20, 30, 0.3);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.requestItem p {
+  margin: 5px 0;
+}
+
+.requestActions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.acceptButton {
+  background-color: rgba(40, 167, 69, 0.8);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.acceptButton:hover {
+  background-color: rgba(40, 167, 69, 1);
+}
+
+.rejectButton {
+  background-color: rgba(220, 53, 69, 0.8);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rejectButton:hover {
+  background-color: rgba(220, 53, 69, 1);
+}
+
+.systemMessage {
+  text-align: center;
+  padding: 8px;
+  margin: 8px 0;
+  background: rgba(128, 90, 213, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.requestContent {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px;
+  margin-top: 4px;
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
 /* 動畫效果 */
 @keyframes fadeIn {
   from {

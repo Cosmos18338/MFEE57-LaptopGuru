@@ -22,16 +22,17 @@ class WebSocketService {
         this.isConnecting = false
         this.reconnectAttempts = 0
 
+        // 建立連接後立即發送註冊訊息
         this.send({
           type: 'register',
           userID: userId,
         })
-        console.log('Register message sent')
       }
 
       this.ws.onclose = () => {
         console.log('WebSocket connection closed')
         this.isConnecting = false
+        this.ws = null
 
         if (this.reconnectAttempts < this.maxReconnectAttempts) {
           setTimeout(() => {
@@ -47,10 +48,11 @@ class WebSocketService {
       }
 
       this.ws.onmessage = (event) => {
-        console.log('Raw WebSocket message:', event.data)
         try {
           const data = JSON.parse(event.data)
-          console.log('Parsed WebSocket message:', data)
+          console.log('Received WebSocket message:', data)
+
+          // 觸發對應的事件監聽器
           if (this.listeners[data.type]) {
             this.listeners[data.type](data)
           }
@@ -64,15 +66,8 @@ class WebSocketService {
     }
   }
 
-  disconnect() {
-    if (this.ws) {
-      this.ws.close()
-      this.ws = null
-    }
-  }
-
   send(message) {
-    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+    if (this.ws?.readyState === WebSocket.OPEN) {
       console.log('Sending message:', message)
       this.ws.send(JSON.stringify(message))
     } else {
@@ -86,6 +81,13 @@ class WebSocketService {
 
   off(type) {
     delete this.listeners[type]
+  }
+
+  disconnect() {
+    if (this.ws) {
+      this.ws.close()
+      this.ws = null
+    }
   }
 }
 
