@@ -19,6 +19,7 @@ import '@/styles/BlogDetail.scss'
 import '@/styles/BlogEdit.scss'
 import '@/styles/BlogHomePage.scss'
 import '@/styles/BlogUserOverview.scss'
+import 'animate.css'
 
 // 載入購物車context
 import { CartProvider } from '@/hooks/use-cart-state'

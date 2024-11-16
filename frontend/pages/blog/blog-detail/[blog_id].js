@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDiamond } from '@fortawesome/free-solid-svg-icons'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+import { IoArrowBackCircleOutline } from 'react-icons/io5'
 
 export default function BlogId() {
   const router = useRouter()
@@ -38,6 +39,15 @@ export default function BlogId() {
     <>
       <Header />
       <BlogDetailMainArea />
+      <div className="container">
+        <div className="mt-5 mb-5">
+          <Link href="/blog" className="text-decoration-none fs-5">
+            <p className="fs-5 fw-bold">
+              <IoArrowBackCircleOutline /> 返回部落格首頁搜尋！
+            </p>
+          </Link>
+        </div>
+      </div>
       {/* <div>
         <div className="mt-5">
           <div className="mb-5">

@@ -104,14 +104,14 @@ export default function BlogUserDetail() {
         </div>
 
         <div className="">
-          <div className="d-flex gap-5  mb-5">
+          <div className="d-flex  mb-5 gap-xxl-5  gap-xl-5 gap-lg-4 gap-md-3 gap-sm-2 gap-xs-2 gap-1">
             <Link href={`/blog/blog-detail/${blog_id}`}>
-              <button className="BlogEditButtonSubmit" type="button">
+              <button className="BlogEditButtonSubmit shadow" type="button">
                 前往部落格頁面
               </button>
             </Link>
             <Link href={`/blog/blog-user-edit/${blog_id}`}>
-              <button className="BlogEditButtonDelete" type="button">
+              <button className="BlogEditButtonDelete shadow" type="button">
                 前往編輯！
               </button>
             </Link>

@@ -3,6 +3,10 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-size: cover;
+  width: 100%;
+  padding-top: 4%;
+  padding-bottom: 4%;
   // height: 999rem !important;
 }
 
@@ -85,7 +89,7 @@
 .ArticleBrandSearch {
   /* width: 90rem; */
   padding-top: 6rem;
-  padding-bottom: 10rem;
+  padding-bottom: 3rem;
 }
 
 // .ArticleSmallTitle {
@@ -239,6 +243,9 @@
   width: 35rem;
   border-radius: 1rem 0 1rem 0;
 }
+.BlogCard:hover {
+  animation: pulse 1s;
+}
 .BlogCardImg {
   border-radius: 1rem 0 1rem 0;
   background-color: #fff;
@@ -292,7 +299,7 @@
   color: #fff;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   font-family: Khula;
-  font-size: 4.69rem;
+  font-size: 7rem;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
@@ -428,6 +435,12 @@
 
 .BlogIndexCreatedButton:hover {
   background: linear-gradient(180deg, #a793e9 0%, #423db0 50%, #2e256a 100%);
+}
+
+.ArticleSectionIntroduction {
+  letter-spacing: 2rem;
+  width: 100%;
+  font-size: 2.5rem;
 }
 
 @media (max-width: 430px) {

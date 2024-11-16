@@ -38,6 +38,14 @@
 }
 
 /* -----------------------------------新 Article 小卡----------------------------------- */
+.ArticleSmallerCard {
+  height: 12.5rem;
+}
+
+.ArticleSmallerCard:hover {
+  animation: pulse 1s infinite; // 溫和的縮放感
+}
+
 .ArticleSmallerCardTitle {
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -113,7 +121,7 @@
   height: 2rem;
 }
 .BlogDetailComment {
-  border: 1px solid black;
+  border: 1px solid #6854c7;
 }
 .SmallCircleWidgetToButtom {
   width: 3rem;
@@ -130,6 +138,12 @@
   bottom: 0vw;
   left: 50%;
   font-size: 2rem;
+}
+.purplelinehr {
+  color: #6854c7;
+  background-color: #6854c7;
+  height: 2px;
+  // border: 1px solid #6854c7;
 }
 
 // 字體陰影

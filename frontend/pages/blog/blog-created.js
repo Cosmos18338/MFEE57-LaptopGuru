@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/use-auth'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
+import NextBreadCrumb from '@/components/common/next-breadcrumb'
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -106,8 +107,15 @@ export default function Blogcreated(props) {
     <>
       <Header />
       <BlogDetailMainArea />
+      <div className="container mt-5">
+        <NextBreadCrumb
+          bgClass="bg-transparent"
+          isChevron={true}
+          isHomeIcon={true}
+        />
+      </div>
 
-      <div className=" BlogEditAlignAllItems mt-5 w-100">
+      <div className="container-lg container-fluid d-flex h-auto flex-column gap-5 mt-5 col-lg-5 col-md-8 col-12">
         {/* 圖片上傳區塊 */}
         <div className="">
           <div className="BlogEditSmallTitle text-nowrap">
@@ -120,7 +128,7 @@ export default function Blogcreated(props) {
         </div>
 
         <div
-          className="container BlogImgUploadDiv d-flex align-items-center justify-content-center "
+          className="BlogImgUploadDiv d-flex align-items-center justify-content-center"
           onClick={() => document.getElementById('imageInput').click()}
         >
           {blog_image ? (
@@ -147,15 +155,15 @@ export default function Blogcreated(props) {
         <form onSubmit={handleSubmit}>
           {/* 標題區塊 */}
 
-          <div className="container d-flex align-items-start justify-content-start">
-            <div className="BlogEditSmallTitle text-nowrap col-4">
+          <div className="container-fluid d-flex flex-lg-row flex-column align-items-start justify-content-start">
+            <div className="BlogEditSmallTitle text-nowrap col-lg-2 col-12">
               <p>
                 <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
                 {'\u00A0 '}
                 標題
               </p>
             </div>
-            <div className="col-8 col-lg-8 col-md-10">
+            <div className="col-lg-10 col-12">
               <input
                 className="form-control form-control-lg"
                 type="text"
@@ -168,18 +176,17 @@ export default function Blogcreated(props) {
 
           {/* 文章內容區塊 */}
 
-          <div className="container d-flex align-items-start justify-content-start mb-5 mt-5 col-6">
-            <div className="BlogEditSmallTitle text-nowrap">
+          <div className="container-lg container-fluid-md  d-flex flex-lg-row flex-column  align-items-start justify-content-start mb-5 mt-5">
+            <div className="BlogEditSmallTitle text-nowrap col-2">
               <p>
                 <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
                 {'\u00A0 '}
                 內文
               </p>
             </div>
-            <div>
+            <div className="col-10">
               <textarea
                 className="form-control"
-                style={{ width: '430%' }}
                 value={blog_content}
                 onChange={(e) => setContent(e.target.value)}
                 rows="20"
@@ -189,8 +196,8 @@ export default function Blogcreated(props) {
           </div>
 
           {/* 品牌選擇區塊 */}
-          <div className="container d-flex flex-row justify-content-between align-items-start col-6 mb-5">
-            <div className="BlogSmallTitleAlign d-flex justify-content-start align-items-start col-6">
+          <div className="container-lg container-fluid  flex-lg-row flex-column justify-content-between align-items-start mb-5 gap-xxl-5 gap-xl-5 gap-lg-4 gap-md-3 gap-sm-2 gap-xs-2 gap-1">
+            <div className="BlogSmallTitleAlign d-flex justify-content-start align-items-start">
               <div className="BlogEditSmallTitle text-nowrap">
                 <p>
                   <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
@@ -199,13 +206,16 @@ export default function Blogcreated(props) {
                 </p>
               </div>
             </div>
-            <div className="container d-flex flex-row gap-5 justify-content-center">
+            <div className="container-lg container-fluid d-flex flex-row justify-content-center mb-5 mt-5 gap-xxl-5 gap-xl-5 gap-lg-4 gap-md-3 gap-sm-2 gap-xs-2 gap-1">
               {brands.map((column, columnIndex) => (
-                <div key={columnIndex} className="d-flex flex-column gap-5">
+                <div
+                  key={columnIndex}
+                  className="d-flex flex-column gap-xxl-5  gap-xl-5 gap-lg-4 gap-md-3 gap-sm-2 gap-xs-2 gap-1"
+                >
                   {column.map((brand) => (
                     <div
                       key={brand}
-                      className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                      className={`BlogEditBrandSelected shadow d-flex justify-content-center align-items-center ${
                         brand === blog_brand
                           ? 'BlogEditBrandSelectedActive'
                           : ''
@@ -221,26 +231,26 @@ export default function Blogcreated(props) {
           </div>
 
           {/* 標題區塊 */}
-          <div className="container d-flex align-items-start justify-content-start mt-5 mb-5">
-            <div className="BlogEditSmallTitle text-nowrap col-4">
+          <div className="container d-flex flex-lg-row flex-column align-items-start justify-content-start mt-5 mb-5">
+            <div className="BlogEditSmallTitle text-nowrap col-2">
               <p>
                 <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
                 {'\u00A0 '}
                 筆電型號
               </p>
             </div>
-            <div className="col-8 col-lg-8 col-md-10">
+            <div className="col-10">
               <input
                 className="form-control form-control-lg"
                 type="text"
-                placeholder="標題"
+                placeholder="筆電型號"
                 value={blog_brand_model}
                 onChange={(e) => setBrandModel(e.target.value)}
               />
             </div>
           </div>
           {/* 類別選擇區塊 */}
-          <div className="container d-flex flex-row justify-content-between align-items-start col-12 mb-5">
+          <div className="container d-flex justify-content-start align-items-start mb-5 flex-lg-row flex-column col-12">
             <div className="BlogEditSmallTitle text-nowrap col-10">
               <p>
                 <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
@@ -248,11 +258,12 @@ export default function Blogcreated(props) {
                 類別
               </p>
             </div>
-            <div className="d-flex flex-column gap-5 col-9">
+            <div className="w-25 h-25"></div>
+            <div className="d-flex flex-column gap-xxl-5 gap-xl-5 gap-lg-4 gap-md-3 gap-sm-2 gap-xs-2 gap-1 col-2">
               {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((v) => (
                 <div
                   key={v}
-                  className={`BlogEditBrandSelected d-flex justify-content-center align-items-center ${
+                  className={`BlogEditBrandSelected shadow d-flex justify-content-center align-items-center ${
                     v === blog_type ? 'BlogEditBrandSelectedActive' : ''
                   }`}
                   onClick={() => setType(v)}
@@ -263,15 +274,15 @@ export default function Blogcreated(props) {
             </div>
           </div>
           {/* 關鍵字區塊 */}
-          <div className="container d-flex align-items-start justify-content-start">
-            <div className="BlogEditSmallTitle text-nowrap col-4">
+          <div className="container d-flex flex-lg-row flex-column align-items-start justify-content-start">
+            <div className="BlogEditSmallTitle text-nowrap col-3">
               <p>
                 <FontAwesomeIcon icon={faDiamond} className="TitleDiamond" />
                 {'\u00A0 '}
                 關鍵字
               </p>
             </div>
-            <div className="col-8 col-lg-8 col-md-10">
+            <div className="col-9">
               <input
                 className="form-control form-control-lg"
                 type="text"
@@ -283,8 +294,8 @@ export default function Blogcreated(props) {
           </div>
 
           {/* 按鈕區塊 */}
-          <div className="container d-flex flex-row justify-content-around align-items-center mt-5">
-            <button className="BlogEditButtonSubmit" type="submit">
+          <div className="container d-flex flex-row justify-content-around align-items-center mt-5 mb-5">
+            <button className="BlogEditButtonSubmit shadow" type="submit">
               送出
             </button>
           </div>
@@ -294,4 +305,5 @@ export default function Blogcreated(props) {
     </>
   )
 }
+
 Blogcreated.getLayout = (page) => page

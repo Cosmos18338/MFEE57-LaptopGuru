@@ -53,10 +53,7 @@ export default function BloghomepageCardgroup() {
                   href={`/blog/blog-detail/${data.blog_id}`}
                   passHref
                 >
-                  <div
-                    className="card d-flex flex-row bg-white ArticleSmallerCard"
-                    style={{ height: '200px' }}
-                  >
+                  <div className="card d-flex flex-row bg-white ArticleSmallerCard">
                     {' '}
                     {/* 固定卡片高度 */}
                     <div className="w-50 position-relative">

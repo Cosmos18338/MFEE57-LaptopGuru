@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useAuth } from '@/hooks/use-auth'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+import NextBreadCrumb from '@/components/common/next-breadcrumb'
 
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
@@ -93,6 +94,13 @@ export default function BlogSearchPage() {
     <>
       <Header />
       <BlogDetailMainArea />
+      <div className="container mt-5">
+        <NextBreadCrumb
+          bgClass="bg-transparent"
+          isChevron={true}
+          isHomeIcon={true}
+        />
+      </div>
 
       {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
       <div>
@@ -172,27 +180,27 @@ export default function BlogSearchPage() {
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {userData?.user_id ? (
-          <Link href="/blog/blog-created">
-            <div className="container d-flex flex-row-reverse mb-5">
+          <div className="container d-flex flex-row-reverse mb-5">
+            <Link href="/blog/blog-created">
               <button
                 type="button"
                 className="btn text-white BlogIndexCreatedButton"
               >
                 新增發文！
               </button>
-            </div>
-          </Link>
+            </Link>
+          </div>
         ) : (
-          <Link href="http://localhost:3000/member/login">
-            <div className="container d-flex flex-row-reverse mb-5">
+          <div className="container d-flex flex-row-reverse mb-5">
+            <Link href="http://localhost:3000/member/login">
               <button
                 type="button"
                 className="btn text-white BlogIndexCreatedButton"
               >
                 登入後發文
               </button>
-            </div>
-          </Link>
+            </Link>
+          </div>
         )}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
