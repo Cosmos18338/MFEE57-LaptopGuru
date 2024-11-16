@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Nav, Tab } from 'react-bootstrap'
 import { FaPenFancy } from 'react-icons/fa'
 import { useAuth } from '@/hooks/use-auth'
-import CardExample from '@/components/bootstrap/cards'
 import UserProfile from '@/components/dashboard/userInfoEdit'
 import MembershipLevels from '@/components/dashboard/membership-levels'
+import EditPassword from '@/components/dashboard/EditPassword'
 import CouponList from '@/components/coupon/coupon-list-components'
 import CouponUser from '@/components/coupon/coupon-user-components'
 import EventManagement from '@/components/event/EventManagement'
@@ -12,20 +12,26 @@ import GroupManagement from '@/components/group/GroupManagement'
 import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
+import Link from 'next/link'
+import {LoadingSpinner} from '@/components/dashboard/loading-spinner'
+// import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
-  const { auth, setAuth } = useAuth()
+  const { auth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
+  // 需要加入這個state
+  const [isLoading, setIsLoading] = useState(true)
   const [subActiveKey, setSubActiveKey] = useState('')
-  // 狀態用一樣的就好
+  // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
     home: [
       { key: 'profile', label: '檔案管理' },
-      { key: 'favorites', label: '收藏清單' },
+      { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
+      // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
       { key: 'all-orders', label: '全部訂單' },
@@ -59,6 +65,16 @@ export default function Test1() {
       setCouponActiveKey(key)
     }
   }
+  useEffect(()=>{
+    console.log('Dashboard mounted');
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+      console.log('Loading complete');
+    }, 2000);
+
+    return () => clearTimeout(timer);
+    
+  },[])
 
   const renderHome = (key) => {
     switch (key) {
@@ -66,13 +82,21 @@ export default function Test1() {
         return <UserProfile />
       case 'membership':
         return <MembershipLevels />
+      case 'EditPassword':
+        return <EditPassword />
+      // case 'MarioGame':
+      //   return <MarioGame />
       default:
         return <UserProfile />
     }
   }
 
   return (
-    <div className="container">
+    <>
+    <LoadingSpinner loading={isLoading} />
+    {!isLoading && (
+      // 你的主要內容
+      <div className="container">
       <div className="row">
         <Tab.Container
           id="dashboard-tabs"
@@ -87,20 +111,22 @@ export default function Test1() {
               <img
                 src={
                   auth?.userData?.image_path ||
-                  'https://via.placeholder.com/70x70'
+                  'signup_login/undraw_profile_1.svg'
                 }
                 alt="Profile"
                 className="rounded-circle img-fluid mb-3"
                 style={{ width: '70px', height: '70px', objectFit: 'cover' }}
               />
               <h5 className="mb-2">{auth?.userData?.name}</h5>
-              <button
-                className="btn btn-outline-primary btn-sm mb-3"
-                style={{ color: '#805AF5', borderColor: '#805AF5' }}
-              >
-                <FaPenFancy />
-                編輯個人簡介
-              </button>
+              {/* <Link href="">
+                <button
+                  className="btn btn-outline-primary btn-sm mb-3 "
+                  style={{ color: '#805AF5', borderColor: '#805AF5' }}
+                >
+                  <FaPenFancy />
+                  編輯個人簡介
+                </button>
+              </Link> */}
             </div>
 
             {/* 左側導航 - 動態根據上方選擇改變 */}
@@ -112,12 +138,7 @@ export default function Test1() {
                       handleSideNavClick(item.key)
                       setSubActiveKey(item.key)
                     }}
-                    className={`text-center ${
-                      activeKey === 'coupon-record' &&
-                      couponActiveKey === item.key
-                        ? 'active'
-                        : ''
-                    }`}
+                    className={`text-center`}
                   >
                     {item.label}
                   </Nav.Link>
@@ -142,7 +163,7 @@ export default function Test1() {
                 <Nav.Link eventKey="shopping-record">購買清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
-                <Nav.Link eventKey="favorites">蒐藏清單</Nav.Link>
+                <Nav.Link eventKey="favorites">收藏清單</Nav.Link>
               </Nav.Item>
               <Nav.Item>
                 <Nav.Link eventKey="coupon-record">優惠券</Nav.Link>
@@ -162,7 +183,6 @@ export default function Test1() {
             <Tab.Content>
               <Tab.Pane eventKey="home">
                 <div className="row justify-content-end">
-                  {/* <UserProfile /> */}
                   {renderHome(subActiveKey)}
                 </div>
               </Tab.Pane>
@@ -212,5 +232,9 @@ export default function Test1() {
         </Tab.Container>
       </div>
     </div>
+
+    )}
+  </>
+    
   )
 }
