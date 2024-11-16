@@ -23,12 +23,15 @@ export function timeout(ms) {
 
 // 全站的Context狀態
 // loader是元件，可以放於全站版面上，要用時用showLoader控制
+// 4. |- showLoader/hideLoader (手動控制方法)
 // close 代表幾秒後關閉
+// 1. |- global (控制是否全域顯示)
 export const LoaderProvider = ({
   children,
   close = 2,
-  global = false,
+  global = true,
   CustomLoader = DefaultLoader,
+  // 3. |- CustomLoader (可自訂載入元件)
 }) => {
   const router = useRouter()
   const [show, setShow] = useState(false)
@@ -41,7 +44,7 @@ export const LoaderProvider = ({
     }
 
     const handleChangeEnd = () => {
-      // auto close
+      // 2. auto close
       if (close && global) {
         timeout(close * 1000).then(() => setShow(false))
       }
@@ -63,7 +66,7 @@ export const LoaderProvider = ({
       value={{
         showLoader: () => {
           setShow(true)
-
+          //2.   |- close (自動關閉時間)
           // auto close
           if (close) {
             timeout(close * 1000).then(() => setShow(false))

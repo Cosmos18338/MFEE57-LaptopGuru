@@ -42,13 +42,13 @@ export default function CouponUser() {
       if (resData.status === 'success') {
         setCouponDataList(resData.data)
 
-        if (resData.data.length === 0) {
-          MySwal.fire({
-            title: '提示',
-            text: '目前沒有可用的優惠券',
-            icon: 'info',
-          })
-        }
+        // if (resData.data.length === 0) {
+        //   MySwal.fire({
+        //     title: '提示',
+        //     text: '目前沒有可用的優惠券',
+        //     icon: 'info',
+        //   })
+        // }
       } else {
         throw new Error(resData.message || '獲取資料失敗')
       }
@@ -87,7 +87,7 @@ export default function CouponUser() {
       router.push('/member/login')
       return
     }
-    router.push(`/coupon/test?id=${couponId}`)
+    router.push(`/cart?id=${couponId}`)
   }
 
   useEffect(() => {
@@ -169,6 +169,7 @@ export default function CouponUser() {
                 borderColor: '#805AF5',
                 color: 'white',
               }}
+              className="me-2"
             >
               搜尋
             </Button>

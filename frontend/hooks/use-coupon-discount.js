@@ -13,7 +13,7 @@ export const useDiscount = (originalPrice) => {
       return Math.max(0, price - Number(coupon.coupon_discount))
     } else {
       // 折扣比例 (例如: 90 = 打 9 折)
-      return price * (Number(coupon.coupon_discount) / 100)
+      return price * (Number(coupon.coupon_discount) / 10)
     }
   }
 

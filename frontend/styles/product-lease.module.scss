@@ -44,6 +44,8 @@
   display: flex;
   width: 500px;
   gap: 24px;
+  /* justify-content: center; */
+  align-items: center;
 }
 
 .square {
@@ -126,14 +128,13 @@
 
   .menu,
   .menu2 {
-    width: 100%;
     margin-right: 0;
     gap: 20px;
   }
 
   .square {
     width: 100%;
-    max-width: 100%;
+    max-width: 500px;
     margin-top: 20px;
   }
 
@@ -147,7 +148,7 @@
   }
 
   .list img {
-    width: 100%;
+    max-width: 150px;
     height: auto;
     object-fit: cover;
   }

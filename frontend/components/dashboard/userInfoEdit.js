@@ -4,7 +4,6 @@ import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
-import Accordion from 'react-bootstrap/Accordion'
 
 export default function UserProfile() {
   const { auth, setAuth } = useAuth()
@@ -26,24 +25,17 @@ export default function UserProfile() {
     valid: 1,
   })
 
-  // const [currentPassword,
-  //   newPassword]=useState({password:''})
-
-  const [passwordErrors, setPasswordErrors] = useState({
-    newPassword1: '',
-    newPassword2: '',
-  })
-
   const [profilePic, setProfilePic] = useState(
-    editableUser.image_path ||'https://via.placeholder.com/220x220' 
+    editableUser.image_path || 'signup_login/undraw_profile_1.svg'
   )
-  const [showpassword, setShowpassword] = useState(false)
-  const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
+  // 沒有寫就是false
   const [selectedImg, setSelectedImg] = useState(null)
 
+  //裡面要放什麼
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
+  // 欄位是否要開放
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
@@ -58,14 +50,14 @@ export default function UserProfile() {
       { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
     ],
     中部區域: [
-      { CityName: '台中市', CityEngName: 'Taichung City' },
+      { CityName: '臺中市', CityEngName: 'Taichung City' },
       { CityName: '彰化縣', CityEngName: 'Changhua County' },
       { CityName: '南投縣', CityEngName: 'Nantou County' },
       { CityName: '雲林縣', CityEngName: 'Yunlin County' },
     ],
     南部區域: [
       { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-      { CityName: '台南市', CityEngName: 'Tainan City' },
+      { CityName: '臺南市', CityEngName: 'Tainan City' },
       { CityName: '嘉義市', CityEngName: 'Chiayi City' },
       { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
       { CityName: '屏東縣', CityEngName: 'Pingtung County' },
@@ -223,97 +215,6 @@ export default function UserProfile() {
     }
   }, [user_id])
 
-  const pwdCheck = async () => {
-    // 移除 e 參數，因為我們改用 onClick
-    const user_id = auth?.userData?.user_id
-
-    //  檢查必要條件:從勾子抓到登入後的這個user_id
-    if (!user_id) {
-      console.error('User ID 不存在')
-      return // Handle this case appropriately
-    }
-    if (!editableUser.currentPassword) {
-      Swal.fire('錯誤', '請輸入密碼', 'error')
-      return
-    }
-// createObjectURL(file) 這個是瀏覽器端還沒有傳送到伺服器用previewURL,setPreviewURL 暫時性的預覽長得很像一個網址可以直接用網址就可以看到那張圖。改成用useEffect主要是因為createObjectURL會占掉記憶體空間，用revokeObjectURL(objectURL)
-    try {
-      const responsePwdSend = await fetch(
-        `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
-        {
-          method: 'PUT',
-          credentials: 'include',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            currentPassword: editableUser.currentPassword,
-          }),
-        }
-      )
-
-      // 嘗試把輸入的值丟回去後做處理
-      // 檢查後端回應的 status 是否為 'pwdmatch'
-      // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
-      // 用fetch不能response.data.data
-      const data = await responsePwdSend.json()
-      console.log('回應資料:', data) // 除錯用
-      // axios.才要responsePwdSend.data,用fetch只要
-      if (data.status === 'pwdmatch') {
-        Swal.fire('成功', '密碼與資料表相符', 'success')
-        setShowNewPasswordInput(true)
-        console.log('成功')
-      } else {
-        Swal.fire('錯誤', '密碼輸入錯誤', 'error')
-      }
-    } catch (error) {
-      Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
-    }
-  }
-
-  const confirmPwdReset = async () => {
-    try {
-      // 檢查新密碼是否有值
-      if (!editableUser.newPassword1) {
-        newErrors.confirmpassword = '確認密碼為必填'
-      } else if (editableUser.newPassword1 !== editableUser.newPassword2) {
-        newErrors.newPassword = '密碼與確認密碼不相符'
-      }
-
-      if (!editableUser.newPassword1) {
-        Swal.fire('錯誤', '請輸入新密碼', 'error')
-        return
-      }
-
-      const user_id = auth?.userData?.user_id
-      const response = await axios.put(
-        `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
-        {
-          newPassword1: editableUser.newPassword1,
-          newPassword2: editableUser.newPassword2,
-        }
-      )
-
-      if (response.data.status === 'resetPwd success') {
-        Swal.fire('成功', '密碼更新成功！記得記住新密碼', 'success')
-        // 重置表單
-        // setEditableUser(prev => ({
-        //   ...prev,
-        //   currentPassword: '',
-        //   newPassword: ''
-        // }));
-        setShowNewPasswordInput(false)
-      }
-    } catch (error) {
-      console.error('密碼更新失敗:', error)
-      Swal.fire(
-        '錯誤',
-        error.response?.data?.message || '密碼更新失敗',
-        'error'
-      )
-    }
-  }
-
   const handleInputChange = (e) => {
     const { name, value } = e.target
     console.log('輸入值型別:', typeof value) // 檢查型別
@@ -334,6 +235,7 @@ export default function UserProfile() {
       }
 
       if (!file.type.startsWith('image/')) {
+        // 這是檢查 MIME type，所有圖片文件的 MIME type 都是以 "image/" 開頭的
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
@@ -454,7 +356,8 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！')
+        setUploadStatus('頭像更新成功！') //有文字算true,沒有算none?
+        //除非想防風報攻擊才需要寫得很認真@@
         Swal.fire('成功', '頭像更新成功', 'success')
       }
     } catch (error) {
@@ -553,7 +456,6 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label
                           htmlFor="phone"
@@ -805,7 +707,7 @@ export default function UserProfile() {
                         >
                           更新
                         </button>
-
+                        {/*  */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
@@ -814,93 +716,6 @@ export default function UserProfile() {
                       </div>
                     </form>
                   </div>
-                </div>
-                {/* 密碼變更 */}
-                <div className="mt-5 row">
-                  <Accordion defaultActiveKey="0">
-                    <Accordion.Item eventKey="0">
-                      <Accordion.Header>
-                        {' '}
-                        <label
-                          htmlFor="password"
-                          className="col-sm-3 col-form-label"
-                        >
-                          密碼修改
-                        </label>
-                      </Accordion.Header>
-                      <Accordion.Body>
-                        <div className="mb-3">
-                          <input
-                            type={showpassword ? 'text' : 'password'}
-                            className="form-control"
-                            name="currentPassword"
-                            value={editableUser.currentPassword || ''}
-                            placeholder="請輸入當前密碼"
-                            onChange={handleInputChange}
-                          />
-
-                          <div className="form-text">
-                            要先輸入密碼正確，才能輸入新的密碼
-                          </div>
-
-                          <div className="d-flex justify-content-between align-itmes-center">
-                            <div>
-                              <input
-                                type="checkbox"
-                                id="showpassword"
-                                checked={showpassword}
-                                onChange={() => setShowpassword(!showpassword)}
-                                className="form-check-input"
-                              />{' '}
-                              顯示密碼
-                            </div>
-                            <button
-                              type="button"
-                              className="btn btn-primary text-white"
-                              onClick={pwdCheck}
-                            >
-                              送出檢查
-                            </button>
-                          </div>
-                        </div>
-                        {showNewPasswordInput && (
-                          <>
-                            <div className="mb-3">
-                              <input
-                                type="text"
-                                id="newPassword1"
-                                className="form-control"
-                                name="newPassword1"
-                                value={editableUser.newPassword1}
-                                onChange={handleInputChange}
-                                placeholder="請輸入新密碼"
-                              />
-                            </div>
-                            <div className="mb-3">
-                              <input
-                                type="text"
-                                id="newPassword2"
-                                className="form-control mb-3"
-                                name="newPassword2"
-                                value={editableUser.newPassword2}
-                                onChange={handleInputChange}
-                                min={8}
-                                placeholder="請確認新密碼"
-                              />
-                              <button
-                                type="button"
-                                className="btn btn-secondary text-white"
-                                onClick={confirmPwdReset}
-                                min={8}
-                              >
-                                確認修改
-                              </button>
-                            </div>
-                          </>
-                        )}
-                      </Accordion.Body>
-                    </Accordion.Item>
-                  </Accordion>
                 </div>
               </div>
             </div>

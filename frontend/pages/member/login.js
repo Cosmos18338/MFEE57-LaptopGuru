@@ -9,6 +9,9 @@ import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
+import { useLoader } from '@/hooks/use-loader'
+
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -18,11 +21,13 @@ export default function LogIn(props) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [errors, setErrors] = useState({ error: ' ' })
+  const { showLoader, hideLoader } = useLoader()
 
   // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
+    showLoader() // 開始載入時顯示
 
     try {
       const response = await fetch(`http://localhost:3005/api/login`, {
@@ -37,14 +42,11 @@ export default function LogIn(props) {
         }),
       })
       const result = await response.json()
-
+  
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
-        // 可以添加登入成功後的導向
-
         router.push('/dashboard')
       } else {
-        // 處理錯誤情況
         setErrors({
           message: result.message,
         })
@@ -58,6 +60,8 @@ export default function LogIn(props) {
         confirmButtonText: '確定',
         confirmButtonColor: '#3085d6',
       })
+    } finally {
+      hideLoader() // 不管成功失敗都要關閉 loader
     }
   }
 
@@ -82,7 +86,7 @@ export default function LogIn(props) {
               </h4>
               <br />
               <h3 className={`text-white ${styles['guru-laptop']}`}>
-                {renderJumpingText('Laptop Guru', 'company-name')}
+                {renderJumpingText('LaptopGuru', 'company-name')}
               </h3>
             </div>
             <div className={`${styles.right} col`}>
@@ -146,13 +150,27 @@ export default function LogIn(props) {
                       className={`form-control ${styles.inputs}`}
                       required // 添加必填
                     />
-                    <MdLockOutline
+                    {/* 這個button是 眼睛*/}
+                    <button
+                      type="button"
+                      className="btn position-absolute end-0 top-50 translate-middle-y border-0 ${styles[eye-icon]}"
+                      onClick={() => setShowpassword(!showpassword)}
+                      style={{ background: 'none', zIndex: 2 }}
+                    >
+                      {showpassword ? (
+                        <AiOutlineEyeInvisible size={20} color="#E0B0FF" />
+                      ) : (
+                        <AiOutlineEye size={20} color="#E0B0FF" />
+                      )}
+                    </button>
+
+                    {/* <MdLockOutline
                       className={`${styles['input-icon']}`}
                       size={22}
                       style={{ color: '#E0B0FF', cursor: 'pointer' }}
-                    />
+                    /> */}
                   </div>
-                  <div className='form-text'>
+                  {/* <div className="form-text">
                     <input
                       type="checkbox"
                       name=""
@@ -165,7 +183,7 @@ export default function LogIn(props) {
                       }}
                     />
                     <span className="text-white">顯示密碼</span>
-                  </div>
+                  </div> */}
 
                   <div
                     id="Error_message"
@@ -175,11 +193,16 @@ export default function LogIn(props) {
                       <div className="error">{errors.message}</div>
                     )}
                   </div>
+                  <div className="d-flex justify-content-center">
+                  <Link href="./member/forget-password">
+                  忘記密碼</Link>
+                  </div>
+
                   <button
                     onClick={() => {
                       login
                     }}
-                    className={`text-white ${styles.button} ${styles.hover}`}
+                    className={`text-white border-0 ${styles.button} `}
                     type="submit"
                   >
                     送出
