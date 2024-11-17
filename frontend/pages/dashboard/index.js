@@ -34,7 +34,6 @@ export default function Test1() {
       { key: 'profile', label: '檔案管理' },
       { key: 'EditPassword', label: '密碼修改' },
       { key: 'membership', label: '會員等級' },
-      { key: 'favorites', label: '收藏清單' },
       // { key: 'MarioGame', label: '小遊戲' },
     ],
     'shopping-record': [
@@ -94,12 +93,6 @@ export default function Test1() {
     }
   }
 
-  useEffect(() => {
-    if (refresh) {
-      setRefresh(false)
-    }
-  }, [refresh])
-
   return (
     <>
       <LoadingSpinner loading={isLoading} />
@@ -120,7 +113,7 @@ export default function Test1() {
                   <img
                     src={
                       auth?.userData?.image_path ||
-                      'https://via.placeholder.com/70x70'
+                      'signup_login/undraw_profile_1.svg'
                     }
                     alt="Profile"
                     className="rounded-circle img-fluid mb-3"
@@ -131,15 +124,15 @@ export default function Test1() {
                     }}
                   />
                   <h5 className="mb-2">{auth?.userData?.name}</h5>
-                  <Link href="">
+                  {/* <Link href="">
                     <button
-                      className="btn btn-outline-primary btn-sm mb-3"
+                      className="btn btn-outline-primary btn-sm mb-3 "
                       style={{ color: '#805AF5', borderColor: '#805AF5' }}
                     >
                       <FaPenFancy />
                       編輯個人簡介
                     </button>
-                  </Link>
+                  </Link> */}
                 </div>
 
                 {/* 左側導航 - 動態根據上方選擇改變 */}
