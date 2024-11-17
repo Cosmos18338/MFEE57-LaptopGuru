@@ -7,7 +7,7 @@ import UserList from '@/components/chatroom/UserList'
 import EventButton from '@/components/event/EventButton'
 import websocketService from '@/services/websocketService'
 import styles from '@/styles/Chat.module.css'
-import { Send } from 'lucide-react' // 新增 icon
+import { Send } from 'lucide-react'
 
 export default function Chat() {
   const [users, setUsers] = useState([])
@@ -100,14 +100,11 @@ export default function Chat() {
 
   const handlePrivateChat = (userId) => {
     // 處理私人聊天
+    console.log('Private chat with user:', userId)
   }
 
   if (isLoading) {
-    return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}></div>
-      </div>
-    )
+    return <div className={styles.loadingContainer}>載入中...</div>
   }
 
   return (
@@ -131,27 +128,28 @@ export default function Chat() {
 
         <div className={styles.chatContent}>
           <ChatRoom currentUser={currentUser} currentRoom={currentRoom} />
-          <div className={styles.inputArea}>
-            <form onSubmit={handleSendMessage} className={styles.inputForm}>
-              <input
-                type="text"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="輸入訊息..."
-                className={styles.messageInput}
-                disabled={!currentRoom}
-              />
-              <EventButton
-                type="submit"
-                className={styles.sendButton}
-                disabled={!currentRoom || !message.trim()}
-              >
-                <Send size={18} />
-                <span>發送</span>
-              </EventButton>
-            </form>
-          </div>
         </div>
+      </div>
+
+      <div className={styles.inputArea}>
+        <form onSubmit={handleSendMessage} className={styles.inputForm}>
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            placeholder="輸入訊息..."
+            className={styles.messageInput}
+            disabled={!currentRoom}
+          />
+          <EventButton
+            type="submit"
+            className={styles.sendButton}
+            disabled={!currentRoom || !message.trim()}
+          >
+            <Send size={18} />
+            <span>發送</span>
+          </EventButton>
+        </form>
       </div>
 
       <CreateRoomForm
