@@ -7,8 +7,13 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
+import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 
 export default function Signup() {
+  // 處理失焦
+  const { renderJumpingText } = useJumpingLetters()
+
+  
   const validatePassword = (password) => {
     const rules = {
       minLength: password.length >= 8,
@@ -26,7 +31,9 @@ export default function Signup() {
 
     return Object.entries(rules)
       .filter(([rule, valid]) => !valid)
+      // !valid 意思是找出值是 false 的規則
       .map(([rule]) => messages[rule])
+      // 用 rule 當作 key 去 messages 物件找對應的訊息
   }
 
   const router = useRouter()
@@ -101,7 +108,10 @@ export default function Signup() {
 
     try {
       setSubmitError('')
-
+      
+      if (!validateForm()) {
+        return
+      }
       const passwordErrors = validatePassword(user.password)
       if (passwordErrors.length > 0) {
         setErrors((prev) => ({
@@ -111,12 +121,9 @@ export default function Signup() {
         return
       }
 
-      if (!validateForm()) {
-        return
-      }
 
       const response = await axios.post(
-        'http://localhost:3005/api/signup',
+        `http://localhost:3005/api/signup`,
         user
       )
 
@@ -182,13 +189,20 @@ export default function Signup() {
         <div className="container">
           <div className="row d-flex justify-content-center align-items-center">
             <div className={`${styles.left} col`}>
-              <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
+              {/* <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
               <h3 className={`text-white ${styles['guru-laptop']}`}>
-                GURU Laptop
+                GURU Laptop */}
+              {/* </h3> */}
+              <h4 className={styles.white}>
+                {renderJumpingText('Welcome to', 'welcome-text')}
+              </h4>
+              <br />
+              <h3 className={`text-white ${styles['guru-laptop']}`}>
+                {renderJumpingText('LaptopGuru', 'company-name')}
               </h3>
             </div>
             <div
-              className={`${styles.right} align-item-center col ${styles['signup-right']}`}
+              className={`${styles.right} align-item-center col ${styles['signup-right']} text-white`}
             >
               <div className={`${styles.tabs} d-flex justify-content-between`}>
                 <Link
@@ -224,6 +238,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.email}
                       onChange={handleFieldChange}
+                      
                     />
                     {errors.email && (
                       <div className="error">{errors.email}</div>
@@ -283,6 +298,7 @@ export default function Signup() {
                         onChange={() =>
                           setShowConfirmpassword(!showConfirmpassword)
                         }
+                        
                         className="form-check-input"
                       />
                       <label
@@ -308,6 +324,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.phone}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -322,6 +339,7 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.birthdate}
                       onChange={handleFieldChange}
+                      
                     />
                   </div>
 
@@ -335,6 +353,7 @@ export default function Signup() {
                       className={`form-select ${styles.inputs}`}
                       value={user.gender}
                       onChange={handleFieldChange}
+                      
                     >
                       <option value="">請選擇</option>
                       <option value="女">女</option>
@@ -352,6 +371,8 @@ export default function Signup() {
                         checked={user.agree}
                         onChange={handleFieldChange}
                         className="form-check-input"
+                        
+
                       />
                       <label
                         htmlFor="agree"
@@ -365,7 +386,7 @@ export default function Signup() {
                     )}
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-100">
+                  <button type="submit" className="btn btn-primary w-100 text-white">
                     送出
                   </button>
                 </div>

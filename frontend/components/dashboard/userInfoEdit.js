@@ -4,43 +4,38 @@ import { useAuth } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
-import Accordion from 'react-bootstrap/Accordion'
 
 export default function UserProfile() {
   const { auth, setAuth } = useAuth()
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
-    // password: '',
-    currentPassword:'',
-    newPassword:'',
     gender: '',
+    password: '',
     birthdate: '',
     phone: '',
-    email: '',
     country: '',
     city: '',
     district: '',
     road_name: '',
     detailed_address: '',
+    user_id: 0,
     image_path: '',
     remarks: '',
     valid: 1,
   })
-  const [currentPassword, setcurrentPassword]=useState({
-    password:''
-  })
 
   const [profilePic, setProfilePic] = useState(
-    'https://via.placeholder.com/220x220'
+    editableUser.image_path || 'signup_login/undraw_profile_1.svg'
   )
-  const [showpassword, setShowpassword] = useState(false)
-  const [showNewPasswordInput, setShowNewPasswordInput] = useState(false)
   const [uploadStatus, setUploadStatus] = useState('')
+  // 沒有寫就是false
   const [selectedImg, setSelectedImg] = useState(null)
 
+  //裡面要放什麼
   const [districts, setDistricts] = useState([])
   const [roads, setRoads] = useState([])
+  // 欄位是否要開放
   const [isDistrictDisabled, setIsDistrictDisabled] = useState(true)
   const [isRoadDisabled, setIsRoadDisabled] = useState(true)
 
@@ -55,14 +50,14 @@ export default function UserProfile() {
       { CityName: '苗栗縣', CityEngName: 'Miaoli County' },
     ],
     中部區域: [
-      { CityName: '台中市', CityEngName: 'Taichung City' },
+      { CityName: '臺中市', CityEngName: 'Taichung City' },
       { CityName: '彰化縣', CityEngName: 'Changhua County' },
       { CityName: '南投縣', CityEngName: 'Nantou County' },
       { CityName: '雲林縣', CityEngName: 'Yunlin County' },
     ],
     南部區域: [
       { CityName: '高雄市', CityEngName: 'Kaohsiung City' },
-      { CityName: '台南市', CityEngName: 'Tainan City' },
+      { CityName: '臺南市', CityEngName: 'Tainan City' },
       { CityName: '嘉義市', CityEngName: 'Chiayi City' },
       { CityName: '嘉義縣', CityEngName: 'Chiayi County' },
       { CityName: '屏東縣', CityEngName: 'Pingtung County' },
@@ -167,11 +162,10 @@ export default function UserProfile() {
           const userData = response.data.data.user
           setEditableUser({
             name: userData.name || '',
-            password: userData.password || ' ',
             gender: userData.gender || '',
+            // password: userData.password || ' ',
             birthdate: userData.birthdate || '',
             phone: userData.phone || '',
-            email: userData.email || '',
             country: userData.country || '',
             city: userData.city || '',
             district: userData.district || '',
@@ -179,6 +173,8 @@ export default function UserProfile() {
             detailed_address: userData.detailed_address || '',
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
+            valid: userData.valid ?? 1,
+            // email: userData.email || '',
           })
 
           // 如果國家是台灣，啟用地址選擇
@@ -219,91 +215,10 @@ export default function UserProfile() {
     }
   }, [user_id])
 
-  const pwdCheck = async () => {// 移除 e 參數，因為我們改用 onClick
-    const user_id = auth?.userData?.user_id
-
-  //  檢查必要條件:從勾子抓到登入後的這個user_id
-    if (!user_id) {
-      console.error('User ID 不存在');
-      return; // Handle this case appropriately
-  }
-  if (!editableUser.currentPassword) {
-    Swal.fire('錯誤', '請輸入密碼', 'error');
-    return;
-  }
-
-    try {
-      const responsePwdSend = await fetch(
-     
-          `http://localhost:3005/api/dashboard/pwdCheck/${user_id}/`,
-          {
-            method: 'PUT',
-            credentials: 'include',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              currentPassword: editableUser.currentPassword
-            })
-          }
-        )
-      
-      // 嘗試把輸入的值丟回去後做處理
-      // 檢查後端回應的 status 是否為 'pwdmatch'
-      // 我這邊要先接到後端回傳的回應是否回pwdmatch,似乎我的值沒有成功丟回去，我丟回去axios方法用post,現在到底要不用get or post?
-      const data = await responsePwdSend.json();
-      console.log('回應資料:', data);  // 除錯用
-
-      if (data.status === 'pwdmatch') {
-        Swal.fire('成功', '密碼與資料表相符', 'success')
-        setShowNewPasswordInput(true)
-        console.log('成功')
-      } else {
-        Swal.fire('錯誤', '密碼輸入錯誤', 'error')
-      }
-    } catch (error) {
-      Swal.fire('錯誤', '密碼輸入錯誤或伺服器回應錯誤', 'error')
-    }
-  }
-
-  const confirmPwdReset = async () => {
-    try {
-      // 檢查新密碼是否有值
-      if (!editableUser.newPassword) {
-        Swal.fire('錯誤', '請輸入新密碼', 'error');
-        return;
-      }
-  
-      const user_id = auth?.userData?.user_id;
-      const response = await axios.put(
-        `http://localhost:3005/api/dashboard/${user_id}/pwdReset`,
-        {
-          currentPassword: editableUser.currentPassword,
-          newPassword: editableUser.newPassword
-        }
-      );
-  
-      if (response.data.status === 'resetPwd success') {
-        Swal.fire('成功', '密碼更新成功', 'success');
-        // 重置表單
-        setEditableUser(prev => ({
-          ...prev,
-          currentPassword: '',
-          newPassword: ''
-        }));
-        setShowNewPasswordInput(false);
-      }
-    } catch (error) {
-      console.error('密碼更新失敗:', error);
-      Swal.fire('錯誤', error.response?.data?.message || '密碼更新失敗', 'error');
-    }
-  };
-
   const handleInputChange = (e) => {
-    
     const { name, value } = e.target
-    console.log('輸入值型別:', typeof value);  // 檢查型別
-    console.log('輸入值:', value);            // 檢查值
+    console.log('輸入值型別:', typeof value) // 檢查型別
+    console.log('輸入值:', value) // 檢查值
     setEditableUser((prev) => ({
       ...prev,
       [name]: value,
@@ -312,6 +227,7 @@ export default function UserProfile() {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0]
+    // 類似陣列特性的物件
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
         Swal.fire('錯誤', '檔案不能超過5MB', 'error')
@@ -319,6 +235,7 @@ export default function UserProfile() {
       }
 
       if (!file.type.startsWith('image/')) {
+        // 這是檢查 MIME type，所有圖片文件的 MIME type 都是以 "image/" 開頭的
         Swal.fire('錯誤', '請上傳圖片檔案', 'error')
         return
       }
@@ -341,20 +258,29 @@ export default function UserProfile() {
     e.preventDefault()
 
     try {
-      if (!editableUser.name || !editableUser.email || !editableUser.password) {
-        Swal.fire('錯誤', '請填寫必要欄位', 'error')
+      if (!editableUser.name) {
+        Swal.fire('錯誤', '請填寫名稱', 'error')
         return
       }
+      const dataToSubmit = {
+        ...editableUser,
+        // email: auth?.userData?.email || editableUser.email,
+        // 確保有 email, email已經改成純顯示了所以之前的editableUser裡面的email應該要刪掉
+      }
+      delete dataToSubmit.password // 移除 password 欄位
+      delete dataToSubmit.currentPassword // 移除 currentPassword 欄位
+      delete dataToSubmit.newPassword // 移除 newPassword 欄位
 
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
-        editableUser
+        // editableUser
+        dataToSubmit
       )
 
       if (response.data.status === 'success') {
         Swal.fire('成功', '用戶資料更新成功', 'success')
-        setAuth({ isAuth: auth.isAuth, userData: { ...editableUser } })
-        console.log({ ...editableUser })
+        setAuth({ isAuth: auth.isAuth, userData: { ...dataToSubmit, user_id } })
+        console.log({ ...dataToSubmit })
         // 改變的結果是輸入的狀態的物件
       }
     } catch (error) {
@@ -383,6 +309,7 @@ export default function UserProfile() {
       if (!isConfirmed.isConfirmed) {
         return
       }
+      //s停用button跟更新button用的是同一個路由所以停用
       const response = await axios.put(
         `http://localhost:3005/api/dashboard/${user_id}`,
         {
@@ -429,7 +356,8 @@ export default function UserProfile() {
       )
 
       if (response.data.status === 'success') {
-        setUploadStatus('頭像更新成功！')
+        setUploadStatus('頭像更新成功！') //有文字算true,沒有算none?
+        //除非想防風報攻擊才需要寫得很認真@@
         Swal.fire('成功', '頭像更新成功', 'success')
       }
     } catch (error) {
@@ -488,7 +416,6 @@ export default function UserProfile() {
                         </div>
                       </div>
 
-
                       <div className="mb-3 row">
                         <label
                           htmlFor="gender"
@@ -529,7 +456,6 @@ export default function UserProfile() {
                           />
                         </div>
                       </div>
-
                       <div className="mb-3 row">
                         <label
                           htmlFor="phone"
@@ -749,7 +675,6 @@ export default function UserProfile() {
                       </div>
                     </form>
                   </div>
-                 
 
                   {/* Profile Picture Section */}
                   <div className="col-md-4">
@@ -766,7 +691,7 @@ export default function UserProfile() {
                             htmlFor="profile-pic-upload"
                             className={`btn btn-outline-primary ${styles['profile-button']}`}
                           >
-                            大頭照預覽
+                            上傳大頭照
                           </label>
                           <input
                             id="profile-pic-upload"
@@ -782,7 +707,7 @@ export default function UserProfile() {
                         >
                           更新
                         </button>
-
+                        {/*  */}
                         {uploadStatus && (
                           <div className="alert alert-success mt-3">
                             {uploadStatus}
@@ -792,75 +717,6 @@ export default function UserProfile() {
                     </form>
                   </div>
                 </div>
-                 {/* 密碼變更 */}
-                 <div className="mt-5 row">
-                 
-                 <Accordion defaultActiveKey="0">
-                   <Accordion.Item eventKey="0">
-                     <Accordion.Header>
-                       {' '}
-                       <label
-                         htmlFor="password"
-                         className="col-sm-3 col-form-label"
-                       >
-                         密碼修改
-                       </label>
-                     </Accordion.Header>
-                     <Accordion.Body>
-                       <div className="mb-3 row">
-                         <input
-                           type={showpassword ? 'text' : 'password'}
-                           className="form-control"
-                           name="currentPassword"
-                           value={editableUser.currentPassword || ''}
-                           placeholder="請輸入當前密碼"
-                           onChange={handleInputChange}
-                         />
-                         要先輸入密碼正確，才能輸入新的密碼
-                         <input
-                           type="checkbox"
-                           id="showpassword"
-                           checked={showpassword}
-                           onChange={() =>
-                             setShowpassword(!showpassword)
-                           }
-                           className="form-check-input"
-                         />
-                         顯示密碼
-                         <button
-                           type="button"
-                           className="btn btn-primary"
-                           onClick={pwdCheck}
-                         >
-                           送出檢查
-                         </button>
-                       </div>
-                       {showNewPasswordInput && (
-                         <div className="mb-3 row">
-                           <div className="col-8">
-                             <input
-                               type="text"
-                               className="form-control"
-                               name="newPassword"
-                               value={editableUser.newPassword}
-                               onChange={handleInputChange}
-                             />
-                           </div>
-                           <div className="col-4">
-                             <button
-                               type="button"
-                               className="btn btn-secondary"
-                               onClick={confirmPwdReset}
-                             >
-                               確認修改
-                             </button>
-                           </div>
-                         </div>
-                       )}
-                     </Accordion.Body>
-                   </Accordion.Item>
-                 </Accordion>
-               </div>
               </div>
             </div>
           </div>

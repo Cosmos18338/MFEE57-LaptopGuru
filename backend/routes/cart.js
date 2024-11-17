@@ -16,7 +16,7 @@ router.post('/', upload.none(), async (req, res, next) => {
   //   [user_id]
   // )
   const [data] = await db.query(
-    'SELECT cart.id, cart.user_id, cart.product_id, cart.quantity, product.model, product.list_price, product_img.product_img_path FROM cart JOIN product ON cart.product_id = product.product_id JOIN product_img ON cart.product_id = product_img.img_product_id  WHERE cart.user_id = ?',
+    'SELECT cart.id, cart.user_id, cart.product_id, cart.quantity, product.product_name, product.list_price, product_img.product_img_path FROM cart JOIN product ON cart.product_id = product.product_id JOIN product_img ON cart.product_id = product_img.img_product_id  WHERE cart.user_id = ?',
     [user_id]
   )
   if (data.length == 0) {
@@ -109,15 +109,16 @@ router.post('/update', upload.none(), async (req, res, next) => {
 })
 
 router.post('/order', upload.none(), async (req, res, next) => {
-  const { user_id, amount, coupon_id, detail, address } = req.body
+  const { user_id, amount, coupon_id, detail, receiver, phone, address } =
+    req.body
   const order_id = uuidv4()
   try {
     if (detail.length === 0) {
       return res.json({ status: 'error', message: '訂單內容不能為空' })
     }
     const [data] = await db.query(
-      'INSERT INTO order_list (user_id, order_id, order_amount, coupon_id, address) VALUES (?, ?, ?, ?, ?)',
-      [user_id, order_id, amount, coupon_id, address]
+      'INSERT INTO order_list (user_id, order_id, order_amount, coupon_id, receiver, phone, address) VALUES (?, ?, ?, ?, ?, ?, ?)',
+      [user_id, order_id, amount, coupon_id, receiver, phone, address]
     )
 
     // res.json({ detailArray })

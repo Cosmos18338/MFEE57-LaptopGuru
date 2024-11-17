@@ -10,7 +10,9 @@
   flex-direction: column;
 }
 
-
+.eye-icon{
+  transform: translateY(-50px);
+}
 .blur {
   /* background: rgba(255, 255, 255, 0.626);*/
   /* width: 400px; 固定寬度 */

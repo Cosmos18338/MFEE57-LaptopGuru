@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react'
-import BackToTop from '../BackToTop/BackToTop'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
+import HomeSection from './HomeSection'
+import Section4 from './Section4'
+import BackToTop from '../BackToTop/BackToTop'
+import NewProducts from './NewProducts'
+import HotProducts from './HotProducts'
+import ArticleSlider from './ArticleSlider'
 
 export default function FrontPage(props) {
   return (
     <>
-        <div className="position-relative" style={{ zIndex: 1 }}>
+      <div className="position-relative" style={{ zIndex: 1 }}>
         <Header />
-        </div>
+      </div>
 
-      <div className="blob-outer-container">
+      {/* <div className="blob-outer-container">
         <div className="blob-inner-container">
           <div className="blob"></div>
         </div>
-      </div>
+      </div> */}
 
       <div className="main-body ">
-        <div className="home-section1">
+        {/* <div className="home-section1">
           <div className="home-welcome">
             <span>Welcome</span>
           </div>
@@ -61,11 +66,10 @@ export default function FrontPage(props) {
                 </div>
               </div>
             </div>
-            {/* <button className="home-btn">
-              <img src="/images/index/arrow.svg" alt />
-            </button> */}
           </div>
-        </div>
+        </div> */}
+        <HomeSection />
+
         <div className="home-section2">
           <div className="home-icon home-marquee-content3">
             <a
@@ -305,9 +309,12 @@ export default function FrontPage(props) {
         </div>
 
         <div className="home-container-body">
-          <section className="home-section3">
+          {/* <section className="home-section3">
             <div className="home-pic-body">
-              <title className="home-title">新品介紹</title>
+              <div className="title-body">
+                <div className="home-title-diamond">◇</div>
+                <title className="home-title">新品介紹</title>
+              </div>
               <div className="home-pic">
                 <div className="home-pic-box1">
                   <div className="home-content">
@@ -335,11 +342,12 @@ export default function FrontPage(props) {
                 </div>
               </div>
             </div>
-          </section>
+          </section> */}
+          <NewProducts />
 
-          <section className="home-section4">
+          {/* <section className="home-section4">
             <div className="home-pic-body2">
-              <title className="home-title">熱門商品</title>
+              <title className="home-title">◇熱門商品</title>
               <div className="home-card1">
                 <div className="home-card2">
                   <div className="home-slider-container">
@@ -373,9 +381,12 @@ export default function FrontPage(props) {
                 </p>
               </div>
             </div>
-          </section>
-          <section className="home-section5">
-            <title className="home-title">品牌文章</title>
+          </section> */}
+          <HotProducts />
+
+          {/* 文章這裡 */}
+          {/* <section className="home-section5">
+            <title className="home-title">◇品牌文章</title>
             <div className="home-article-container">
               <article className="home-article">
                 <div className="home-article-body">
@@ -412,12 +423,34 @@ export default function FrontPage(props) {
               <button className="home-article-btn">
                 <img src="/images/index/arrow.svg" alt />
               </button>
+
+              <article className="home-article home-hide-on-mobile">
+                <div className="home-article-body">
+                  <div className="home-article-content">
+                    <div className="home-article-title2">
+                      <span>文章開頭</span>
+                    </div>
+                    <p className="home-article-text">
+                      經過上述討論，dbfdf的發生，到底需要如何做到，不dbfdf的發生，又會如何產生。所謂dbfdf，關鍵是dbfdf需要如何寫。我們不得不面對一個非常尷尬的事實，那就是，我們都知道，只要有意義，那麽就必須慎重考慮。富蘭克林曾經說過，讀書是易事，思索是難事，但兩者缺一，便全無用處。這讓我深深地想到，dbfdf，到底應該如何實現。dbfdf，發生了會如何，不發生又會如何。現在，解決dbfdf的問題，是非常非常重要的。
+                      所以，dbfdf真的是很值得探究，既然如此，要想清楚，dbfdf，到底是一種怎麽樣的存在。
+                    </p>
+                  </div>
+                  <div className="home-article-img">
+                    <img src="/images/index/banner_09.jpg" alt />
+                  </div>
+                </div>
+              </article>
             </div>
-          </section>
+          </section> */}
+          {/* 到這裡 */}
+          <ArticleSlider />
         </div>
 
         <div className="home-activity-section6">
-          <title className="home-title">活動資訊</title>
+          <div className="title-body">
+            <div className="home-title-diamond">◇</div>
+            <title className="home-title">活動資訊</title>
+          </div>
           <div className="home-activity-div">
             <div className="home-activity-container">
               <div className="home-activity-card-1">
@@ -427,9 +460,12 @@ export default function FrontPage(props) {
                     <p>活動數據以及描述內容...</p>
                   </div>
                   <div className="home-activity-card-footer1">
-                    <button className="home-activity-btn">
+                    <a
+                      href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                      className="home-activity-btn"
+                    >
                       <img src="/images/index/arrow.svg" alt />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -440,9 +476,12 @@ export default function FrontPage(props) {
                     <p>活動數據以及描述內容...</p>
                   </div>
                   <div className="home-activity-card-footer1">
-                    <button className="home-activity-btn">
+                    <a
+                      href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                      className="home-activity-btn"
+                    >
                       <img src="/images/index/arrow.svg" alt />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -454,9 +493,12 @@ export default function FrontPage(props) {
                     <p>活動數據以及描述內容...</p>
                   </div>
                   <div className="home-activity-card-footer2">
-                    <button className="home-activity-btn">
+                    <a
+                      href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                      className="home-activity-btn"
+                    >
                       <img src="/images/index/arrow.svg" alt />
-                    </button>
+                    </a>
                   </div>
                 </div>
                 <div className="home-activity-frame home-activity-frame-bottom">
@@ -465,9 +507,12 @@ export default function FrontPage(props) {
                     <p>活動數據以及描述內容...</p>
                   </div>
                   <div className="home-activity-card-footer2">
-                    <button className="home-activity-btn">
+                    <a
+                      href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                      className="home-activity-btn"
+                    >
                       <img src="/images/index/arrow.svg" alt />
-                    </button>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -480,9 +525,12 @@ export default function FrontPage(props) {
                   <p>活動數據以及描述內容...</p>
                 </div>
                 <div className="home-activity-card-footer3">
-                  <button className="home-activity-btn">
+                  <a
+                    href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                    className="home-activity-btn"
+                  >
                     <img src="/images/index/arrow.svg" alt />
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className="home-activity-card3 home-activity-card3-right">
@@ -491,9 +539,12 @@ export default function FrontPage(props) {
                   <p>活動數據以及描述內容...</p>
                 </div>
                 <div className="home-activity-card-footer3">
-                  <button className="home-activity-btn">
+                  <a
+                    href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                    className="home-activity-btn"
+                  >
                     <img src="/images/index/arrow.svg" alt />
-                  </button>
+                  </a>
                 </div>
               </div>
               <div className="home-activity-card4">
@@ -502,18 +553,20 @@ export default function FrontPage(props) {
                   <p />
                 </div>
                 <div className="home-activity-card-footer3">
-                  <button className="home-activity-btn">
+                  <a
+                    href="https://www.bilibili.com/video/BV1Vq4GenE2j/?spm_id_from=333.337.search-card.all.click&vd_source=1b25005216ba454333811619f6788cea"
+                    className="home-activity-btn"
+                  >
                     <img src="/images/index/arrow.svg" alt />
-                  </button>
+                  </a>
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div className="position-relative mt-5">
-        <MyFooter />
+          <MyFooter />
         </div>
-
         <BackToTop />
       </div>
     </>
