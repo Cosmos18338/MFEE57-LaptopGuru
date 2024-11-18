@@ -194,7 +194,7 @@ export default function LogIn(props) {
                     )}
                   </div>
                   <div className="d-flex justify-content-center">
-                  <Link href="./member/forget-password">
+                  <Link href="./forget-password">
                   忘記密碼</Link>
                   </div>
 
