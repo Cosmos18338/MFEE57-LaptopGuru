@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth, logout } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
@@ -325,7 +325,8 @@ export default function UserProfile() {
           confirmButtonColor: '#805AF5',
         })
         // 可選：重新導向到登出頁面或首頁
-        // window.location.href = '/logout'
+        await logout()
+        window.location.href = '/'
       }
     } catch (error) {
       console.error('停用失敗:', error)

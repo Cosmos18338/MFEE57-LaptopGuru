@@ -16,16 +16,14 @@ router.post('/', upload.none(), async (req, res, next) => {
     const { email, password } = req.body
 
     const [row] = await db.query(
-      'SELECT user_id, email, password FROM users WHERE email = ?',
+      'SELECT user_id, email, password FROM users WHERE email = ? AND valid = 1',
       [email]
     )
-
+    const user = row[0]
     // 這邊實際上是帳號錯誤
     if (row.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤' })
     }
-    
-    const user = row[0]
     // compareHash比對輸入與資料庫中的密碼~
     const passwordMatch = await compareHash(password, user.password)
     //  這邊實際上是密碼錯誤
