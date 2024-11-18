@@ -2,15 +2,11 @@ import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import BuyCard from '@/components/cart/buy-card'
-import Cookies from 'js-cookie'
 import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
-
-const accessToken = Cookies.get('accessToken')
-console.log(accessToken) // 顯示 accessToken 的值
 
 export default function CartIndex() {
   const { auth } = useAuth()
@@ -31,6 +27,11 @@ export default function CartIndex() {
     coupon_discount: 0,
     finalPrice: 0,
   })
+  const [shipPrice, setShipPrice] = useState(0)
+
+  const handlePaymentMethod = (e) => {
+    setPayment_method(+e.target.value)
+  }
 
   const user_id = userData.user_id ? userData.user_id : ''
   const country = userData.country ? userData.country : ''
@@ -294,6 +295,11 @@ export default function CartIndex() {
                   className="form-select border-primary"
                   onChange={(e) => {
                     setShip(e.target.value)
+                    if (e.target.value === '7-11') {
+                      setShipPrice(60)
+                    } else {
+                      setShipPrice(200)
+                    }
                   }}
                 >
                   <option value="" selected disabled>
@@ -361,16 +367,68 @@ export default function CartIndex() {
                   </>
                 )}
               </div>
-
-              <button
-                className="btn btn-primary text-light"
-                onClick={() => {
-                  createOrder()
-                  // router.push(`/cart/double-check?order_id=${order.order_id}`)
-                }}
-              >
-                前往結帳
-              </button>
+              <div className="d-flex mb-2">
+                <div className="form-check me-3">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="ecpay"
+                    value={'0'}
+                    checked={payment_method == 0}
+                    onChange={handlePaymentMethod}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="ecpay"
+                    defaultChecked
+                  >
+                    綠界付款
+                  </label>
+                </div>
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="radio"
+                    id="linepay"
+                    value={'1'}
+                    checked={payment_method == 1}
+                    onChange={handlePaymentMethod}
+                  />
+                  <label className="form-check-label" htmlFor="linepay">
+                    Line Pay
+                  </label>
+                </div>
+              </div>
+              {payment_method == 0 ? (
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="btn btn-primary text-light w-50"
+                    onClick={() => {
+                      createOrder()
+                    }}
+                  >
+                    前往結帳
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
+              {payment_method == 1 ? (
+                <>
+                  <div className="d-flex justify-content-center mb-2">
+                    <button className="btn btn-primary text-light">
+                      產生Line Pay訂單
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-center">
+                    <button className="btn btn-primary text-light">
+                      前往Line Pay付款
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           ) : (
             <></>
@@ -421,7 +479,8 @@ export default function CartIndex() {
               <div className="total row w-100 mb-2">
                 <div className="col">總計</div>
                 <div className="col-auto">
-                  NT {couponDetails.finalPrice.toLocaleString()}元
+                  NT {(+couponDetails.finalPrice + +shipPrice).toLocaleString()}
+                  元
                 </div>
               </div>
               <div className="d-flex justify-content-center">
