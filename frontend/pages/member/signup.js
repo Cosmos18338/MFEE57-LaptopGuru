@@ -7,26 +7,31 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
+import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 
 export default function Signup() {
   // 處理失焦
+  const { renderJumpingText } = useJumpingLetters()
 
   
   const validatePassword = (password) => {
+    //函式內宣告2個變數
     const rules = {
       minLength: password.length >= 8,
-      hasUpperCase: /[A-Z]/.test(password),
+      hasUpperCase: /[A-Z]/.test(password),//2
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
     }
 
     const messages = {
       minLength: '密碼至少需要8個字元',
-      hasUpperCase: '需要包含大寫字母',
+      hasUpperCase: '需要包含大寫字母', //2
       hasLowerCase: '需要包含小寫字母',
       hasNumber: '需要包含數字',
     }
 
+    // 函式的返回值
+    //  Object.entries() 是產生新的陣列，不會影響到原物件
     return Object.entries(rules)
       .filter(([rule, valid]) => !valid)
       // !valid 意思是找出值是 false 的規則
@@ -187,9 +192,16 @@ export default function Signup() {
         <div className="container">
           <div className="row d-flex justify-content-center align-items-center">
             <div className={`${styles.left} col`}>
-              <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
+              {/* <h4 className={`text-white ${styles.welcome}`}>Welcome to</h4>
               <h3 className={`text-white ${styles['guru-laptop']}`}>
-                GURU Laptop
+                GURU Laptop */}
+              {/* </h3> */}
+              <h4 className={styles.white}>
+                {renderJumpingText('Welcome to', 'welcome-text')}
+              </h4>
+              <br />
+              <h3 className={`text-white ${styles['guru-laptop']}`}>
+                {renderJumpingText('LaptopGuru', 'company-name')}
               </h3>
             </div>
             <div
@@ -200,14 +212,14 @@ export default function Signup() {
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/login"
                 >
-                  登入Log in
+                  登入
                 </Link>
-                <span className="text-white">|</span>
+                <span className="text-white">| </span>
                 <Link
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/signup"
                 >
-                  註冊Sign Up
+                  註冊
                 </Link>
               </div>
               {submitError && (

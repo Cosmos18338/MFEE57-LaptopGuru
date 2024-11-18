@@ -12,7 +12,7 @@ const router = express.Router()
 /* GET home page. */
 router.post('/', upload.none(), async (req, res, next) => {
   try {
-    console.log(req.body)
+    // console.log(req.body)
     const { email, password } = req.body
 
     const [row] = await db.query(
@@ -76,7 +76,7 @@ router.post('/logout', authenticate, (req, res) => {
 
 router.post('/status', checkToken, (req, res) => {
   const user = req.decoded
-  console.log('user', user)
+  // console.log('user', user)
   if (user) {
     const token = jsonwebtoken.sign(
       {

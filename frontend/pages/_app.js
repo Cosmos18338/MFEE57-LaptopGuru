@@ -10,15 +10,18 @@ import '@/styles/footer.scss'
 
 // 首頁
 import '@/styles/frontPage.scss'
+//會員註冊
+// import '@/styles/transitions_Abby.scss'
 
 // 文章/部落格用 css
 import '@/styles/ArticleDetail.scss'
 import '@/styles/ArticleHomePage.scss'
-import '@/styles/blogcreated.scss'
+import '@/styles/BlogCreated.scss'
 import '@/styles/BlogDetail.scss'
-import '@/styles/blogedit.scss'
+import '@/styles/BlogEdit.scss'
 import '@/styles/BlogHomePage.scss'
 import '@/styles/BlogUserOverview.scss'
+import 'animate.css'
 
 // 載入購物車context
 import { CartProvider } from '@/hooks/use-cart-state'
@@ -30,7 +33,7 @@ import { LoaderProvider } from '@/hooks/use-loader'
 import DefaultLayout from '@/components/layout/default-layout'
 // 自訂用載入動畫元件
 import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
-
+import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // event的scss
 import '../styles/event.scss'
 // eventdetail的scss
@@ -41,6 +44,8 @@ import '../styles/eventRegistration.scss'
 import '../styles/group.scss'
 // groupCreat的scss
 import '../styles/groupCreat.scss'
+
+import { GroupAuthProvider } from '@/context/GroupAuthContext'
 
 export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
@@ -55,8 +60,10 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <LoaderProvider close={2} CustomLoader={CatLoader}>
-        <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+      <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+        <GroupAuthProvider>
+          <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+        </GroupAuthProvider>
       </LoaderProvider>
     </AuthProvider>
   )

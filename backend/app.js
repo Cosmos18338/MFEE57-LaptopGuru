@@ -16,6 +16,7 @@ import eventsRouter from './routes/events.js'
 import couponRouter from './routes/coupon.js'
 import couponUserRouter from './routes/coupon-user.js'
 import chatRoutes from './routes/chat.js'
+import GroupRequests from './routes/group-request.js'
 
 import forgotPasswordRouter from './routes/forgot-password.js'
 // 使用檔案的session store，存在sessions資料夾
@@ -48,7 +49,7 @@ const app = express()
 app.use(
   cors({
     origin: ['http://localhost:3000', 'https://localhost:9000'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   })
 )
@@ -139,12 +140,13 @@ app.use(function (err, req, res, next) {
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')))
 
 // 確保上傳目錄存在
-const uploadDir = path.join(__dirname, 'public', 'uploads', 'groups')
+const uploadDir = path.join(__dirname, 'public', 'uploads')
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true })
 }
 
 // 使用聊天室路由
 app.use('/api/chat', chatRoutes)
+app.use('/api/', GroupRequests)
 
 export default app

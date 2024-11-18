@@ -2,7 +2,7 @@ import { useState, useContext, createContext, useRef, useEffect } from 'react'
 // 可自訂載入動畫元件
 import { DefaultLoader, LoaderText } from './components'
 import { useRouter } from 'next/router'
-
+import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 const LoaderContext = createContext(null)
 
 /**
@@ -23,12 +23,15 @@ export function timeout(ms) {
 
 // 全站的Context狀態
 // loader是元件，可以放於全站版面上，要用時用showLoader控制
+// 4. |- showLoader/hideLoader (手動控制方法)
 // close 代表幾秒後關閉
+// 1. |- global (控制是否全域顯示)
 export const LoaderProvider = ({
   children,
   close = 2,
-  global = false,
-  CustomLoader = DefaultLoader,
+  global = true,
+  CustomLoader = LoadingSpinner,
+  // 3. |- CustomLoader (可自訂載入元件)
 }) => {
   const router = useRouter()
   const [show, setShow] = useState(false)
@@ -41,15 +44,15 @@ export const LoaderProvider = ({
     }
 
     const handleChangeEnd = () => {
-      // auto close
+      // 2. auto close
       if (close && global) {
         timeout(close * 1000).then(() => setShow(false))
       }
     }
 
-    router.events.on('routeChangeStart', handleChangeStart)
-    router.events.on('routeChangeComplete', handleChangeEnd)
-    router.events.on('routeChangeError', handleChangeEnd)
+    router.events.on('routeChangeStart', handleChangeStart) // 路由開始變化時
+    router.events.on('routeChangeComplete', handleChangeEnd) // 路由變化完成時
+    router.events.on('routeChangeError', handleChangeEnd) // 路由變化發生錯誤時
 
     return () => {
       router.events.off('routeChangeStart', handleChangeStart)
@@ -63,10 +66,11 @@ export const LoaderProvider = ({
       value={{
         showLoader: () => {
           setShow(true)
-
+          //2.   |- close (自動關閉時間)
           // auto close
-          if (close) {
-            timeout(close * 1000).then(() => setShow(false))
+          if (close) { // 如果有設定 close
+            timeout(close * 1000)// 等待 close 秒
+            .then(() => setShow(false)) // 然後關閉 loader
           }
         },
         hideLoader: () => (!close ? setShow(false) : null),
@@ -76,6 +80,11 @@ export const LoaderProvider = ({
         loaderText: (text) => <LoaderText text={text} show={show} />,
       }}
     >
+      {/* // close 是傳入的秒數（預設是 2）
+            // close * 1000 轉換成毫秒
+            // 例如：
+            // close = 2，表示 2秒
+            // 2 * 1000 = 2000 毫秒 */}
       {children}
     </LoaderContext.Provider>
   )
