@@ -72,17 +72,23 @@
   color: white; 
   background-color: transparent; 
   font-size: 16px; 
-  font-family: Khula; 
+  // font-family: Khula; 
   font-weight: 400; 
   letter-spacing: 3.20px; 
   word-wrap: break-word; 
   border-radius: 10px;
-  padding-left: 23px; padding-right: 23px; padding-top: 17px; padding-bottom: 17px; background: rgba(30, 25, 55, 0.30); border-radius: 10px; overflow: hidden; justify-content: flex-start; align-items: center; gap: 10px; display: inline-flex
+  padding-left: 23px; padding-right: 23px; padding-top: 17px; 
+  padding-bottom: 17px; 
+  background: rgba(30, 25, 55, 0.30); 
+  border-radius: 10px; 
+  overflow: hidden; 
+  justify-content: flex-start; 
+  align-items: center; gap: 10px; display: inline-flex
 }
 .inputs::placeholder {
   font-size: 10px; /* 設置文字大小 */
   color: #888; /* 設置文字顏色 */
-  font-family: 'Arial', sans-serif; /* 設置字體 */
+  // font-family: 'Arial', sans-serif; 
   font-weight: normal; /* 設置字重 */   
 }
 
@@ -112,10 +118,13 @@
 .welcome{
   letter-spacing: 9.6px;
   word-wrap: break-word;
-  color: white; font-size: 48px; font-family: Khula;
+  color: white; font-size: 48px; 
+  // font-family: Khula;
 }
 .guru-laptop{
-  font-size: 64px; font-family: Khula; font-weight: 400; letter-spacing: 12.80px; 
+  font-size: 64px; 
+  // font-family: Khula;
+  font-weight: 400; letter-spacing: 12.80px; 
 }
 .custom-label{
   letter-spacing: 4px;
