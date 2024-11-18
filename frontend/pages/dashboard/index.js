@@ -25,9 +25,6 @@ export default function Test1() {
   const [subActiveKey, setSubActiveKey] = useState('')
   // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
 
-  // 添加 refresh state
-  const [refresh, setRefresh] = useState(false)
-
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
     home: [
@@ -95,8 +92,8 @@ export default function Test1() {
 
   return (
     <>
-      <LoadingSpinner loading={isLoading} />
-      {!isLoading && (
+      {/* <LoadingSpinner loading={isLoading} /> */}
+      {/* {!isLoading && ( */}
         // 你的主要內容
         <div className="container">
           <div className="row">
@@ -238,7 +235,7 @@ export default function Test1() {
             </Tab.Container>
           </div>
         </div>
-      )}
+      {/* )} */}
     </>
   )
 }
