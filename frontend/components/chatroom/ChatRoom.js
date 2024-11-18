@@ -3,39 +3,20 @@ import styles from '@/styles/Chat.module.css'
 import { format } from 'date-fns'
 import { zhTW } from 'date-fns/locale'
 import Image from 'next/image'
-import { MoveDown } from 'lucide-react'
 import websocketService from '@/services/websocketService'
 
 export default function ChatRoom({ currentUser, currentRoom }) {
   const [messages, setMessages] = useState([])
-  const [shouldAutoScroll, setShouldAutoScroll] = useState(true)
-  const [showScrollButton, setShowScrollButton] = useState(false)
-  const messagesEndRef = useRef(null)
   const messageListRef = useRef(null)
   const defaultAvatar = 'http://localhost:3005/uploads/default-avatar.png'
 
   const scrollToBottom = useCallback(() => {
-    if (messagesEndRef.current) {
-      const behavior = shouldAutoScroll ? 'smooth' : 'auto'
-      const options = {
-        top: messagesEndRef.current.offsetTop,
-        behavior,
-      }
-      messageListRef.current?.scrollTo(options)
-    }
-  }, [shouldAutoScroll])
-
-  const handleScroll = useCallback((e) => {
-    const element = e.target
-    const { scrollTop, scrollHeight, clientHeight } = element
-    const isAtBottom = scrollHeight - scrollTop - clientHeight < 100
-    setShouldAutoScroll(isAtBottom)
-    setShowScrollButton(!isAtBottom)
+    if (!messageListRef.current) return
+    messageListRef.current.scrollTop = messageListRef.current.scrollHeight
   }, [])
 
   const handleNewMessage = useCallback(
     (data) => {
-      console.log('New message received:', data)
       if (data.room_id === currentRoom || data.roomId === currentRoom) {
         setMessages((prev) => {
           const messageExists = prev.some(
@@ -51,50 +32,64 @@ export default function ChatRoom({ currentUser, currentRoom }) {
             (a, b) => new Date(a.created_at) - new Date(b.created_at)
           )
 
-          return newMessages.filter(
-            (msg, index, self) =>
-              index ===
-              self.findIndex(
-                (m) =>
-                  m.id === msg.id ||
-                  (m.created_at === msg.created_at &&
-                    m.sender_id === msg.sender_id)
-              )
-          )
+          requestAnimationFrame(scrollToBottom)
+          return newMessages
         })
-        if (shouldAutoScroll) {
-          scrollToBottom()
-        }
       }
     },
-    [currentRoom, shouldAutoScroll, scrollToBottom]
+    [currentRoom, scrollToBottom]
   )
 
   const handleSystemMessage = useCallback(
     (data) => {
-      console.log('System message received:', data)
       if (data.room_id === currentRoom || data.roomId === currentRoom) {
         setMessages((prev) => {
+          // 解析系統訊息
+          let messageContent = data.content || data.message
+
+          try {
+            if (
+              typeof messageContent === 'string' &&
+              messageContent.startsWith('{')
+            ) {
+              const parsedContent = JSON.parse(messageContent)
+              messageContent = parsedContent.content
+            }
+          } catch (e) {
+            // 如果解析失敗，使用原始內容
+          }
+
+          // 清理訊息內容
+          messageContent = messageContent
+            .replace(/^{/, '')
+            .replace(/}$/, '')
+            .replace(/"type":"system",/, '')
+            .replace(/"content":/, '')
+            .replace(/"/g, '')
+            .replace(/使用者/, '')
+            .trim()
+
+          const newMessage = {
+            id: data.id || `system-${Date.now()}`,
+            type: 'system',
+            isSystem: true,
+            content: messageContent,
+            created_at: data.created_at || new Date().toISOString(),
+          }
+
+          // 檢查訊息是否已存在
           const exists = prev.some(
             (msg) =>
-              msg.id === data.id ||
-              (msg.content === data.content &&
-                msg.created_at === data.created_at)
+              msg.id === newMessage.id ||
+              (msg.content === newMessage.content &&
+                msg.created_at === newMessage.created_at)
           )
 
           if (exists) return prev
 
-          return [
-            ...prev,
-            {
-              ...data,
-              id: data.id || `system-${Date.now()}`,
-              isSystem: true,
-              created_at: data.created_at || new Date().toISOString(),
-            },
-          ]
+          requestAnimationFrame(scrollToBottom)
+          return [...prev, newMessage]
         })
-        scrollToBottom()
       }
     },
     [currentRoom, scrollToBottom]
@@ -102,7 +97,6 @@ export default function ChatRoom({ currentUser, currentRoom }) {
 
   const handleRoomJoined = useCallback(
     (data) => {
-      console.log('Room joined:', data)
       if (data.roomId === currentRoom && Array.isArray(data.messages)) {
         setMessages((prev) => {
           const existingIds = new Set(prev.map((msg) => msg.id))
@@ -114,11 +108,13 @@ export default function ChatRoom({ currentUser, currentRoom }) {
               content: msg.content || msg.message,
             }))
 
-          return [...prev, ...newMessages].sort(
+          const combinedMessages = [...prev, ...newMessages].sort(
             (a, b) => new Date(a.created_at) - new Date(b.created_at)
           )
+
+          requestAnimationFrame(scrollToBottom)
+          return combinedMessages
         })
-        scrollToBottom()
       }
     },
     [currentRoom, scrollToBottom]
@@ -126,31 +122,23 @@ export default function ChatRoom({ currentUser, currentRoom }) {
 
   const handleMemberUpdate = useCallback(
     (data) => {
-      console.log('Member update:', data)
       if (data.roomId === currentRoom) {
-        setMessages((prev) => [
-          ...prev,
-          {
+        setMessages((prev) => {
+          const newMessage = {
             id: `system-${Date.now()}`,
             type: 'system',
-            content: data.content || data.message,
-            created_at: data.timestamp,
+            content: data.content,
+            created_at: data.timestamp || new Date().toISOString(),
             isSystem: true,
-          },
-        ])
-        scrollToBottom()
+          }
+
+          requestAnimationFrame(scrollToBottom)
+          return [...prev, newMessage]
+        })
       }
     },
     [currentRoom, scrollToBottom]
   )
-
-  useEffect(() => {
-    const messageList = messageListRef.current
-    if (messageList) {
-      messageList.addEventListener('scroll', handleScroll)
-      return () => messageList.removeEventListener('scroll', handleScroll)
-    }
-  }, [handleScroll])
 
   useEffect(() => {
     if (currentUser) {
@@ -158,10 +146,7 @@ export default function ChatRoom({ currentUser, currentRoom }) {
     }
 
     if (currentRoom) {
-      console.log('Joining room:', currentRoom)
-      // 清空舊消息
       setMessages([])
-
       websocketService.send({
         type: 'joinRoom',
         roomID: currentRoom,
@@ -169,7 +154,6 @@ export default function ChatRoom({ currentUser, currentRoom }) {
       })
     }
 
-    // 註冊所有事件監聽器
     websocketService.on('message', handleNewMessage)
     websocketService.on('system', handleSystemMessage)
     websocketService.on('roomJoined', handleRoomJoined)
@@ -185,7 +169,6 @@ export default function ChatRoom({ currentUser, currentRoom }) {
         })
       }
 
-      // 移除所有事件監聽器
       websocketService.off('message', handleNewMessage)
       websocketService.off('system', handleSystemMessage)
       websocketService.off('roomJoined', handleRoomJoined)
@@ -205,9 +188,31 @@ export default function ChatRoom({ currentUser, currentRoom }) {
     const isOwnMessage = msg.sender_id === currentUser
 
     if (msg.isSystem || msg.type === 'system') {
-      return (
-        <div className={styles.systemMessage}>{msg.content || msg.message}</div>
-      )
+      const content = msg.content || msg.message
+      if (!content) return null
+
+      // 清理並格式化系統訊息
+      let displayContent = content
+      try {
+        if (typeof content === 'string' && content.startsWith('{')) {
+          const parsed = JSON.parse(content)
+          displayContent = parsed.content || content
+        }
+      } catch (e) {
+        displayContent = content
+      }
+
+      // 移除多餘的符號和格式
+      displayContent = displayContent
+        .replace(/^{/, '')
+        .replace(/}$/, '')
+        .replace(/"type":"system",/, '')
+        .replace(/"content":/, '')
+        .replace(/"/g, '')
+        .replace(/使用者/, '')
+        .trim()
+
+      return <div className={styles.systemMessage}>{displayContent}</div>
     }
 
     return (
@@ -250,11 +255,7 @@ export default function ChatRoom({ currentUser, currentRoom }) {
 
   return (
     <div className={styles.chatContainer}>
-      <div
-        className={styles.messagesContainer}
-        ref={messageListRef}
-        onScroll={handleScroll}
-      >
+      <div className={styles.messagesContainer} ref={messageListRef}>
         {messages.map((msg) => {
           const messageKey = msg.id
             ? `msg-${msg.id}`
@@ -268,21 +269,7 @@ export default function ChatRoom({ currentUser, currentRoom }) {
             </div>
           )
         })}
-        <div ref={messagesEndRef} />
       </div>
-
-      {showScrollButton && (
-        <button
-          className={styles.scrollToBottomButton}
-          onClick={() => {
-            setShouldAutoScroll(true)
-            scrollToBottom()
-          }}
-          aria-label="滾動到底部"
-        >
-          <MoveDown size={20} />
-        </button>
-      )}
     </div>
   )
 }
