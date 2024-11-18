@@ -12,7 +12,6 @@ export default function DefaultLayout({ title = 'Next-BS5', children }) {
   return (
     <>
       <Head>
-        <title>{title}</title>
         <meta name="viewport" content="width=device-width" />
       </Head>
       <Header />

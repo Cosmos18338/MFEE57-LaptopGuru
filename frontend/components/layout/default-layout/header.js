@@ -68,7 +68,7 @@ export default function Header(props) {
               首頁
             </Link>
             <Link className={`text-light me-3`} href="/product">
-              商品
+              產品
             </Link>
             <Link className={`text-light me-3`} href="/product/compare">
               比較
@@ -107,7 +107,9 @@ export default function Header(props) {
                 </button>
               </Link>
               <Link href="/member/signup">
-                <button className="btn btn-primary text-white border-0">註冊</button>
+                <button className="btn btn-primary text-white border-0">
+                  註冊
+                </button>
               </Link>
             </>
           )}
