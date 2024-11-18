@@ -325,7 +325,7 @@ export default function UserProfile() {
           confirmButtonColor: '#805AF5',
         })
         // 可選：重新導向到登出頁面或首頁
-        // window.location.href = '/logout'
+        window.location.href = '/'
       }
     } catch (error) {
       console.error('停用失敗:', error)
