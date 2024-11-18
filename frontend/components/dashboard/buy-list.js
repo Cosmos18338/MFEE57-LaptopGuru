@@ -16,6 +16,7 @@ export default function BuyList(order) {
   const receiver = order.order.receiver
   const phone = order.order.phone
   const address = order.order.address
+  const payment_method = order.order.payment_method
 
   const getOrderDetail = async () => {
     const res = await fetch(
@@ -105,7 +106,17 @@ export default function BuyList(order) {
               </div>
               <div className="col-6">收件人： {receiver}</div>
               <div className="col-6">聯絡電話： {phone}</div>
-              <div className="">收件地址： {address}</div>
+              <div className="col-6">收件地址： {address}</div>
+              {payment_method == 1 ? (
+                <div className="col-6">付款方式： Line Pay</div>
+              ) : (
+                <></>
+              )}
+              {payment_method == 0 ? (
+                <div className="col-6">付款方式： 綠界支付</div>
+              ) : (
+                <></>
+              )}
             </div>
             {orderDetail.map((item, index) => {
               return <BuyItemCard key={index} item={item} />
