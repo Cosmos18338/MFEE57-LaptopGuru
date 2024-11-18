@@ -676,18 +676,28 @@ export default function CartIndex() {
                 </div>
               </div>
             </div>
-            <CouponBtn price={total} setCouponValue={setCouponDetails} />
-
             <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="text-center mb-2"></div>
-              <div>
-                <input
-                  type="text"
-                  className="form-control border-primary"
-                  value={couponDetails.coupon_code}
-                  disabled
-                />
-              </div>
+              {payment_method == 0 ? (
+                <>
+                  <div className="text-center mb-2">
+                    <CouponBtn
+                      price={total}
+                      setCouponValue={setCouponDetails}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      className="form-control border-primary"
+                      value={couponDetails.coupon_code}
+                      disabled
+                    />
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
+              {payment_method == 1 ? <div>* Line Pay不適用優惠券</div> : <></>}
             </div>
             <div>
               <div className="discount row w-100 mb-2">

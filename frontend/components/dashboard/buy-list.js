@@ -41,6 +41,21 @@ export default function BuyList(order) {
     }
   }
 
+  const goLinePay = () => {
+    MySwal.fire({
+      icon: 'info',
+      title: '確認要導向至LINE Pay進行付款?',
+      showCancelButton: true,
+      confirmButtonText: '確認',
+      cancelButtonText: '取消',
+    }).then((result) => {
+      localStorage.removeItem('store711')
+      if (result.isConfirmed) {
+        window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${order_id}`
+      }
+    })
+  }
+
   const handlePay = async () => {
     const check = await MySwal.fire({
       title: '是否確認前往結帳?',
@@ -123,15 +138,24 @@ export default function BuyList(order) {
             })}
             {alreadyPay ? (
               <></>
+            ) : payment_method == 1 ? (
+              <div className="d-flex justify-content-end">
+                <button
+                  className="btn btn-primary text-light"
+                  onClick={goLinePay}
+                >
+                  前往Line Pay付款
+                </button>
+              </div>
             ) : (
-              <>
+              <div className="d-flex justify-content-end">
                 <button
                   className="btn btn-primary text-light"
                   onClick={handlePay}
                 >
-                  前往付款
+                  前往綠界支付
                 </button>
-              </>
+              </div>
             )}
           </Accordion.Body>
         </Accordion.Item>
