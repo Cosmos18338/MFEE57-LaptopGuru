@@ -197,6 +197,7 @@ export default function List() {
             <div className={`${styles.product_aside_content}`}>
               <input
                 type="text"
+                id="search"
                 className={`${styles.product_search}`}
                 placeholder="Search"
                 onInput={(e) =>
