@@ -175,7 +175,7 @@ export default function ProductCardWhite({ onSendMessage, product_id }) {
         <input
           type="checkbox"
           id={`productCompareCheck_${key}`}
-          onClick={toggleCompare}
+          onChange={toggleCompare}
           checked={isCompared}
           className={styles.product_compare_checkbox}
         />
@@ -187,7 +187,11 @@ export default function ProductCardWhite({ onSendMessage, product_id }) {
         </label>
         <span className={styles.product_compare_text}>比較</span>
         <Image
-          src={data ? `/product/${data.product_img_path}` : ''}
+          src={
+            data
+              ? `/product/${data.product_img_path}`
+              : '/images/product/placeholder.avif'
+          }
           alt="Product"
           width={200}
           height={200}
