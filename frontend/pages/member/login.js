@@ -141,7 +141,7 @@ export default function LogIn(props) {
                     <input
                       type={showpassword ? 'text' : 'password'}
                       value={password}
-                      autocomplete="new-password"
+                      autoComplete="new-password"
                       onChange={(e) => {
                         setPassword(e.target.value)
                       }}
