@@ -102,7 +102,7 @@ export default function Compare() {
                   productDataFirst.list_price
                 )}元`}
               </p>
-
+              <p>用途： {productDataFirst.affordance}</p>
               <p>處理器： {productDataFirst.product_CPU}</p>
 
               <p>記憶體： {productDataFirst.product_RAM}</p>
@@ -181,7 +181,7 @@ export default function Compare() {
                   productDataSecond.list_price
                 )}元`}
               </p>
-
+              <p>用途： {productDataSecond.affordance}</p>
               <p>處理器： {productDataSecond.product_CPU}</p>
 
               <p>記憶體： {productDataSecond.product_RAM}</p>

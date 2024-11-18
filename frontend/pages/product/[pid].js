@@ -277,9 +277,7 @@ export default function Detail() {
       <Header />
       <div className={styles.customBody}>
         <div className={styles.customContainer}>
-          <nav className={`${styles.breadcrumb}`}>
-            <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
-          </nav>
+          <nav className={`${styles.breadcrumb}`}></nav>
           <section className={styles.col1}>
             <div className={styles.menu}>
               <div className={styles.square}>
@@ -477,6 +475,9 @@ export default function Detail() {
             <div className={styles.productSpecs}>
               <div className={styles.title2}>產品規格</div>
               <ul>
+                {!isLoading && data?.affordance && (
+                  <li>用途： {data.affordance}</li>
+                )}
                 {!isLoading && data?.product_CPU && (
                   <li>處理器： {data.product_CPU}</li>
                 )}
