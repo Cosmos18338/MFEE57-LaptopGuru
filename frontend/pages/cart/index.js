@@ -24,7 +24,7 @@ export default function CartIndex() {
   const [receiver, setReceiver] = useState('')
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
-
+  const [payment_method, setPayment_method] = useState(0)
   const [couponDetails, setCouponDetails] = useState({
     coupon_id: '',
     coupon_code: '',
@@ -150,6 +150,7 @@ export default function CartIndex() {
         receiver: receiver,
         phone: phone,
         amount: couponDetails.finalPrice,
+        payment_method: payment_method,
         coupon_id: couponDetails.coupon_id,
         detail: cartdata,
         address: address,
@@ -414,7 +415,7 @@ export default function CartIndex() {
               <div className="discount row w-100 mb-2">
                 <div className="col">折價</div>
                 <div className="col-auto">
-                  NT {(+couponDetails.coupon_discount).toLocaleString()}元
+                  NT {(+total - +couponDetails.finalPrice).toLocaleString()}元
                 </div>
               </div>
               <div className="total row w-100 mb-2">
