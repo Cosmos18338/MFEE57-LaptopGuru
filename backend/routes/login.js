@@ -19,7 +19,7 @@ router.post('/', upload.none(), async (req, res, next) => {
       'SELECT user_id, email, password FROM users WHERE email = ? AND valid = 1',
       [email]
     )
-
+    const user = row[0]
     // 這邊實際上是帳號錯誤
     if (row.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤' })
