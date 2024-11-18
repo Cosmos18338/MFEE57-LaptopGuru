@@ -13,7 +13,7 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
-import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
+// import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
