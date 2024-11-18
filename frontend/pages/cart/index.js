@@ -139,7 +139,9 @@ export default function CartIndex() {
       title: '確認訂單後將無法修改',
       html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${
         couponDetails.coupon_code
-      }<br>金額: NT ${couponDetails.finalPrice.toLocaleString()}元`,
+      }<br>金額: NT ${(
+        Number(couponDetails.finalPrice) + Number(shipPrice)
+      ).toLocaleString()}元`,
       icon: 'warning',
       showCancelButton: true,
 
@@ -162,7 +164,7 @@ export default function CartIndex() {
         user_id: user_id,
         receiver: receiver,
         phone: phone,
-        amount: couponDetails.finalPrice,
+        amount: Number(couponDetails.finalPrice) + Number(shipPrice),
         payment_method: payment_method,
         coupon_id: couponDetails.coupon_id,
         detail: cartdata,
@@ -197,15 +199,123 @@ export default function CartIndex() {
 
   // 生成line pay訂單
   const goLinePay = () => {
-    if (window.confirm('確認要導向至LINE Pay進行付款?')) {
-      // 先連到node伺服器後，導向至LINE Pay付款頁面
-      window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
-    }
+    MySwal.fire({
+      icon: 'info',
+      title: '確認要導向至LINE Pay進行付款?',
+      showCancelButton: true,
+      confirmButtonText: '確認',
+      cancelButtonText: '取消',
+    }).then((result) => {
+      setCartdata([])
+      setAddress('')
+      localStorage.removeItem('store711')
+      if (result.isConfirmed) {
+        window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
+      }
+    })
   }
 
   const createLinePayOrder = async () => {
+    if (cartdata == null) {
+      MySwal.fire({
+        icon: 'error',
+        title: '購物車是空的',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    if (ship == '') {
+      MySwal.fire({
+        icon: 'error',
+        title: '請選擇運送方式',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+      return
+    }
+
+    if (ship == '7-11') {
+      if (store711.storeid == '') {
+        MySwal.fire({
+          icon: 'error',
+          title: '請選擇7-11門市',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+        return
+      }
+    }
+
+    if (receiver == '') {
+      setReceiver(userData.name)
+    }
+
+    if (phone == '') {
+      setPhone(userData.phone)
+    }
+
+    const check = await MySwal.fire({
+      title: '確認訂單後將無法修改',
+      html: `收件人: ${receiver}<br>電話: ${phone}<br>運送方式: ${ship}<br>收貨地址: ${address}<br>套用優惠券: ${
+        couponDetails.coupon_code
+      }<br>金額: NT ${(
+        Number(couponDetails.finalPrice) + Number(shipPrice)
+      ).toLocaleString()}元`,
+      icon: 'warning',
+      showCancelButton: true,
+
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: '前往結帳',
+      cancelButtonText: '取消',
+    })
+
+    if (!check.isConfirmed) {
+      return
+    }
+
+    const result = await fetch(`http://localhost:3005/api/cart/order`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        receiver: receiver,
+        phone: phone,
+        amount: Number(couponDetails.finalPrice) + Number(shipPrice),
+        payment_method: payment_method,
+        coupon_id: couponDetails.coupon_id,
+        detail: cartdata,
+        address: address,
+      }),
+    })
+
+    if (couponDetails.coupon_id !== '') {
+      const couponResult = await fetch(
+        `http://localhost:3005/api/coupon-user/update/${user_id}/${couponDetails.coupon_id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ status: '已使用' }),
+        }
+      )
+    }
+
+    const data = await result.json()
+    const order_id = data.order_id
+    // const id = data.id
+    if (data.status === 'success') {
+      setOrder({ order_id: order_id, amount: total })
+    }
+
     const res = await axiosInstance.post('/line-pay/create-order', {
       userId: auth.userData.user_id,
+      orderId: order_id,
       amount: +(total + shipPrice),
       products: [
         {
@@ -442,7 +552,7 @@ export default function CartIndex() {
                     </div>
                     <div className="text-center">
                       <button
-                        className="btn btn-primary text-light"
+                        className="btn btn-primary text-light mb-2"
                         onClick={(e) => {
                           e.preventDefault()
                           handleAddress(store711.storeaddress)

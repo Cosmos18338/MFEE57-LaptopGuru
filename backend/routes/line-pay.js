@@ -28,9 +28,10 @@ const linePayClient = createLinePayClient({
 router.post('/create-order', async (req, res) => {
   // 會員id由authenticate中介軟體提供
   const userId = req.body.userId
+  const orderId = req.body.orderId
 
   //產生 orderId與packageId
-  const orderId = uuidv4()
+  // const orderId = uuidv4()
   const packageId = uuidv4()
 
   // 要傳送給line pay的訂單資訊
@@ -78,7 +79,7 @@ router.get('/reserve', async (req, res) => {
 
   const orderId = req.query.orderId
   const redirectUrls = {
-    confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL + `?orderId=${orderId}`,
+    confirmUrl: process.env.REACT_REDIRECT_CONFIRM_URL + `?ID=${orderId}`,
     cancelUrl: process.env.REACT_REDIRECT_CANCEL_URL,
   }
 
