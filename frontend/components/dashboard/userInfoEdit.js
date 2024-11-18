@@ -6,7 +6,7 @@ import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
 
 export default function UserProfile() {
-  const { auth, setAuth } = useAuth()
+  const { auth, setAuth, logout } = useAuth()
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
@@ -294,6 +294,7 @@ export default function UserProfile() {
   }
 
   const handleDeactivate = async () => {
+    // const {logout} = useAuth()
     try {
       const isConfirmed = await Swal.fire({
         title: '確定要停用帳號嗎？',
@@ -325,8 +326,13 @@ export default function UserProfile() {
           confirmButtonColor: '#805AF5',
         })
         // 可選：重新導向到登出頁面或首頁
-        await logout()
-        window.location.href = '/'
+        try {
+          await logout()
+          window.location.href = '/'
+        } catch (logoutError) {
+          console.error('登出錯誤:', logoutError)
+          window.location.href = '/'
+        }
       }
     } catch (error) {
       console.error('停用失敗:', error)
