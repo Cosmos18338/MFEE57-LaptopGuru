@@ -1,14 +1,17 @@
 import React from 'react'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
+import { useRouter } from 'next/router'
 import BuyCard from '@/components/cart/buy-card'
 import { useShip711StoreOpener } from '@/hooks/use-ship-711-store'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
+import axiosInstance from '@/services/axios-instance'
 
 export default function CartIndex() {
+  const router = useRouter()
   const { auth } = useAuth()
   const { userData } = auth
   const [cartdata, setCartdata] = useState([])
@@ -17,6 +20,7 @@ export default function CartIndex() {
     order_id: '',
     amount: '',
   })
+  const [lineOrder, setLineOrder] = useState({})
   const [receiver, setReceiver] = useState('')
   const [ship, setShip] = useState('')
   const [address, setAddress] = useState('')
@@ -28,6 +32,14 @@ export default function CartIndex() {
     finalPrice: 0,
   })
   const [shipPrice, setShipPrice] = useState(0)
+  // confirm回來用的，在記錄確認之後，line-pay回傳訊息與代碼，例如
+  // {returnCode: '1172', returnMessage: 'Existing same orderId.'}
+  const [result, setResult] = useState({
+    returnCode: '',
+    returnMessage: '',
+  })
+  // 載入狀態(控制是否顯示載入中的訊息，和伺服器回傳時間點未完成不同步的呈現問題)
+  const [isLoading, setIsLoading] = useState(true)
 
   const handlePaymentMethod = (e) => {
     setPayment_method(+e.target.value)
@@ -183,13 +195,103 @@ export default function CartIndex() {
     }
   }
 
-  // // 送到綠界
-  // const goECPay = (order_id, amount) => {
-  //   if (window.confirm('確認要導向至ECPay進行付款?')) {
-  //     // 先連到node伺服器後，導向至ECPay付款頁面
-  //     window.location.href = `http://localhost:3005/api/ecpay/payment?orderId=${order_id}&amount=${amount}`
-  //   }
-  // }
+  // 生成line pay訂單
+  const goLinePay = () => {
+    if (window.confirm('確認要導向至LINE Pay進行付款?')) {
+      // 先連到node伺服器後，導向至LINE Pay付款頁面
+      window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${lineOrder.orderId}`
+    }
+  }
+
+  const createLinePayOrder = async () => {
+    const res = await axiosInstance.post('/line-pay/create-order', {
+      userId: auth.userData.user_id,
+      amount: +(total + shipPrice),
+      products: [
+        {
+          id: 1,
+          name: '商品價格',
+          quantity: 1,
+          price: total,
+        },
+        {
+          id: 2,
+          name: '運費',
+          quantity: 1,
+          price: shipPrice,
+        },
+      ],
+    })
+
+    console.log(res.data) //訂單物件格式(line-pay專用)
+
+    if (res.data.status === 'success') {
+      setLineOrder(res.data.data.order)
+      MySwal.fire({
+        icon: 'success',
+        title: '已成功建立訂單',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+    }
+  }
+
+  // 確認交易，處理伺服器通知line pay已確認付款，為必要流程
+  const handleConfirm = async (transactionId) => {
+    const res = await axiosInstance.get(
+      `/line-pay/confirm?transactionId=${transactionId}`
+    )
+
+    console.log(res.data)
+
+    if (res.data.status === 'success') {
+      MySwal.fire({
+        icon: 'success',
+        title: '付款成功',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+    } else {
+      MySwal.fire({
+        icon: 'error',
+        title: '付款失敗',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+    }
+
+    if (res.data.data) {
+      setResult(res.data.data)
+    }
+
+    // 處理完畢，關閉載入狀態
+    setIsLoading(false)
+  }
+
+  // confirm回來用的
+  useEffect(() => {
+    if (router.isReady) {
+      // 這裡確保能得到router.query值
+      console.log(router.query)
+      // http://localhost:3000/order?transactionId=2022112800733496610&orderId=da3b7389-1525-40e0-a139-52ff02a350a8
+      // 這裡要得到交易id，處理伺服器通知line pay已確認付款，為必要流程
+      // TODO: 除非為不需登入的交易，為提高安全性應檢查是否為會員登入狀態
+      const { transactionId, orderId } = router.query
+
+      // 如果沒有帶transactionId或orderId時，導向至首頁(或其它頁)
+      if (!transactionId || !orderId) {
+        // 關閉載入狀態
+        setIsLoading(false)
+        // 不繼續處理
+        return
+      }
+
+      // 向server發送確認交易api
+      handleConfirm(transactionId)
+    }
+
+    // eslint-disable-next-line
+  }, [router.isReady])
 
   useEffect(() => {
     async function fetchData() {
@@ -416,12 +518,20 @@ export default function CartIndex() {
               {payment_method == 1 ? (
                 <>
                   <div className="d-flex justify-content-center mb-2">
-                    <button className="btn btn-primary text-light">
+                    <button
+                      className="btn btn-primary text-light"
+                      onClick={createLinePayOrder}
+                    >
                       產生Line Pay訂單
                     </button>
                   </div>
                   <div className="d-flex justify-content-center">
-                    <button className="btn btn-primary text-light">
+                    <button
+                      className="btn btn-primary text-light"
+                      onClick={goLinePay}
+                      // 限制有orderId產生後才能點按
+                      disabled={order.orderId === ''}
+                    >
                       前往Line Pay付款
                     </button>
                   </div>
