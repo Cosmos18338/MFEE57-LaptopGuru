@@ -62,6 +62,7 @@ router.post('/create-order', async (req, res) => {
   // 儲存到資料庫
   // await purchase_order.create(dbOrder)
   const [result] = await db.query('INSERT INTO purchase_order SET ?', dbOrder)
+  const order_id = result.insertId
 
   console.log(result)
 
