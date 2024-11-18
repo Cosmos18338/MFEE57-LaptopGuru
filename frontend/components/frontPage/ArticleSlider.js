@@ -49,28 +49,21 @@ const ArticleSection = () => {
   ]
 
   const handleNext = () => {
-    if (currentIndex < articles.length - articlesPerView - 1) {
-      setCurrentIndex((prev) => prev + 1)
+    const mobileHeight = window.innerWidth <= 768 ? 600 : 400;
+    const articleHeight = window.innerWidth <= 480 ? 500 : mobileHeight;
+  
+    if (currentIndex < articles.length - articlesPerView) {
+      setCurrentIndex(prev => prev + 1);
       if (containerRef.current) {
-        containerRef.current.style.transform = `translateY(-${
-          (currentIndex + 1) * 400
-        }px)`
-      }
-    } else if (currentIndex === articles.length - articlesPerView - 1) {
-      setCurrentIndex((prev) => prev + 1)
-      if (containerRef.current) {
-        containerRef.current.style.transform = `translateY(-${
-          (currentIndex + 1) * 200
-        }px)`
+        containerRef.current.style.transform = `translateY(-${(currentIndex + 1) * articleHeight}px)`;
       }
     } else {
-      setCurrentIndex(0)
+      setCurrentIndex(0);
       if (containerRef.current) {
-        containerRef.current.style.transform = 'translateY(0)'
+        containerRef.current.style.transform = 'translateY(0)';
       }
     }
-  }
-
+  };
   return (
     <section className="home-section5">
       <div className="title-body">

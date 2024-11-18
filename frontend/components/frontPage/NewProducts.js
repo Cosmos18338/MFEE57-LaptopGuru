@@ -65,6 +65,28 @@ const NewProducts = () => {
           spaceBetween={30}
           initialSlide={1}
           className="home-pic"
+          breakpoints={{
+            1200: {
+              slidesPerView: 3,
+              spaceBetween: 30,
+              centeredSlides: true,
+            },
+            992: {
+              slidesPerView: 2,
+              spaceBetween: 20,
+              centeredSlides: false,
+            },
+            768: {
+              slidesPerView: 2,
+              spaceBetween: 15,
+              centeredSlides: false,
+            },
+            0: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+              centeredSlides: true,
+            },
+          }}
         >
           {products.map((product) => (
             <SwiperSlide key={product.id} className="home-pic-box">
