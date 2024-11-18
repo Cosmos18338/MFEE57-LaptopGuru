@@ -212,14 +212,14 @@ export default function Signup() {
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/login"
                 >
-                  登入Log in
+                  登入
                 </Link>
-                <span className="text-white">|</span>
+                <span className="text-white">| </span>
                 <Link
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/signup"
                 >
-                  註冊Sign Up
+                  註冊
                 </Link>
               </div>
               {submitError && (

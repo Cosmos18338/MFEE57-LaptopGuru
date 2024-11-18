@@ -13,7 +13,7 @@ import BuylistPage from '@/components/dashboard/buylist-page'
 import Favorites from '@/components/product/favorites'
 import BlogUserOverview from '@/components/blog/bloguseroverview'
 import Link from 'next/link'
-import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
+// import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // import MarioGame from '@/components/dashboard/MarioGame'
 
 export default function Test1() {
@@ -24,9 +24,6 @@ export default function Test1() {
   const [isLoading, setIsLoading] = useState(true)
   const [subActiveKey, setSubActiveKey] = useState('')
   // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
-
-  // 添加 refresh state
-  const [refresh, setRefresh] = useState(false)
 
   // 定義不同頁籤對應的左側導航配置
   const sideNavConfigs = {
@@ -95,9 +92,9 @@ export default function Test1() {
 
   return (
     <>
-      <LoadingSpinner loading={isLoading} />
-      {!isLoading && (
-        // 你的主要內容
+      {/* <LoadingSpinner loading={isLoading} /> */}
+      {/* {!isLoading && ( */}
+        
         <div className="container">
           <div className="row">
             <Tab.Container
@@ -238,7 +235,7 @@ export default function Test1() {
             </Tab.Container>
           </div>
         </div>
-      )}
+      {/* )} */}
     </>
   )
 }
