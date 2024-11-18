@@ -5,13 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useAuth } from '@/hooks/use-auth'
-import { MdOutlineEmail, MdLockOutline, MdArrowForward } from 'react-icons/md'
+import { MdOutlineEmail, MdArrowForward } from 'react-icons/md'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
 import { useLoader } from '@/hooks/use-loader'
-
+// 這裡是我原本陽春的登入功能
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -95,14 +95,14 @@ export default function LogIn(props) {
                   className={` ${styles.hover} text-decoration-none text-white`}
                   href="/member/login"
                 >
-                  登入Log in
+                  登入
                 </Link>
-                <span className="text-white">|</span>
+                <span className="text-white">| </span>
                 <Link
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/signup"
                 >
-                  註冊Sign Up
+                  註冊
                 </Link>
               </div>
               <form
@@ -194,7 +194,7 @@ export default function LogIn(props) {
                     )}
                   </div>
                   <div className="d-flex justify-content-center">
-                  <Link href="./member/forget-password">
+                  <Link href="./forget-password">
                   忘記密碼</Link>
                   </div>
 

@@ -27,7 +27,7 @@ export default function MembershipLevels() {
     } else if (spent >= 20000) {
       return '銅牌會員'
     } else if (spent >= 0) {
-      return '剛註冊'
+      return '消費金額未達銅牌2萬'
     } else {
       return '帳號有問題，請聯繫客服'
     }
@@ -91,21 +91,25 @@ export default function MembershipLevels() {
       name: '銅牌會員',
       benefits:
         '可於文章區發表文章、參加活動、包膜優惠價(打95折，價值1,000的包膜等於省50元)',
+      criteria:'2萬',
     },
     {
       name: '銀牌會員',
       benefits:
         '可於文章區發表文章、參加活動、包膜優惠價(打95折，價值1,000的包膜等於省50元)',
+        criteria:'4萬',
     },
     {
       name: '金牌會員',
       benefits:
         '可於文章區發表文章、參加活動、送免費新機包膜服務、三節打95折(等於購買30,000的電腦可省500)、電腦包客製化姓名刺繡服務(價值120元)',
+        criteria:'7萬',
     },
     {
       name: '鑽石會員',
       benefits:
         '可於文章區發表文章、參加活動、免費包膜服務(價值1,000)、日後購買新機免費升級延長保固半年、生日禮(抽獎券-可抽筆電支架)',
+        criteria:'10萬',
     },
   ]
 
@@ -221,6 +225,7 @@ export default function MembershipLevels() {
             >
               <h3 className="text-white mb-3">{level.name}</h3>
               <p className="text-white flex-grow-1">{level.benefits}</p>
+              <p className="text-white flex-grow-1">{level.criteria}</p>
             </div>
           </div>
         ))}

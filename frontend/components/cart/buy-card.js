@@ -6,6 +6,7 @@ import { RxCross1 } from 'react-icons/rx'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+import Link from 'next/link'
 
 export default function BuyCard({ item, onDataChange }) {
   const [price, setPrice] = useState(0)
@@ -77,16 +78,21 @@ export default function BuyCard({ item, onDataChange }) {
         </div>
         <div className="row align-items-center mb-2">
           <div className="col-2">
-            <div className="cart-photo">
+            <Link className="cart-photo" href={`/product/${item.product_id}`}>
               <Image
                 src={`/product/${item.product_img_path}`}
                 alt={item.model}
                 width={500}
                 height={500}
               />
-            </div>
+            </Link>
           </div>
-          <div className="col-3">{item.product_name}</div>
+          <Link
+            className="col-3 text-decoration-none text-black"
+            href={`/product/${item.product_id}`}
+          >
+            {item.product_name}
+          </Link>
           <div className="col-2">NT {item.list_price.toLocaleString()}元</div>
           <div className="col-2">
             <input

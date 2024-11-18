@@ -4,7 +4,7 @@ import EventButton from '@/components/event/EventButton'
 import styles from '@/styles/Chat.module.css'
 import websocketService from '@/services/websocketService'
 
-export default function CreateRoomForm({ show, onHide, ws, currentUser }) {
+export default function CreateRoomForm({ show, onHide, currentUser }) {
   const [roomName, setRoomName] = useState('')
 
   const handleSubmit = (e) => {

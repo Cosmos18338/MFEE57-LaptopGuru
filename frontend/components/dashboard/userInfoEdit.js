@@ -174,7 +174,7 @@ export default function UserProfile() {
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
             valid: userData.valid ?? 1,
-            // email: userData.email || '',
+            email: userData.email || '',
           })
 
           // 如果國家是台灣，啟用地址選擇
