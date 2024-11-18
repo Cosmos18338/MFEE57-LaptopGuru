@@ -24,6 +24,12 @@ router.post('/', upload.none(), async (req, res, next) => {
     if (row.length === 0) {
       return res.json({ status: 'error', message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服' })
     }
+    if (user.valid !== 1) {
+      return res.json({ 
+        status: 'error', 
+        message: '此帳號已被停用' 
+      })
+    }
     // compareHash比對輸入與資料庫中的密碼~
     const passwordMatch = await compareHash(password, user.password)
     //  這邊實際上是密碼錯誤
