@@ -9,6 +9,8 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
 import axiosInstance from '@/services/axios-instance'
+import Head from 'next/head'
+import NextBreadCrumb from '@/components/common/next-breadcrumb'
 
 export default function CartIndex() {
   const router = useRouter()
@@ -446,275 +448,109 @@ export default function CartIndex() {
 
   return (
     <>
-      <div className="tilte d-flex mb-3">
-        <div className="logo border-end me-3">
-          <img src="/logo-black.svg" />
-        </div>
-        <div className="h2 align-items-center">
-          <h2>購物車</h2>
-        </div>
-      </div>
+      <Head>
+        <title>購物車</title>
+      </Head>
 
-      <div className="row mb-3">
-        <div className="col-9 cart h-100">
-          {cartdata && cartdata.length > 0 ? (
-            cartdata.map((item) => (
-              <BuyCard
-                key={item.product_id}
-                item={item}
-                onDataChange={(newQuantity) => {
-                  // console.log(item.quantity)
-                  handle(item.product_id, newQuantity)
-                  if (newQuantity === 0) {
-                    setCartdata(
-                      cartdata.filter((v) => v.product_id !== item.product_id)
-                    )
-                  }
-                }}
-              />
-            ))
-          ) : (
-            <p>購物車是空的</p>
-          )}
-          {cartdata && cartdata.length > 0 ? (
-            <div className="border border-primary rounded w-50 p-3">
-              <h3>確認訂單細節</h3>
-              <h5>收件人</h5>
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="border-primary form-control"
-                  value={receiver}
-                  onChange={(e) => {
-                    setReceiver(e.target.value)
-                  }}
-                />
-              </div>
-              <h5>收件人連絡電話</h5>
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="border-primary form-control"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value)
-                  }}
-                />
-              </div>
-              <h5>運送方式</h5>
-              <div className="text-center mb-2">
-                <select
-                  className="form-select border-primary"
-                  onChange={(e) => {
-                    setShip(e.target.value)
-                    if (e.target.value === '7-11') {
-                      setShipPrice(60)
-                    } else {
-                      setShipPrice(200)
+      <div className="container">
+        <NextBreadCrumb isHomeIcon isChevron bgClass="bg-transparent" />
+        <div className="tilte d-flex mb-3">
+          <div className="logo border-end me-3">
+            <img src="/logo-black.svg" />
+          </div>
+          <div className="h2 align-items-center">
+            <h2>購物車</h2>
+          </div>
+        </div>
+
+        <div className="row mb-3 border-bottom p-2">
+          <div className="col-lg-9 col-md-12 cart h-100">
+            {cartdata && cartdata.length > 0 ? (
+              cartdata.map((item) => (
+                <BuyCard
+                  key={item.product_id}
+                  item={item}
+                  onDataChange={(newQuantity) => {
+                    // console.log(item.quantity)
+                    handle(item.product_id, newQuantity)
+                    if (newQuantity === 0) {
+                      setCartdata(
+                        cartdata.filter((v) => v.product_id !== item.product_id)
+                      )
                     }
                   }}
-                >
-                  <option value="" selected disabled>
-                    選擇運送方式
-                  </option>
-                  <option value="宅配">宅配</option>
-                  <option value="7-11">7-11</option>
-                </select>
+                />
+              ))
+            ) : (
+              <p>購物車是空的</p>
+            )}
+          </div>
+          <div className="col bill h-50">
+            <div className="card p-3 border-primary">
+              <div className="row border-bottom border-primary mb-2 pb-2">
+                <div className="col-6 text-primary">
+                  <img src="/diamond.svg" />
+                  清單資訊
+                </div>
               </div>
-              <div className="address">
-                {ship === '7-11' && (
+              <div className="row border-bottom border-primary mb-2 pb-2">
+                <div className="row">
+                  <div className="col">商品總計</div>
+                  <div className="col-auto">NT {total.toLocaleString()}元</div>
+                </div>
+                <div className="row">
+                  <div className="col">運費總計</div>
+                  <div className="col-auto">
+                    NT {ship == '' && '0'}
+                    {ship == '7-11' && '60'}
+                    {ship == '宅配' && '200'}元
+                  </div>
+                </div>
+              </div>
+              <div className="row border-bottom border-primary mb-2 pb-2">
+                {payment_method == 0 ? (
                   <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <button
-                        className="btn btn-primary w-50  text-light"
-                        onClick={() => {
-                          openWindow()
-                        }}
-                      >
-                        選擇門市
-                      </button>
+                    <div className="mb-2">
+                      <CouponBtn
+                        price={total}
+                        setCouponValue={setCouponDetails}
+                      />
                     </div>
-                    <div className="d-flex justify-content-center mb-2">
+                    <div>
                       <input
                         type="text"
-                        className="border-primary form-control"
-                        value={store711.storename}
+                        className="form-control border-primary"
+                        value={couponDetails.coupon_code}
                         disabled
                       />
                     </div>
-                    <div className="d-flex justify-content-center mb-2">
-                      <input
-                        type="text"
-                        className="border-primary form-control"
-                        value={store711.storeaddress}
-                        disabled
-                      />
-                    </div>
-                    <div className="text-center">
-                      <button
-                        className="btn btn-primary text-light mb-2"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          handleAddress(store711.storeaddress)
-                        }}
-                      >
-                        確認收件門市
-                      </button>
-                    </div>
                   </>
+                ) : (
+                  <></>
                 )}
-                {ship === '宅配' && (
-                  <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <input
-                        type="text"
-                        className="border-primary form-control"
-                        value={address}
-                        onChange={(e) => {
-                          e.preventDefault()
-                          setAddress(e.target.value)
-                        }}
-                      />
-                    </div>
-                  </>
+                {payment_method == 1 ? (
+                  <div>* Line Pay不適用優惠券</div>
+                ) : (
+                  <></>
                 )}
               </div>
-              <div className="d-flex mb-2">
-                <div className="form-check me-3">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="ecpay"
-                    value={'0'}
-                    checked={payment_method == 0}
-                    onChange={handlePaymentMethod}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="ecpay"
-                    defaultChecked
-                  >
-                    綠界付款
-                  </label>
+              <div>
+                <div className="discount row w-100 mb-2">
+                  <div className="col">折價</div>
+                  <div className="col-auto">
+                    NT {(+total - +couponDetails.finalPrice).toLocaleString()}元
+                  </div>
                 </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="linepay"
-                    value={'1'}
-                    checked={payment_method == 1}
-                    onChange={handlePaymentMethod}
-                  />
-                  <label className="form-check-label" htmlFor="linepay">
-                    Line Pay
-                  </label>
+                <div className="total row w-100 mb-2">
+                  <div className="col">總計</div>
+                  <div className="col-auto">
+                    NT{' '}
+                    {(+couponDetails.finalPrice + +shipPrice).toLocaleString()}
+                    元
+                  </div>
                 </div>
-              </div>
-              {payment_method == 0 ? (
                 <div className="d-flex justify-content-center">
-                  <button
-                    className="btn btn-primary text-light w-50"
-                    onClick={() => {
-                      createOrder()
-                    }}
-                  >
-                    前往結帳
-                  </button>
-                </div>
-              ) : (
-                <></>
-              )}
-              {payment_method == 1 ? (
-                <>
-                  <div className="d-flex justify-content-center mb-2">
-                    <button
-                      className="btn btn-primary text-light"
-                      onClick={createLinePayOrder}
-                    >
-                      產生Line Pay訂單
-                    </button>
-                  </div>
-                  <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-primary text-light"
-                      onClick={goLinePay}
-                      // 限制有orderId產生後才能點按
-                      disabled={order.orderId === ''}
-                    >
-                      前往Line Pay付款
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          ) : (
-            <></>
-          )}
-        </div>
-        <div className="col bill h-50">
-          <div className="card p-3 border-primary">
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="col-6 text-primary">
-                <img src="/diamond.svg" />
-                清單資訊
-              </div>
-            </div>
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              <div className="row">
-                <div className="col">商品總計</div>
-                <div className="col-auto">NT {total.toLocaleString()}元</div>
-              </div>
-              <div className="row">
-                <div className="col">運費總計</div>
-                <div className="col-auto">
-                  NT {ship == '' && '0'}
-                  {ship == '7-11' && '60'}
-                  {ship == '宅配' && '200'}元
-                </div>
-              </div>
-            </div>
-            <div className="row border-bottom border-primary mb-2 pb-2">
-              {payment_method == 0 ? (
-                <>
-                  <div className="text-center mb-2">
-                    <CouponBtn
-                      price={total}
-                      setCouponValue={setCouponDetails}
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="text"
-                      className="form-control border-primary"
-                      value={couponDetails.coupon_code}
-                      disabled
-                    />
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
-              {payment_method == 1 ? <div>* Line Pay不適用優惠券</div> : <></>}
-            </div>
-            <div>
-              <div className="discount row w-100 mb-2">
-                <div className="col">折價</div>
-                <div className="col-auto">
-                  NT {(+total - +couponDetails.finalPrice).toLocaleString()}元
-                </div>
-              </div>
-              <div className="total row w-100 mb-2">
-                <div className="col">總計</div>
-                <div className="col-auto">
-                  NT {(+couponDetails.finalPrice + +shipPrice).toLocaleString()}
-                  元
-                </div>
-              </div>
-              <div className="d-flex justify-content-center">
-                {/* <button
+                  {/* <button
                   className="btn btn-primary w-50 text-light"
                   onClick={() => {
                     createOrder()
@@ -723,10 +559,188 @@ export default function CartIndex() {
                 >
                   產生訂單
                 </button> */}
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {cartdata && cartdata.length > 0 ? (
+          <div className="border border-primary rounded w-lg-50 w-md-100 p-3 mb-3">
+            <h3>確認訂單細節</h3>
+            <h5>收件人</h5>
+            <div className="mb-2">
+              <input
+                type="text"
+                className="border-primary form-control"
+                value={receiver}
+                onChange={(e) => {
+                  setReceiver(e.target.value)
+                }}
+              />
+            </div>
+            <h5>收件人連絡電話</h5>
+            <div className="mb-2">
+              <input
+                type="text"
+                className="border-primary form-control"
+                value={phone}
+                onChange={(e) => {
+                  setPhone(e.target.value)
+                }}
+              />
+            </div>
+            <h5>運送方式</h5>
+            <div className="text-center mb-2">
+              <select
+                className="form-select border-primary"
+                onChange={(e) => {
+                  setShip(e.target.value)
+                  if (e.target.value === '7-11') {
+                    setShipPrice(60)
+                  } else {
+                    setShipPrice(200)
+                  }
+                }}
+              >
+                <option value="" selected disabled>
+                  選擇運送方式
+                </option>
+                <option value="宅配">宅配</option>
+                <option value="7-11">7-11</option>
+              </select>
+            </div>
+            <div className="address">
+              {ship === '7-11' && (
+                <>
+                  <div className="d-flex justify-content-center mb-2">
+                    <button
+                      className="btn btn-primary w-50  text-light"
+                      onClick={() => {
+                        openWindow()
+                      }}
+                    >
+                      選擇門市
+                    </button>
+                  </div>
+                  <div className="d-flex justify-content-center mb-2">
+                    <input
+                      type="text"
+                      className="border-primary form-control"
+                      value={store711.storename}
+                      disabled
+                    />
+                  </div>
+                  <div className="d-flex justify-content-center mb-2">
+                    <input
+                      type="text"
+                      className="border-primary form-control"
+                      value={store711.storeaddress}
+                      disabled
+                    />
+                  </div>
+                  <div className="text-center">
+                    <button
+                      className="btn btn-primary text-light mb-2"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        handleAddress(store711.storeaddress)
+                      }}
+                    >
+                      確認收件門市
+                    </button>
+                  </div>
+                </>
+              )}
+              {ship === '宅配' && (
+                <>
+                  <div className="d-flex justify-content-center mb-2">
+                    <input
+                      type="text"
+                      className="border-primary form-control"
+                      value={address}
+                      onChange={(e) => {
+                        e.preventDefault()
+                        setAddress(e.target.value)
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+            <div className="d-flex mb-2">
+              <div className="form-check me-3">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  id="ecpay"
+                  value={'0'}
+                  checked={payment_method == 0}
+                  onChange={handlePaymentMethod}
+                />
+                <label
+                  className="form-check-label"
+                  htmlFor="ecpay"
+                  defaultChecked
+                >
+                  綠界付款
+                </label>
+              </div>
+              <div className="form-check">
+                <input
+                  className="form-check-input"
+                  type="radio"
+                  id="linepay"
+                  value={'1'}
+                  checked={payment_method == 1}
+                  onChange={handlePaymentMethod}
+                />
+                <label className="form-check-label" htmlFor="linepay">
+                  Line Pay
+                </label>
+              </div>
+            </div>
+            {payment_method == 0 ? (
+              <div className="d-flex justify-content-center">
+                <button
+                  className="btn btn-primary text-light w-50"
+                  onClick={() => {
+                    createOrder()
+                  }}
+                >
+                  前往結帳
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+            {payment_method == 1 ? (
+              <>
+                <div className="d-flex justify-content-center mb-2">
+                  <button
+                    className="btn btn-primary text-light"
+                    onClick={createLinePayOrder}
+                  >
+                    產生Line Pay訂單
+                  </button>
+                </div>
+                <div className="d-flex justify-content-center">
+                  <button
+                    className="btn btn-primary text-light"
+                    onClick={goLinePay}
+                    // 限制有orderId產生後才能點按
+                    disabled={order.orderId === ''}
+                  >
+                    前往Line Pay付款
+                  </button>
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   )

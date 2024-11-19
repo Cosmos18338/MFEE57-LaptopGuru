@@ -5,8 +5,10 @@ import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
 export default function Header(props) {
   const { auth, logout } = useAuth() // 獲取 auth 對象
-  const { isAuth } = auth // 獲取 isAuth
+  const { isAuth, userData } = auth // 獲取 isAuth
+  const [user_id, setUserId] = useState('')
   const router = useRouter()
+  const [image_path, setImagePath] = useState('/Vector.svg')
 
   const handleLogout = async () => {
     try {
@@ -56,6 +58,33 @@ export default function Header(props) {
       })
     }
   }
+
+  useEffect(() => {
+    if (user_id) {
+      fetch(`http://localhost:3005/api/header`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: user_id,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setImagePath(data?.image_path || '/Vector.svg')
+        })
+    }
+  }, [user_id])
+
+  useEffect(() => {
+    if (userData && userData.user_id) {
+      setUserId(userData.user_id)
+    } else {
+      setUserId(null)
+    }
+  }, [userData])
+
   return (
     <>
       <header>
@@ -68,13 +97,16 @@ export default function Header(props) {
               首頁
             </Link>
             <Link className={`text-light me-3`} href="/product">
-              商品
+              產品
             </Link>
             <Link className={`text-light me-3`} href="/product/compare">
               比較
             </Link>
             <Link className={`text-light me-3`} href="/event">
               活動
+            </Link>
+            <Link className={`text-light me-3`} href="/group">
+              揪團
             </Link>
             <Link className={`text-light me-3`} href="/blog">
               部落格
@@ -84,7 +116,7 @@ export default function Header(props) {
             <>
               <Link href="/dashboard">
                 <div className="user-avater me-3">
-                  <img src="/Vector.svg" />
+                  <img src={image_path} />
                 </div>
               </Link>
               <Link href="/cart">
@@ -107,7 +139,9 @@ export default function Header(props) {
                 </button>
               </Link>
               <Link href="/member/signup">
-                <button className="btn btn-primary text-white border-0">註冊</button>
+                <button className="btn btn-primary text-white border-0">
+                  註冊
+                </button>
               </Link>
             </>
           )}
@@ -119,6 +153,19 @@ export default function Header(props) {
           .header-hover {
             cursor: pointer;
             color: red;
+          }
+          .user-avater {
+            width: 40px; /* 調整尺寸 */
+            height: 40px;
+            border-radius: 50%; /* 圓形 */
+            overflow: hidden; /* 隱藏超出的部分 */
+            display: inline-block; /* 讓外層成為包覆容器 */
+          }
+
+          .user-avater img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 確保圖像填滿容器並裁剪 */
           }
         `}
       </style>

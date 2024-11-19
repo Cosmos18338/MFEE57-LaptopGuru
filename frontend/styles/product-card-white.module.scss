@@ -16,7 +16,7 @@
 }
 
 .product_card_img {
-  padding: 15px; /* 內邊距 */
+  padding: 10px; /* 圖片內邊距 */
   background: linear-gradient(0deg, #432aba 0%, #1f1e2e 100%);
   /* 圖片背景顏色 */
   position: relative;
@@ -43,10 +43,11 @@
 /* 自訂 checkbox 樣式 */
 .product_compare_label {
   position: absolute;
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  height: 15px;
   border: 1px solid #ddd;
   transform: rotate(45deg);
+  top: 15px;
   right: 50px;
   color: white;
   cursor: pointer;
@@ -91,6 +92,7 @@
   margin-left: 20px;
   padding: 15px; /* 內容內邊距 */
   color: black; /* 文字顏色 */
+  font-size: 14px; /* 文字大小 */
 }
 .product_collection_checkbox {
   display: none; /* 隱藏原生 checkbox */
@@ -113,12 +115,13 @@
   align-items: center;
   margin-left: auto;
   margin-right: auto;
-  width: 200px;
-  border: 2px solid rgba(0, 0, 0, 0.4); /* 外邊框顏色 */
+  width: 220px;
+  border: 1px solid rgba(0, 0, 0, 0.4); /* 外邊框顏色 */
   border-radius: 35px; /* 圓角 */
   color: black;
   font-size: 18px;
   font-weight: bold;
+  letter-spacing: 3px;
   cursor: pointer;
   justify-content: space-between;
 }

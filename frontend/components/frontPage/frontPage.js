@@ -15,11 +15,11 @@ export default function FrontPage(props) {
         <Header />
       </div>
 
-      <div className="blob-outer-container">
+      {/* <div className="blob-outer-container">
         <div className="blob-inner-container">
           <div className="blob"></div>
         </div>
-      </div>
+      </div> */}
 
       <div className="main-body ">
         {/* <div className="home-section1">

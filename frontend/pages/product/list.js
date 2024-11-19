@@ -7,6 +7,7 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import Image from 'next/image'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 export default function List() {
   // 利用網址列的參數來過濾產品
@@ -152,6 +153,10 @@ export default function List() {
 
   return (
     <>
+      <Head>
+        <title>產品列表</title>
+        <meta name="description" content="Product List" />
+      </Head>
       <Header />
       <div className={`${styles.product_container}`}>
         <div className={`${styles.product_banner}`}>
@@ -164,9 +169,7 @@ export default function List() {
             </div>
           </div>
         </div>
-        <nav className={`${styles.product_breadcrumb}`}>
-          <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
-        </nav>
+        <nav className={`${styles.product_breadcrumb}`}></nav>
         <input
           type="checkbox"
           id="product_aside_toggle"
@@ -226,10 +229,21 @@ export default function List() {
                 min={5000}
                 max={200000}
                 value={priceMin}
-                onInput={handleMinChange}
+                onChange={handleMinChange}
                 onMouseEnter={() => setTooltipMinVisible(true)}
                 onMouseLeave={() => setTooltipMinVisible(false)}
                 onMouseUp={() => {
+                  handleButtonClick({
+                    page: 1,
+                    category: tmpCategory,
+                    category_value: tmpCategoryValue,
+                    search: tmpSearch,
+                    price: `${priceMin}-${priceMax}`,
+                  })
+                }}
+                onTouchStart={() => setTooltipMinVisible(true)}
+                onTouchEnd={() => {
+                  setTooltipMinVisible(false)
                   handleButtonClick({
                     page: 1,
                     category: tmpCategory,
@@ -263,10 +277,21 @@ export default function List() {
                 min={5000}
                 max={200000}
                 value={priceMax}
-                onInput={handleMaxChange}
+                onChange={handleMaxChange}
                 onMouseEnter={() => setTooltipMaxVisible(true)}
                 onMouseLeave={() => setTooltipMaxVisible(false)}
                 onMouseUp={() => {
+                  handleButtonClick({
+                    page: 1,
+                    category: tmpCategory,
+                    category_value: tmpCategoryValue,
+                    search: tmpSearch,
+                    price: `${priceMin}-${priceMax}`,
+                  })
+                }}
+                onTouchStart={() => setTooltipMaxVisible(true)}
+                onTouchEnd={() => {
+                  setTooltipMaxVisible(false)
                   handleButtonClick({
                     page: 1,
                     category: tmpCategory,
@@ -821,6 +846,23 @@ export default function List() {
                       i7
                     </a>
                   </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_CPU',
+                          category_value: 'i9',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      i9
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -913,6 +955,23 @@ export default function List() {
                       64G
                     </a>
                   </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_RAM',
+                          category_value: '128',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      128G
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -988,6 +1047,23 @@ export default function List() {
                       2T
                     </a>
                   </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_hardisk_volume',
+                          category_value: '4T',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      4T
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -1036,7 +1112,7 @@ export default function List() {
             )}
             {/* 頁碼 */}
             {Array.from({ length: totalPages }).map((_, index) => {
-              const isPageInRange = Math.abs(currentPage - index) <= 5 // 當前頁的前後 5 頁
+              const isPageInRange = Math.abs(currentPage - index) <= 3 // 當前頁的前後 5 頁
 
               if (isPageInRange) {
                 return (
