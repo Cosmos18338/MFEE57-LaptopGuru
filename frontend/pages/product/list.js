@@ -229,10 +229,21 @@ export default function List() {
                 min={5000}
                 max={200000}
                 value={priceMin}
-                onInput={handleMinChange}
+                onChange={handleMinChange}
                 onMouseEnter={() => setTooltipMinVisible(true)}
                 onMouseLeave={() => setTooltipMinVisible(false)}
                 onMouseUp={() => {
+                  handleButtonClick({
+                    page: 1,
+                    category: tmpCategory,
+                    category_value: tmpCategoryValue,
+                    search: tmpSearch,
+                    price: `${priceMin}-${priceMax}`,
+                  })
+                }}
+                onTouchStart={() => setTooltipMinVisible(true)}
+                onTouchEnd={() => {
+                  setTooltipMinVisible(false)
                   handleButtonClick({
                     page: 1,
                     category: tmpCategory,
@@ -266,10 +277,21 @@ export default function List() {
                 min={5000}
                 max={200000}
                 value={priceMax}
-                onInput={handleMaxChange}
+                onChange={handleMaxChange}
                 onMouseEnter={() => setTooltipMaxVisible(true)}
                 onMouseLeave={() => setTooltipMaxVisible(false)}
                 onMouseUp={() => {
+                  handleButtonClick({
+                    page: 1,
+                    category: tmpCategory,
+                    category_value: tmpCategoryValue,
+                    search: tmpSearch,
+                    price: `${priceMin}-${priceMax}`,
+                  })
+                }}
+                onTouchStart={() => setTooltipMaxVisible(true)}
+                onTouchEnd={() => {
+                  setTooltipMaxVisible(false)
                   handleButtonClick({
                     page: 1,
                     category: tmpCategory,
@@ -824,6 +846,23 @@ export default function List() {
                       i7
                     </a>
                   </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_CPU',
+                          category_value: 'i9',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      i9
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -916,6 +955,23 @@ export default function List() {
                       64G
                     </a>
                   </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_RAM',
+                          category_value: '128',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      128G
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -989,6 +1045,23 @@ export default function List() {
                       href=""
                     >
                       2T
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      onClick={(e) => {
+                        e.preventDefault() // 阻止預設的 href 跳轉
+                        handleButtonClick({
+                          page: 1,
+                          category: 'product_hardisk_volume',
+                          category_value: '4T',
+                          search: tmpSearch,
+                          price: tmpPrice,
+                        })
+                      }}
+                      href=""
+                    >
+                      4T
                     </a>
                   </li>
                 </ul>

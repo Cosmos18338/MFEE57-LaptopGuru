@@ -2,7 +2,6 @@ import React from 'react'
 import styles from '@/styles/product-lease.module.scss'
 import Header from '@/components/layout/default-layout/header'
 import Footer from '@/components/layout/default-layout/my-footer'
-import NextBreadCrumbLight from '@/components/common/next-breadcrumb-light'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
@@ -276,7 +275,7 @@ export default function Detail() {
   return (
     <>
       <Head>
-        <title>{}</title>
+        <title>{`商品細節`}</title>
       </Head>
       <Header />
       <div className={styles.customBody}>
