@@ -1112,7 +1112,7 @@ export default function List() {
             )}
             {/* 頁碼 */}
             {Array.from({ length: totalPages }).map((_, index) => {
-              const isPageInRange = Math.abs(currentPage - index) <= 5 // 當前頁的前後 5 頁
+              const isPageInRange = Math.abs(currentPage - index) <= 3 // 當前頁的前後 5 頁
 
               if (isPageInRange) {
                 return (
