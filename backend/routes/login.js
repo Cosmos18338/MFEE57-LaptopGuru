@@ -16,18 +16,21 @@ router.post('/', upload.none(), async (req, res, next) => {
     const { email, password } = req.body
 
     const [row] = await db.query(
-      'SELECT user_id, email, password FROM users WHERE email = ? AND valid = 1',
+      'SELECT * FROM users WHERE email = ? AND valid = 1',
       [email]
     )
     const user = row[0]
     // 這邊實際上是帳號錯誤
     if (row.length === 0) {
-      return res.json({ status: 'error', message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服' })
+      return res.json({
+        status: 'error',
+        message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服',
+      })
     }
     if (user.valid !== 1) {
-      return res.json({ 
-        status: 'error', 
-        message: '此帳號已被停用' 
+      return res.json({
+        status: 'error',
+        message: '此帳號已被停用',
       })
     }
     // compareHash比對輸入與資料庫中的密碼~

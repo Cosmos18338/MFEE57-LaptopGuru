@@ -68,9 +68,10 @@ export const LoaderProvider = ({
           setShow(true)
           //2.   |- close (自動關閉時間)
           // auto close
-          if (close) { // 如果有設定 close
-            timeout(close * 1000)// 等待 close 秒
-            .then(() => setShow(false)) // 然後關閉 loader
+          if (close) {
+            // 如果有設定 close
+            timeout(close * 1000) // 等待 close 秒
+              .then(() => setShow(false)) // 然後關閉 loader
           }
         },
         hideLoader: () => (!close ? setShow(false) : null),
