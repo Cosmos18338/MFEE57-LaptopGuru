@@ -460,8 +460,8 @@ export default function CartIndex() {
         </div>
       </div>
 
-      <div className="row mb-3">
-        <div className="col-9 cart h-100">
+      <div className="row mb-3 border-bottom p-2">
+        <div className="col-lg-9 col-md-12 cart h-100">
           {cartdata && cartdata.length > 0 ? (
             cartdata.map((item) => (
               <BuyCard
@@ -480,183 +480,6 @@ export default function CartIndex() {
             ))
           ) : (
             <p>購物車是空的</p>
-          )}
-          {cartdata && cartdata.length > 0 ? (
-            <div className="border border-primary rounded w-50 p-3">
-              <h3>確認訂單細節</h3>
-              <h5>收件人</h5>
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="border-primary form-control"
-                  value={receiver}
-                  onChange={(e) => {
-                    setReceiver(e.target.value)
-                  }}
-                />
-              </div>
-              <h5>收件人連絡電話</h5>
-              <div className="mb-2">
-                <input
-                  type="text"
-                  className="border-primary form-control"
-                  value={phone}
-                  onChange={(e) => {
-                    setPhone(e.target.value)
-                  }}
-                />
-              </div>
-              <h5>運送方式</h5>
-              <div className="text-center mb-2">
-                <select
-                  className="form-select border-primary"
-                  onChange={(e) => {
-                    setShip(e.target.value)
-                    if (e.target.value === '7-11') {
-                      setShipPrice(60)
-                    } else {
-                      setShipPrice(200)
-                    }
-                  }}
-                >
-                  <option value="" selected disabled>
-                    選擇運送方式
-                  </option>
-                  <option value="宅配">宅配</option>
-                  <option value="7-11">7-11</option>
-                </select>
-              </div>
-              <div className="address">
-                {ship === '7-11' && (
-                  <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <button
-                        className="btn btn-primary w-50  text-light"
-                        onClick={() => {
-                          openWindow()
-                        }}
-                      >
-                        選擇門市
-                      </button>
-                    </div>
-                    <div className="d-flex justify-content-center mb-2">
-                      <input
-                        type="text"
-                        className="border-primary form-control"
-                        value={store711.storename}
-                        disabled
-                      />
-                    </div>
-                    <div className="d-flex justify-content-center mb-2">
-                      <input
-                        type="text"
-                        className="border-primary form-control"
-                        value={store711.storeaddress}
-                        disabled
-                      />
-                    </div>
-                    <div className="text-center">
-                      <button
-                        className="btn btn-primary text-light mb-2"
-                        onClick={(e) => {
-                          e.preventDefault()
-                          handleAddress(store711.storeaddress)
-                        }}
-                      >
-                        確認收件門市
-                      </button>
-                    </div>
-                  </>
-                )}
-                {ship === '宅配' && (
-                  <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <input
-                        type="text"
-                        className="border-primary form-control"
-                        value={address}
-                        onChange={(e) => {
-                          e.preventDefault()
-                          setAddress(e.target.value)
-                        }}
-                      />
-                    </div>
-                  </>
-                )}
-              </div>
-              <div className="d-flex mb-2">
-                <div className="form-check me-3">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="ecpay"
-                    value={'0'}
-                    checked={payment_method == 0}
-                    onChange={handlePaymentMethod}
-                  />
-                  <label
-                    className="form-check-label"
-                    htmlFor="ecpay"
-                    defaultChecked
-                  >
-                    綠界付款
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="linepay"
-                    value={'1'}
-                    checked={payment_method == 1}
-                    onChange={handlePaymentMethod}
-                  />
-                  <label className="form-check-label" htmlFor="linepay">
-                    Line Pay
-                  </label>
-                </div>
-              </div>
-              {payment_method == 0 ? (
-                <div className="d-flex justify-content-center">
-                  <button
-                    className="btn btn-primary text-light w-50"
-                    onClick={() => {
-                      createOrder()
-                    }}
-                  >
-                    前往結帳
-                  </button>
-                </div>
-              ) : (
-                <></>
-              )}
-              {payment_method == 1 ? (
-                <>
-                  <div className="d-flex justify-content-center mb-2">
-                    <button
-                      className="btn btn-primary text-light"
-                      onClick={createLinePayOrder}
-                    >
-                      產生Line Pay訂單
-                    </button>
-                  </div>
-                  <div className="d-flex justify-content-center">
-                    <button
-                      className="btn btn-primary text-light"
-                      onClick={goLinePay}
-                      // 限制有orderId產生後才能點按
-                      disabled={order.orderId === ''}
-                    >
-                      前往Line Pay付款
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <></>
-              )}
-            </div>
-          ) : (
-            <></>
           )}
         </div>
         <div className="col bill h-50">
@@ -733,6 +556,183 @@ export default function CartIndex() {
           </div>
         </div>
       </div>
+      {cartdata && cartdata.length > 0 ? (
+        <div className="border border-primary rounded w-lg-50 w-md-100 p-3 mb-3">
+          <h3>確認訂單細節</h3>
+          <h5>收件人</h5>
+          <div className="mb-2">
+            <input
+              type="text"
+              className="border-primary form-control"
+              value={receiver}
+              onChange={(e) => {
+                setReceiver(e.target.value)
+              }}
+            />
+          </div>
+          <h5>收件人連絡電話</h5>
+          <div className="mb-2">
+            <input
+              type="text"
+              className="border-primary form-control"
+              value={phone}
+              onChange={(e) => {
+                setPhone(e.target.value)
+              }}
+            />
+          </div>
+          <h5>運送方式</h5>
+          <div className="text-center mb-2">
+            <select
+              className="form-select border-primary"
+              onChange={(e) => {
+                setShip(e.target.value)
+                if (e.target.value === '7-11') {
+                  setShipPrice(60)
+                } else {
+                  setShipPrice(200)
+                }
+              }}
+            >
+              <option value="" selected disabled>
+                選擇運送方式
+              </option>
+              <option value="宅配">宅配</option>
+              <option value="7-11">7-11</option>
+            </select>
+          </div>
+          <div className="address">
+            {ship === '7-11' && (
+              <>
+                <div className="d-flex justify-content-center mb-2">
+                  <button
+                    className="btn btn-primary w-50  text-light"
+                    onClick={() => {
+                      openWindow()
+                    }}
+                  >
+                    選擇門市
+                  </button>
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <input
+                    type="text"
+                    className="border-primary form-control"
+                    value={store711.storename}
+                    disabled
+                  />
+                </div>
+                <div className="d-flex justify-content-center mb-2">
+                  <input
+                    type="text"
+                    className="border-primary form-control"
+                    value={store711.storeaddress}
+                    disabled
+                  />
+                </div>
+                <div className="text-center">
+                  <button
+                    className="btn btn-primary text-light mb-2"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      handleAddress(store711.storeaddress)
+                    }}
+                  >
+                    確認收件門市
+                  </button>
+                </div>
+              </>
+            )}
+            {ship === '宅配' && (
+              <>
+                <div className="d-flex justify-content-center mb-2">
+                  <input
+                    type="text"
+                    className="border-primary form-control"
+                    value={address}
+                    onChange={(e) => {
+                      e.preventDefault()
+                      setAddress(e.target.value)
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+          <div className="d-flex mb-2">
+            <div className="form-check me-3">
+              <input
+                className="form-check-input"
+                type="radio"
+                id="ecpay"
+                value={'0'}
+                checked={payment_method == 0}
+                onChange={handlePaymentMethod}
+              />
+              <label
+                className="form-check-label"
+                htmlFor="ecpay"
+                defaultChecked
+              >
+                綠界付款
+              </label>
+            </div>
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="radio"
+                id="linepay"
+                value={'1'}
+                checked={payment_method == 1}
+                onChange={handlePaymentMethod}
+              />
+              <label className="form-check-label" htmlFor="linepay">
+                Line Pay
+              </label>
+            </div>
+          </div>
+          {payment_method == 0 ? (
+            <div className="d-flex justify-content-center">
+              <button
+                className="btn btn-primary text-light w-50"
+                onClick={() => {
+                  createOrder()
+                }}
+              >
+                前往結帳
+              </button>
+            </div>
+          ) : (
+            <></>
+          )}
+          {payment_method == 1 ? (
+            <>
+              <div className="d-flex justify-content-center mb-2">
+                <button
+                  className="btn btn-primary text-light"
+                  onClick={createLinePayOrder}
+                >
+                  產生Line Pay訂單
+                </button>
+              </div>
+              <div className="d-flex justify-content-center">
+                <button
+                  className="btn btn-primary text-light"
+                  onClick={goLinePay}
+                  // 限制有orderId產生後才能點按
+                  disabled={order.orderId === ''}
+                >
+                  前往Line Pay付款
+                </button>
+              </div>
+            </>
+          ) : (
+            <></>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
     </>
   )
 }
