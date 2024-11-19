@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Swal from 'sweetalert2'
-import { useAuth } from '@/hooks/use-auth'
+import { useAuth, logout } from '@/hooks/use-auth'
 import axios from 'axios'
 import { taiwanData } from '@/data/address/data.js'
 import styles from '@/styles/dashboard.module.scss'
 
 export default function UserProfile() {
-  const { auth, setAuth } = useAuth()
+  const { auth, setAuth, logout } = useAuth()
   const user_id = auth?.userData?.user_id
   const [editableUser, setEditableUser] = useState({
     name: '',
@@ -174,7 +174,7 @@ export default function UserProfile() {
             image_path: userData.image_path || '',
             remarks: userData.remarks || '',
             valid: userData.valid ?? 1,
-            // email: userData.email || '',
+            email: userData.email || '',
           })
 
           // 如果國家是台灣，啟用地址選擇
@@ -294,6 +294,7 @@ export default function UserProfile() {
   }
 
   const handleDeactivate = async () => {
+    // const {logout} = useAuth()
     try {
       const isConfirmed = await Swal.fire({
         title: '確定要停用帳號嗎？',
@@ -325,7 +326,13 @@ export default function UserProfile() {
           confirmButtonColor: '#805AF5',
         })
         // 可選：重新導向到登出頁面或首頁
-        // window.location.href = '/logout'
+        try {
+          await logout()
+          window.location.href = '/'
+        } catch (logoutError) {
+          console.error('登出錯誤:', logoutError)
+          window.location.href = '/'
+        }
       }
     } catch (error) {
       console.error('停用失敗:', error)
