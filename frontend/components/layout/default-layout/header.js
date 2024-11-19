@@ -72,7 +72,7 @@ export default function Header(props) {
       })
         .then((res) => res.json())
         .then((data) => {
-          setImagePath(data.image_path)
+          setImagePath(data?.image_path || '/Vector.svg')
         })
     }
   }, [user_id])
