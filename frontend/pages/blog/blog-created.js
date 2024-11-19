@@ -20,11 +20,11 @@ export default function Blogcreated(props) {
   // -------------------使用者-------------------
 
   // 2. 用戶驗證，如果沒有登入就導向首頁或登入頁
-  useEffect(() => {
-    if (!isAuth) {
-      router.push('http://localhost:3000/member/login')
-    }
-  }, [isAuth, router])
+  // useEffect(() => {
+  //   if (!isAuth) {
+  //     router.push('http://localhost:3000/member/login')
+  //   }
+  // }, [isAuth, router])
   // -------------------使用者-------------------
 
   const brands = [
@@ -85,7 +85,7 @@ export default function Blogcreated(props) {
 
       const result = await response.json()
 
-      if (response.ok) {
+      if (response.success) {
         alert('部落格新增成功')
         if (result.blog_id) {
           // 導航到新建立的文章頁面
