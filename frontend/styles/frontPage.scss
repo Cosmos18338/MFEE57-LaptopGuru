@@ -253,6 +253,11 @@
 
 /* Small mobile screens (576px and below) */
 @media screen and (max-width: 576px) {
+  .home-section1 {
+    display: flex;
+    justify-content: space-between; /* 或使用 flex-end */
+  }
+
   .home-welcome,
   .home-guru,
   .home-laptop {
@@ -260,8 +265,20 @@
   }
 
   .home-guru {
-    bottom: 25px;
-    /* 調整間距 */
+    width: 50%;
+    bottom: 0px;
+  }
+
+  .home-laptop {
+    width: 50%;
+    bottom: 0px;
+    margin-left: auto; /* 這會讓元素靠右 */
+  }
+
+  /* 如果要讓 home-guru 和 home-laptop 並排，可以加入 */
+  .home-section1 {
+    display: flex;
+    flex-wrap: wrap;
   }
 
   .home-welcome span,
@@ -270,7 +287,6 @@
     font-size: 0.7em;
   }
 }
-
 /* banner*/
 .home-section1 {
   display: flex;
@@ -670,7 +686,7 @@
 
 .home-section3 {
   display: flex;
-  max-width: 1700px;
+  max-width: 1650px;
   width: 100%;
   padding: 68px 0px;
   flex-direction: column;
@@ -1187,7 +1203,7 @@
   .home-slider-container {
     width: 100%;
   }
-  
+
   .home-arrow-left,
   .home-arrow-right {
     width: 40px;

@@ -16,8 +16,8 @@ export default function DefaultLayout({ title = 'Next-BS5', children }) {
       </Head>
       <Header />
       <main className="flex-shrink-0">
-        {/* <div className="container"> */}
-        {/* <NextBreadCrumb isHomeIcon isChevron bgClass="bg-transparent" /> */}
+        {/* <div className="container">
+          <NextBreadCrumb isHomeIcon isChevron bgClass="bg-transparent" /> */}
         {children}
         {/* </div> */}
         {/* 全域的載入動畫指示器 */}

@@ -169,9 +169,7 @@ export default function List() {
             </div>
           </div>
         </div>
-        <nav className={`${styles.product_breadcrumb}`}>
-          <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
-        </nav>
+        <nav className={`${styles.product_breadcrumb}`}></nav>
         <input
           type="checkbox"
           id="product_aside_toggle"

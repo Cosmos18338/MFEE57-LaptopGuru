@@ -159,14 +159,13 @@ export default function LogIn(props) {
                     <button
                       type="button"
                       className="btn position-absolute end-0 top-50 vertical-adjustment border-0 ${styles[eye-icon]}"
-                      
                       onClick={() => setShowpassword(!showpassword)}
-                      style={{ 
-                        background: 'none', 
-                        zIndex: 2, 
+                      style={{
+                        background: 'none',
+                        zIndex: 2,
                         // 使用 !important 強制覆蓋
                         transform: 'translateY(calc(50% - 20px))',
-                        right: '10px'
+                        right: '10px',
                       }}
                     >
                       {showpassword ? (
