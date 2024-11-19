@@ -3,36 +3,7 @@ import EventCard from '@/components/event/EventCard'
 import Carousel from '@/components/event/Carousel'
 import EventNavbar from '@/components/event/EventNavbar'
 import axios from 'axios'
-
-// 分頁標籤組件
-const EventTabs = ({ activeTab, setActiveTab, onTabChange }) => {
-  const tabs = ['所有活動', '進行中', '即將開始報名', '報名中', '已結束']
-
-  return (
-    <div className="event-nav-container">
-      <ul className="nav nav-underline justify-content-center gap-5">
-        {tabs.map((tab) => (
-          <li key={tab} className="nav-item">
-            <a
-              className={`nav-link event-nav-link ${
-                activeTab === tab ? 'active' : ''
-              }`}
-              href="#"
-              onClick={(e) => {
-                e.preventDefault()
-                setActiveTab(tab)
-                onTabChange(tab)
-              }}
-            >
-              {tab}
-            </a>
-          </li>
-        ))}
-      </ul>
-      <div className="event-nav-line" />
-    </div>
-  )
-}
+import EventTabs from '@/components/event/EventTabs'
 
 // 分頁導航組件
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
@@ -116,6 +87,12 @@ export default function Event() {
   const [activeTab, setActiveTab] = useState('所有活動')
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
+  const [filters, setFilters] = useState({
+    type: null,
+    platform: null,
+    teamType: null,
+    search: null,
+  })
 
   // 獲取活動資料
   const fetchEvents = async (page = currentPage, status = activeTab) => {
@@ -128,6 +105,10 @@ export default function Event() {
           page,
           pageSize: 12,
           status: status === '所有活動' ? '' : status,
+          type: filters.type,
+          platform: filters.platform,
+          teamType: filters.teamType,
+          keyword: filters.search,
         },
       })
 
@@ -157,10 +138,17 @@ export default function Event() {
     return () => clearInterval(interval)
   }, [])
 
+  // 當篩選器改變時重新獲取數據
+  useEffect(() => {
+    if (filters.type !== undefined) {
+      fetchEvents(1, activeTab)
+    }
+  }, [filters])
+
   // 處理分頁變更
   const handlePageChange = (page) => {
     setCurrentPage(page)
-    fetchEvents(page)
+    fetchEvents(page, activeTab)
   }
 
   // 處理分類變更
@@ -169,11 +157,24 @@ export default function Event() {
     fetchEvents(1, tab)
   }
 
+  // 處理篩選變更
+  const handleFilterChange = (newFilters) => {
+    console.log('New filters:', newFilters)
+    setFilters((prev) => ({
+      ...prev,
+      type: newFilters.type,
+      platform: newFilters.platform,
+      teamType: newFilters.teamType,
+      search: newFilters.search,
+    }))
+    setCurrentPage(1)
+  }
+
   return (
     <>
-      <Carousel />
       <div className="event-wrapper">
-        <EventNavbar />
+        <Carousel />
+        <EventNavbar onFilterChange={handleFilterChange} />
         <EventTabs
           activeTab={activeTab}
           setActiveTab={setActiveTab}
@@ -230,3 +231,4 @@ export default function Event() {
     </>
   )
 }
+// Event.getLayout = (page) => page

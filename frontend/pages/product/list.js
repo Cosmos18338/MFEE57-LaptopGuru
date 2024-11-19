@@ -7,6 +7,7 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import Image from 'next/image'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 export default function List() {
   // 利用網址列的參數來過濾產品
@@ -152,6 +153,10 @@ export default function List() {
 
   return (
     <>
+      <Head>
+        <title>產品列表</title>
+        <meta name="description" content="Product List" />
+      </Head>
       <Header />
       <div className={`${styles.product_container}`}>
         <div className={`${styles.product_banner}`}>
@@ -164,9 +169,7 @@ export default function List() {
             </div>
           </div>
         </div>
-        <nav className={`${styles.product_breadcrumb}`}>
-          <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
-        </nav>
+        <nav className={`${styles.product_breadcrumb}`}></nav>
         <input
           type="checkbox"
           id="product_aside_toggle"
