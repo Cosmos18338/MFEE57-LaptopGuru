@@ -16,7 +16,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     const { email, password } = req.body
 
     const [row] = await db.query(
-      'SELECT user_id, email, password FROM users WHERE email = ? AND valid = 1',
+      'SELECT * FROM users WHERE email = ? AND valid = 1',
       [email]
     )
     const user = row[0]
