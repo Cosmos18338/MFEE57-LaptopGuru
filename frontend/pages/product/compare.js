@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { useRouter } from 'next/router'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
+import Head from 'next/head'
 export default function Compare() {
   const [compareProduct, setCompareProduct] = useState([])
   const [productDataFirst, setProductDataFirst] = useState([])
@@ -56,6 +57,9 @@ export default function Compare() {
 
   return (
     <>
+      <Head>
+        <title>比較</title>
+      </Head>
       <Header />
       <div className={`${styles.compare_container}`}>
         <nav className={`${styles.compare_breadcrumb}`}>
