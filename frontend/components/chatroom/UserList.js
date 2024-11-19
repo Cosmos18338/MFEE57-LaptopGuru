@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import styles from '@/styles/Chat.module.css'
+import requestStyles from '@/components/group/GroupRequestList.module.css'
 import { Nav, ListGroup } from 'react-bootstrap'
 import Image from 'next/image'
 import websocketService from '@/services/websocketService'
@@ -90,9 +91,12 @@ export default function UserList({
         {
           id: data.requestId,
           sender_id: data.fromUser,
+          sender_name: data.senderName,
           game_id: data.gameId,
           description: data.description,
+          group_name: data.groupName,
           status: 'pending',
+          created_at: new Date().toISOString(),
         },
       ])
     })
@@ -104,6 +108,7 @@ export default function UserList({
           req.id === data.requestId ? { ...req, status: data.status } : req
         )
       )
+      fetchInitialData()
     })
 
     websocketService.on('groupMemberUpdate', () => {
@@ -135,7 +140,11 @@ export default function UserList({
 
       if (data.status === 'success') {
         setRequests((prev) =>
-          prev.map((req) => (req.id === requestId ? { ...req, status } : req))
+          prev.map((req) =>
+            req.id === requestId
+              ? { ...req, status, updated_at: new Date() }
+              : req
+          )
         )
 
         websocketService.send({
@@ -143,6 +152,7 @@ export default function UserList({
           requestId,
           status,
           fromID: currentUser,
+          timestamp: new Date().toISOString(),
         })
 
         fetchInitialData()
@@ -159,58 +169,79 @@ export default function UserList({
         <h4>聊天列表</h4>
       </div>
 
-      <Nav variant="tabs" className={styles.chatTabs}>
-        <Nav.Item>
-          <Nav.Link
-            className={styles.chatTab}
-            active={showTab === 'private'}
-            onClick={() => setShowTab('private')}
-          >
-            私人訊息
-            {requests.filter((r) => r.status === 'pending').length > 0 && (
-              <span className={styles.badge}>
-                {requests.filter((r) => r.status === 'pending').length}
-              </span>
-            )}
-          </Nav.Link>
-        </Nav.Item>
-        <Nav.Item>
-          <Nav.Link
-            className={styles.chatTab}
-            active={showTab === 'group'}
-            onClick={() => setShowTab('group')}
-          >
-            群組訊息
-          </Nav.Link>
-        </Nav.Item>
-      </Nav>
+      <div className={styles.chatTabs}>
+        <button
+          className={`${styles.chatTab} ${
+            showTab === 'private' ? styles.active : ''
+          }`}
+          onClick={() => setShowTab('private')}
+        >
+          私人訊息
+          {requests.filter((r) => r.status === 'pending').length > 0 && (
+            <span className={styles.badge}>
+              {requests.filter((r) => r.status === 'pending').length}
+            </span>
+          )}
+        </button>
+        <button
+          className={`${styles.chatTab} ${
+            showTab === 'group' ? styles.active : ''
+          }`}
+          onClick={() => setShowTab('group')}
+        >
+          群組訊息
+        </button>
+      </div>
 
       <div className={styles.userListContent}>
         {showTab === 'private' && (
           <>
             {requests.filter((r) => r.status === 'pending').length > 0 && (
-              <div className={styles.requestsList}>
-                <h5 className={styles.requestsTitle}>待處理申請</h5>
+              <div className={requestStyles.requestsList}>
+                <h5 className={requestStyles.requestsTitle}>待處理申請</h5>
                 {requests
                   .filter((request) => request.status === 'pending')
                   .map((request) => (
                     <div
                       key={`request-${request.id}`}
-                      className={styles.requestItem}
+                      className={requestStyles.requestItem}
                     >
-                      <p>申請者：{request.sender_name || '未知用戶'}</p>
-                      <p>遊戲ID：{request.game_id}</p>
-                      <p>自我介紹：{request.description}</p>
-                      <div className={styles.requestActions}>
+                      <div className={requestStyles.userInfo}>
+                        <div className={requestStyles.avatar}>
+                          {request.sender_image ? (
+                            <Image
+                              src={request.sender_image}
+                              alt={request.sender_name}
+                              width={48}
+                              height={48}
+                              className={requestStyles.avatarImage}
+                            />
+                          ) : (
+                            <div className={requestStyles.avatarPlaceholder}>
+                              {request.sender_name?.[0] || '?'}
+                            </div>
+                          )}
+                        </div>
+                        <div className={requestStyles.details}>
+                          <h4>{request.sender_name || '未知用戶'}</h4>
+                          <p className={requestStyles.gameId}>
+                            遊戲ID: {request.game_id}
+                          </p>
+                          <p className={requestStyles.description}>
+                            {request.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className={requestStyles.actions}>
                         <button
                           onClick={() => handleRequest(request.id, 'accepted')}
-                          className={styles.acceptButton}
+                          className={requestStyles.acceptButton}
                         >
                           接受
                         </button>
                         <button
                           onClick={() => handleRequest(request.id, 'rejected')}
-                          className={styles.rejectButton}
+                          className={requestStyles.rejectButton}
                         >
                           拒絕
                         </button>
