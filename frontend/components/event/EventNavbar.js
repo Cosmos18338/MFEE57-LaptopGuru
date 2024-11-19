@@ -1,23 +1,97 @@
-import { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IoSearch } from 'react-icons/io5'
 import Dropdown from './Dropdown'
 import styles from './EventNavbar.module.css'
+import axios from 'axios'
 
-const EventNavbar = () => {
+const EventNavbar = ({ onFilterChange }) => {
   const [searchTerm, setSearchTerm] = useState('')
+  const [gameTypes, setGameTypes] = useState([])
+  const [platforms, setPlatforms] = useState([])
+  const [selectedType, setSelectedType] = useState('全部遊戲')
+  const [selectedPlatform, setSelectedPlatform] = useState('平台')
+  const [selectedTeamType, setSelectedTeamType] = useState('個人/團隊')
+
+  useEffect(() => {
+    const fetchFilters = async () => {
+      try {
+        const typesResponse = await axios.get(
+          'http://localhost:3005/api/events/filters/types'
+        )
+        if (typesResponse.data.code === 200) {
+          setGameTypes(typesResponse.data.data)
+        }
+
+        const platformsResponse = await axios.get(
+          'http://localhost:3005/api/events/filters/platforms'
+        )
+        if (platformsResponse.data.code === 200) {
+          setPlatforms(platformsResponse.data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching filters:', error)
+      }
+    }
+
+    fetchFilters()
+  }, [])
 
   const handleSearch = (e) => {
     e.preventDefault()
-    console.log('Searching for:', searchTerm)
+    updateFilters(searchTerm)
+  }
+
+  const handleSearchInputChange = (e) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    updateFilters(value)
+  }
+
+  const updateFilters = (searchValue) => {
+    if (onFilterChange) {
+      onFilterChange({
+        type: selectedType === '全部遊戲' ? null : selectedType,
+        platform: selectedPlatform === '平台' ? null : selectedPlatform,
+        teamType: selectedTeamType === '個人/團隊' ? null : selectedTeamType,
+        search: searchValue.trim() || null,
+      })
+    }
+  }
+
+  const handleTypeChange = (type) => {
+    setSelectedType(type)
+    updateFilters(searchTerm)
+  }
+
+  const handlePlatformChange = (platform) => {
+    setSelectedPlatform(platform)
+    updateFilters(searchTerm)
+  }
+
+  const handleTeamTypeChange = (teamType) => {
+    setSelectedTeamType(teamType)
+    updateFilters(searchTerm)
   }
 
   return (
     <nav className={`navbar ${styles.eventNavbar} navbar-dark`}>
       <div className={styles.containerFluid}>
         <div className={styles.dropdownWrapper}>
-          <Dropdown title="全部遊戲" items={['遊戲 1', '遊戲 2', '遊戲 3']} />
-          <Dropdown title="平台" items={['平台 1', '平台 2', '平台 3']} />
-          <Dropdown title="個人/團隊" items={['個人', '團隊']} />
+          <Dropdown
+            title={selectedType}
+            items={['全部遊戲', ...gameTypes]}
+            onSelect={handleTypeChange}
+          />
+          <Dropdown
+            title={selectedPlatform}
+            items={['平台', ...platforms]}
+            onSelect={handlePlatformChange}
+          />
+          <Dropdown
+            title={selectedTeamType}
+            items={['個人/團隊', '個人', '團隊']}
+            onSelect={handleTeamTypeChange}
+          />
         </div>
 
         <form className={styles.searchForm} onSubmit={handleSearch}>
@@ -27,7 +101,7 @@ const EventNavbar = () => {
               className={styles.searchInput}
               placeholder="搜尋活動"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchInputChange}
             />
             <button className={styles.searchButton} type="submit">
               <IoSearch className={styles.searchIcon} />
