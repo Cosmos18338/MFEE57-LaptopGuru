@@ -4,7 +4,7 @@ export default function MyFooter() {
       <div className="conatiner p-5">
         <div className="row m-3 border-bottom border-light">
           <div className="col-5">
-            <div className="logo">
+            <div className="footer-logo">
               <img src="/logo.svg" alt="網站 Logo" />
             </div>
           </div>

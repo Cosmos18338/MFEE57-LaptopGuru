@@ -22,7 +22,13 @@ router.post('/', upload.none(), async (req, res, next) => {
     const user = row[0]
     // 這邊實際上是帳號錯誤
     if (row.length === 0) {
-      return res.json({ status: 'error', message: '帳號或密碼錯誤' })
+      return res.json({ status: 'error', message: '帳號或密碼錯誤。或已停用本帳號，請聯繫客服' })
+    }
+    if (user.valid !== 1) {
+      return res.json({ 
+        status: 'error', 
+        message: '此帳號已被停用' 
+      })
     }
     // compareHash比對輸入與資料庫中的密碼~
     const passwordMatch = await compareHash(password, user.password)
@@ -61,7 +67,7 @@ router.post('/', upload.none(), async (req, res, next) => {
     console.error('登入錯誤:', error)
     res.status(500).json({
       status: 'error',
-      message: '系統錯誤',
+      message: '系統錯誤或帳號已停用',
     })
   }
 })

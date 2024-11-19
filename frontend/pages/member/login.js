@@ -11,6 +11,7 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
 import { useLoader } from '@/hooks/use-loader'
+import Head from 'next/head'
 // 這裡是我原本陽春的登入功能
 
 export default function LogIn(props) {
@@ -42,7 +43,7 @@ export default function LogIn(props) {
         }),
       })
       const result = await response.json()
-  
+
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
         router.push('/dashboard')
@@ -67,6 +68,10 @@ export default function LogIn(props) {
 
   return (
     <>
+      <Head>
+        <title>登入</title>
+      </Head>
+
       <Header />
       <div className={`${styles['gradient-bg']} ${styles['login-bg']}`}>
         <Image
@@ -141,7 +146,7 @@ export default function LogIn(props) {
                     <input
                       type={showpassword ? 'text' : 'password'}
                       value={password}
-                      autocomplete="new-password"
+                      autoComplete="new-password"
                       onChange={(e) => {
                         setPassword(e.target.value)
                       }}
@@ -153,9 +158,16 @@ export default function LogIn(props) {
                     {/* 這個button是 眼睛*/}
                     <button
                       type="button"
-                      className="btn position-absolute end-0 top-50 translate-middle-y border-0 ${styles[eye-icon]}"
+                      className="btn position-absolute end-0 top-50 vertical-adjustment border-0 ${styles[eye-icon]}"
+                      
                       onClick={() => setShowpassword(!showpassword)}
-                      style={{ background: 'none', zIndex: 2 }}
+                      style={{ 
+                        background: 'none', 
+                        zIndex: 2, 
+                        // 使用 !important 強制覆蓋
+                        transform: 'translateY(calc(50% - 20px))',
+                        right: '10px'
+                      }}
                     >
                       {showpassword ? (
                         <AiOutlineEyeInvisible size={20} color="#E0B0FF" />
@@ -194,8 +206,7 @@ export default function LogIn(props) {
                     )}
                   </div>
                   <div className="d-flex justify-content-center">
-                  <Link href="./forget-password">
-                  忘記密碼</Link>
+                    <Link href="./forget-password">忘記密碼</Link>
                   </div>
 
                   <button
