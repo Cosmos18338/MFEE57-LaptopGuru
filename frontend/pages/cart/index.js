@@ -9,6 +9,7 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 import CouponBtn from '@/components/coupon/coupon-btn'
 import axiosInstance from '@/services/axios-instance'
+import Head from 'next/head'
 
 export default function CartIndex() {
   const router = useRouter()
@@ -446,6 +447,10 @@ export default function CartIndex() {
 
   return (
     <>
+      <Head>
+        <title>購物車</title>
+      </Head>
+
       <div className="tilte d-flex mb-3">
         <div className="logo border-end me-3">
           <img src="/logo-black.svg" />

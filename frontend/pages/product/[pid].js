@@ -10,6 +10,7 @@ import ProductCard from '@/components/product/product-card'
 import { useAuth } from '@/hooks/use-auth'
 import { forEach } from 'lodash'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
+import Head from 'next/head'
 export default function Detail() {
   // 從網址列的參數取得商品ID，並透過ID取得商品資料
   const router = useRouter()
@@ -274,12 +275,13 @@ export default function Detail() {
   }
   return (
     <>
+      <Head>
+        <title>{}</title>
+      </Head>
       <Header />
       <div className={styles.customBody}>
         <div className={styles.customContainer}>
-          <nav className={`${styles.breadcrumb}`}>
-            <NextBreadCrumbLight bgClass="transparent" isHomeIcon="true" />
-          </nav>
+          <nav className={`${styles.breadcrumb}`}></nav>
           <section className={styles.col1}>
             <div className={styles.menu}>
               <div className={styles.square}>
@@ -477,6 +479,9 @@ export default function Detail() {
             <div className={styles.productSpecs}>
               <div className={styles.title2}>產品規格</div>
               <ul>
+                {!isLoading && data?.affordance && (
+                  <li>用途： {data.affordance}</li>
+                )}
                 {!isLoading && data?.product_CPU && (
                   <li>處理器： {data.product_CPU}</li>
                 )}
