@@ -12,7 +12,6 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
 import { useLoader } from '@/hooks/use-loader'
 
-
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
   const { renderJumpingText } = useJumpingLetters()
@@ -23,7 +22,6 @@ export default function LogIn(props) {
   const [errors, setErrors] = useState({ error: ' ' })
   const { showLoader, hideLoader } = useLoader()
 
-  // 以上還是不太確定為什麼需要用狀態管理。登入頁不就送出帳密比對主要這功能就好了嗎？
   const handleSubmit = async (e) => {
     e.preventDefault()
     const formData = new FormData(e.target)
@@ -42,7 +40,7 @@ export default function LogIn(props) {
         }),
       })
       const result = await response.json()
-  
+
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
         router.push('/dashboard')
@@ -106,79 +104,81 @@ export default function LogIn(props) {
                 </Link>
               </div>
               <form
-                className="mt-5 position-relative align-items-center"
+                className="mt-5 position-relative"
                 onSubmit={handleSubmit}
               >
-                 <div className={styles['inputs-group']}>
-                <div className="inputs position-relative">
-                  <div className="position-relative">
-                    <label htmlFor="email" className={`form-label text-white`}>
-                      帳號(信箱)
-                    </label>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => {
-                        setEmail(e.target.value)
-                      }}
-                      className={`form-control ${styles.inputs}`}
-                      name="email"
-                      required // 添加必填
-                    />
-                    <MdOutlineEmail
-                      className={`${styles['input-icon']}`}
-                      size={22}
-                      style={{ color: '#E0B0FF' }} // 使用淺粉紫色
-                    />
-                  </div>
+                <div className={styles['inputs-group']}>
+                  <div className="inputs position-relative">
+                    <div className="position-relative">
+                      <label
+                        htmlFor="email"
+                        className={`form-label text-white`}
+                      >
+                        帳號(信箱)
+                      </label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value)
+                        }}
+                        className={`form-control ${styles.inputs}`}
+                        name="email"
+                        required // 添加必填
+                      />
+                      <MdOutlineEmail
+                        className={`${styles['input-icon']}`}
+                        size={22}
+                        style={{ color: '#E0B0FF' }} // 使用淺粉紫色
+                      />
+                    </div>
 
-                  <div className="position-relative">
-                    <label
-                      htmlFor="password"
-                      className={`form-label text-white`}
-                    >
-                      密碼
-                    </label>
-                    <input
-                      type={showpassword ? 'text' : 'password'}
-                      value={password}
-                      autoComplete="new-password"
-                      onChange={(e) => {
-                        setPassword(e.target.value)
-                      }}
-                      id="password"
-                      name="password" // 添加 name
-                      className={`form-control ${styles.inputs}`}
-                      required // 添加必填
-                    />
-                    {/* 這個button是 眼睛*/}
-                    <button
-                      type="button"
-                      className="btn position-absolute end-0 top-50 vertical-adjustment border-0 ${styles[eye-icon]}"
-                      
-                      onClick={() => setShowpassword(!showpassword)}
-                      style={{ 
-                        background: 'none', 
-                        zIndex: 2, 
-                        // 使用 !important 強制覆蓋
-                        transform: 'translateY(calc(50% - 20px))',
-                        right: '10px'
-                      }}
-                    >
-                      {showpassword ? (
-                        <AiOutlineEyeInvisible size={20} color="#E0B0FF" />
-                      ) : (
-                        <AiOutlineEye size={20} color="#E0B0FF" />
-                      )}
-                    </button>
+                    <div className="position-relative">
+                      <label
+                        htmlFor="password"
+                        className={`form-label text-white`}
+                      >
+                        密碼
+                      </label>
+                      <input
+                        type={showpassword ? 'text' : 'password'}
+                        value={password}
+                        autoComplete="new-password"
+                        onChange={(e) => {
+                          setPassword(e.target.value)
+                        }}
+                        id="password"
+                        name="password" // 添加 name
+                        className={`form-control ${styles.inputs}`}
+                        required // 添加必填
+                      />
+                      {/* 這個button是 眼睛*/}
+                      <button
+                        type="button"
+                        className="btn position-absolute end-0 top-50 vertical-adjustment border-0 ${styles[eye-icon]}"
+                        onClick={() => setShowpassword(!showpassword)}
+                        style={{
+                          background: 'none',
+                          zIndex: 2,
+                          // 使用 !important 強制覆蓋
+                          transform: 'translateY(calc(50% - 20px))',
+                          right: '10px',
+                        }}
+                      >
+                        {showpassword ? (
+                          <AiOutlineEyeInvisible size={20} color="#E0B0FF" />
+                        ) : (
+                          <AiOutlineEye size={20} color="#E0B0FF" />
+                        )}
+                      </button>
 
-                    {/* <MdLockOutline
+                      {/* <MdLockOutline
                       className={`${styles['input-icon']}`}
                       size={22}
                       style={{ color: '#E0B0FF', cursor: 'pointer' }}
                     /> */}
-                  </div>
-                  {/* <div className="form-text">
+                    </div>
+                    {/* <div className="form-text">
                     <input
                       type="checkbox"
                       name=""
@@ -193,34 +193,38 @@ export default function LogIn(props) {
                     <span className="text-white">顯示密碼</span>
                   </div> */}
 
-                  <div
-                    id="Error_message"
-                    className={`form-text text-white p-5`}
-                  >
-                    {errors.message && (
-                      <div className="error">{errors.message}</div>
-                    )}
-                  </div>
-                  <div className="d-flex justify-content-center">
-                  <Link href="./forget-password">
-                  忘記密碼</Link>
-                  </div>
+                    <div
+                      id="Error_message"
+                      className={`form-text text-white p-5`}
+                    >
+                      {errors.message && (
+                        <div className="error">{errors.message}</div>
+                      )}
+                    </div>
 
-                  <button
-                    onClick={() => {
-                      login
-                    }}
-                    className={`text-white border-0 ${styles.button} `}
-                    type="submit"
-                  >
-                    送出
-                    <MdArrowForward
-                      size={20}
-                      className={styles['button-icon']}
-                      style={{ marginLeft: '8px' }}
-                    />
-                  </button>
-                </div>
+                    <div className="center-of-bottom-group d-flex flex-wrap justify-content-around">
+                      <div className="row">
+                        <Link className="text-white" href="./forget-password">
+                          忘記密碼
+                        </Link>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          login
+                        }}
+                        className={`text-white  btn btn-primary border-0 ${styles.button} `}
+                        type="submit"
+                      >
+                        送出
+                        <MdArrowForward
+                          size={20}
+                          className={styles['button-icon']}
+                          style={{ marginLeft: '8px' }}
+                        />
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </form>
               .
