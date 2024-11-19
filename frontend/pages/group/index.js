@@ -12,31 +12,44 @@ const Group = () => {
   const eventId = searchParams.get('eventId')
   const eventName = searchParams.get('eventName')
 
-  // 分頁狀態
+  // 狀態設定
   const [currentPage, setCurrentPage] = useState(1)
   const [totalPages, setTotalPages] = useState(30)
   const [groups, setGroups] = useState([])
   const [filteredGroups, setFilteredGroups] = useState([])
   const [loading, setLoading] = useState(true)
-
-  // 搜尋和篩選狀態
   const [searchTerm, setSearchTerm] = useState('')
-  const [sortOrder, setSortOrder] = useState('newest') // 'newest' 或 'oldest'
+  const [sortOrder, setSortOrder] = useState('newest')
   const [filterEvent, setFilterEvent] = useState(eventId || 'all')
 
   // Modal 狀態
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isJoinModalOpen, setIsJoinModalOpen] = useState(false)
   const [selectedGroup, setSelectedGroup] = useState(null)
+  const [events, setEvents] = useState([])
 
   useEffect(() => {
     fetchGroups()
+    fetchEvents()
   }, [currentPage])
 
-  // 當搜尋條件、排序或篩選改變時，重新過濾群組
   useEffect(() => {
     filterAndSortGroups()
   }, [searchTerm, sortOrder, filterEvent, groups])
+
+  const fetchEvents = async () => {
+    try {
+      const response = await fetch('http://localhost:3005/api/group/events', {
+        credentials: 'include',
+      })
+      const data = await response.json()
+      if (data.status === 'success') {
+        setEvents(data.data.events || [])
+      }
+    } catch (error) {
+      console.error('獲取活動列表失敗:', error)
+    }
+  }
 
   const fetchGroups = async () => {
     try {
@@ -62,11 +75,9 @@ const Group = () => {
     }
   }
 
-  // 過濾和排序群組
   const filterAndSortGroups = () => {
     let result = [...groups]
 
-    // 搜尋過濾
     if (searchTerm) {
       result = result.filter(
         (group) =>
@@ -75,12 +86,12 @@ const Group = () => {
       )
     }
 
-    // 活動篩選
     if (filterEvent && filterEvent !== 'all') {
-      result = result.filter((group) => group.event_id === filterEvent)
+      result = result.filter(
+        (group) => group.event_id === parseInt(filterEvent)
+      )
     }
 
-    // 時間排序
     result.sort((a, b) => {
       const timeA = new Date(a.creat_time).getTime()
       const timeB = new Date(b.creat_time).getTime()
@@ -89,25 +100,9 @@ const Group = () => {
 
     setFilteredGroups(result)
     setTotalPages(Math.ceil(result.length / 8))
-    setCurrentPage(1) // 重置頁碼
+    setCurrentPage(1)
   }
 
-  // 搜尋處理
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value)
-  }
-
-  // 排序處理
-  const handleSort = (e) => {
-    setSortOrder(e.target.value)
-  }
-
-  // 篩選處理
-  const handleFilter = (e) => {
-    setFilterEvent(e.target.value)
-  }
-
-  // 詳情 Modal 控制函數
   const handleOpenModal = (groupData) => {
     setSelectedGroup({
       id: groupData.group_id,
@@ -132,7 +127,6 @@ const Group = () => {
     document.body.style.overflow = 'unset'
   }
 
-  // 申請 Modal 控制函數
   const handleOpenJoinModal = (groupData) => {
     if (!groupData) {
       setIsModalOpen(false)
@@ -151,7 +145,6 @@ const Group = () => {
     document.body.style.overflow = 'unset'
   }
 
-  // 生成頁碼數組
   const generatePaginationItems = () => {
     let items = []
     items.push(1)
@@ -177,14 +170,12 @@ const Group = () => {
     return items
   }
 
-  // 處理頁面切換
   const handlePageChange = (page) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page)
     }
   }
 
-  // 計算當前頁面應顯示的群組
   const getCurrentPageGroups = () => {
     const startIndex = (currentPage - 1) * 8
     return filteredGroups.slice(startIndex, startIndex + 8)
@@ -214,12 +205,20 @@ const Group = () => {
                   : '/group/groupCreat'
               }
               style={{ textDecoration: 'none' }}
-            ></Link>
+            >
+              <EventButton>創建揪團</EventButton>
+            </Link>
           </div>
         </nav>
 
         {/* 搜尋和篩選區域 */}
-        <GroupNavbar />
+        <GroupNavbar
+          events={events}
+          onEventFilter={setFilterEvent}
+          onSearch={setSearchTerm}
+          onSort={setSortOrder}
+          initialEventId={eventId}
+        />
 
         {/* 內容區域 */}
         <div className="group-content">

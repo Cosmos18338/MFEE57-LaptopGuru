@@ -66,19 +66,19 @@ router.put('/:user_id', async (req, res) => {
 
 // 變更密碼單獨抓出來一個區域做處理
 router.put('/pwdCheck/:user_id', async (req, res) => {
-  console.log('收到請求參數:', req.params);
+  // console.log('收到請求參數:', req.params);
   // 在後端可以通過 req.params.user_id 取得這個值
-  console.log('收到請求內容:', req.body);  //
+  // console.log('收到請求內容:', req.body);  
     const { user_id } = req.params
     const { currentPassword } = req.body
-    console.log(currentPassword);
+    // console.log(currentPassword);
 try{
     // 檢查當前密碼是否正確
-    console.log('檢查參數:', {
-      user_id,
-      currentPassword,
-      currentPasswordType: typeof currentPassword,
-    })
+    // console.log('檢查參數:', {
+    //   user_id,
+    //   currentPassword,
+    //   currentPasswordType: typeof currentPassword,
+    // })
     const [users] = await db.query(
       'SELECT password FROM users WHERE user_id = ?',
       [user_id]

@@ -16,6 +16,7 @@ export default function BuyList(order) {
   const receiver = order.order.receiver
   const phone = order.order.phone
   const address = order.order.address
+  const payment_method = order.order.payment_method
 
   const getOrderDetail = async () => {
     const res = await fetch(
@@ -38,6 +39,21 @@ export default function BuyList(order) {
     } catch (err) {
       console.log(err)
     }
+  }
+
+  const goLinePay = () => {
+    MySwal.fire({
+      icon: 'info',
+      title: '確認要導向至LINE Pay進行付款?',
+      showCancelButton: true,
+      confirmButtonText: '確認',
+      cancelButtonText: '取消',
+    }).then((result) => {
+      localStorage.removeItem('store711')
+      if (result.isConfirmed) {
+        window.location.href = `http://localhost:3005/api/line-pay/reserve?orderId=${order_id}`
+      }
+    })
   }
 
   const handlePay = async () => {
@@ -105,22 +121,41 @@ export default function BuyList(order) {
               </div>
               <div className="col-6">收件人： {receiver}</div>
               <div className="col-6">聯絡電話： {phone}</div>
-              <div className="">收件地址： {address}</div>
+              <div className="col-6">收件地址： {address}</div>
+              {payment_method == 1 ? (
+                <div className="col-6">付款方式： Line Pay</div>
+              ) : (
+                <></>
+              )}
+              {payment_method == 0 ? (
+                <div className="col-6">付款方式： 綠界支付</div>
+              ) : (
+                <></>
+              )}
             </div>
             {orderDetail.map((item, index) => {
               return <BuyItemCard key={index} item={item} />
             })}
             {alreadyPay ? (
               <></>
+            ) : payment_method == 1 ? (
+              <div className="d-flex justify-content-end">
+                <button
+                  className="btn btn-primary text-light"
+                  onClick={goLinePay}
+                >
+                  前往Line Pay付款
+                </button>
+              </div>
             ) : (
-              <>
+              <div className="d-flex justify-content-end">
                 <button
                   className="btn btn-primary text-light"
                   onClick={handlePay}
                 >
-                  前往付款
+                  前往綠界支付
                 </button>
-              </>
+              </div>
             )}
           </Accordion.Body>
         </Accordion.Item>

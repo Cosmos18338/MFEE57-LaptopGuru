@@ -1,5 +1,5 @@
 .container {
-    font-family: Khula, Montserrat, "Noto Sans TC", sans-serif;
+    /* font-family: Khula, Montserrat, "Noto Sans TC", sans-serif; */
     font-weight: bold;
     color: #ffffff;
     display: flex;
@@ -76,7 +76,7 @@
   .alphabet {
     display: inline-block;
     transform-origin: center bottom;
-    font-family: Montserrat, "Noto Sans TC", sans-serif;
+    /* font-family: Montserrat, "Noto Sans TC", sans-serif; */
     font-weight: bold;
     color: #ffffff;
     font-size: calc(1.5rem + 2vw); /* RWD 文字大小 */

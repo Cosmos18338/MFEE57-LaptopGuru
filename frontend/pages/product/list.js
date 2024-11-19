@@ -7,6 +7,7 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import Image from 'next/image'
 import BackToTop2 from '@/components/BackToTop/BackToTop2'
 import { useRouter } from 'next/router'
+import Head from 'next/head'
 
 export default function List() {
   // 利用網址列的參數來過濾產品
@@ -133,10 +134,17 @@ export default function List() {
   // 狀態顯示訊息
 
   const [alertMessage, setAlertMessages] = useState([]) // 使用陣列儲存訊息
-
+  const [alertType, setAlertType] = useState() // 設定訊息類型
   // 新增訊息到陣列
-  const handleShowMessage = (message) => {
-    setAlertMessages((prevMessages) => [...prevMessages, message])
+  const handleShowMessage = (message, type) => {
+    if (type === 'success') {
+      setAlertType('alert-success')
+      setAlertMessages((prevMessages) => [...prevMessages, message])
+    } else {
+      setAlertType('alert-danger')
+      setAlertMessages((prevMessages) => [...prevMessages, message])
+    }
+
     setTimeout(() => {
       // 1 秒後移除最早的訊息
       setAlertMessages((prevMessages) => prevMessages.slice(1))
@@ -145,6 +153,10 @@ export default function List() {
 
   return (
     <>
+      <Head>
+        <title>產品列表</title>
+        <meta name="description" content="Product List" />
+      </Head>
       <Header />
       <div className={`${styles.product_container}`}>
         <div className={`${styles.product_banner}`}>
@@ -190,6 +202,7 @@ export default function List() {
             <div className={`${styles.product_aside_content}`}>
               <input
                 type="text"
+                id="search"
                 className={`${styles.product_search}`}
                 placeholder="Search"
                 onInput={(e) =>
@@ -1088,7 +1101,7 @@ export default function List() {
         {alertMessage.map((msg, index) => (
           <div
             key={index}
-            className="alert alert-success alert-dismissible fade show"
+            className={`alert ${alertType} alert-dismissible fade show`}
             style={{
               zIndex: 9999,
               position: 'fixed',

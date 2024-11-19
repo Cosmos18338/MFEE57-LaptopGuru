@@ -8,32 +8,37 @@ import styles from '@/styles/signUpForm.module.scss'
 import { useRouter } from 'next/router'
 import Swal from 'sweetalert2'
 import { useJumpingLetters } from '@/hooks/jumping-letters-hook'
+import Head from 'next/head'
 
 export default function Signup() {
   // 處理失焦
   const { renderJumpingText } = useJumpingLetters()
 
-  
   const validatePassword = (password) => {
+    //函式內宣告2個變數
     const rules = {
       minLength: password.length >= 8,
-      hasUpperCase: /[A-Z]/.test(password),
+      hasUpperCase: /[A-Z]/.test(password), //2
       hasLowerCase: /[a-z]/.test(password),
       hasNumber: /\d/.test(password),
     }
 
     const messages = {
       minLength: '密碼至少需要8個字元',
-      hasUpperCase: '需要包含大寫字母',
+      hasUpperCase: '需要包含大寫字母', //2
       hasLowerCase: '需要包含小寫字母',
       hasNumber: '需要包含數字',
     }
 
-    return Object.entries(rules)
-      .filter(([rule, valid]) => !valid)
-      // !valid 意思是找出值是 false 的規則
-      .map(([rule]) => messages[rule])
-      // 用 rule 當作 key 去 messages 物件找對應的訊息
+    // 函式的返回值
+    //  Object.entries() 是產生新的陣列，不會影響到原物件
+    return (
+      Object.entries(rules)
+        .filter(([rule, valid]) => !valid)
+        // !valid 意思是找出值是 false 的規則
+        .map(([rule]) => messages[rule])
+    )
+    // 用 rule 當作 key 去 messages 物件找對應的訊息
   }
 
   const router = useRouter()
@@ -108,7 +113,7 @@ export default function Signup() {
 
     try {
       setSubmitError('')
-      
+
       if (!validateForm()) {
         return
       }
@@ -120,7 +125,6 @@ export default function Signup() {
         }))
         return
       }
-
 
       const response = await axios.post(
         `http://localhost:3005/api/signup`,
@@ -177,6 +181,10 @@ export default function Signup() {
 
   return (
     <>
+      <Head>
+        <title>註冊</title>
+      </Head>
+
       <Header />
       <div className={styles['gradient-bg']}>
         <Image
@@ -209,14 +217,14 @@ export default function Signup() {
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/login"
                 >
-                  登入Log in
+                  登入
                 </Link>
-                <span className="text-white">|</span>
+                <span className="text-white">| </span>
                 <Link
                   className={`${styles.hover} text-decoration-none text-white`}
                   href="/member/signup"
                 >
-                  註冊Sign Up
+                  註冊
                 </Link>
               </div>
               {submitError && (
@@ -238,7 +246,6 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.email}
                       onChange={handleFieldChange}
-                      
                     />
                     {errors.email && (
                       <div className="error">{errors.email}</div>
@@ -298,7 +305,6 @@ export default function Signup() {
                         onChange={() =>
                           setShowConfirmpassword(!showConfirmpassword)
                         }
-                        
                         className="form-check-input"
                       />
                       <label
@@ -324,7 +330,6 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.phone}
                       onChange={handleFieldChange}
-                      
                     />
                   </div>
 
@@ -339,7 +344,6 @@ export default function Signup() {
                       className={`form-control ${styles.inputs}`}
                       value={user.birthdate}
                       onChange={handleFieldChange}
-                      
                     />
                   </div>
 
@@ -353,7 +357,6 @@ export default function Signup() {
                       className={`form-select ${styles.inputs}`}
                       value={user.gender}
                       onChange={handleFieldChange}
-                      
                     >
                       <option value="">請選擇</option>
                       <option value="女">女</option>
@@ -371,8 +374,6 @@ export default function Signup() {
                         checked={user.agree}
                         onChange={handleFieldChange}
                         className="form-check-input"
-                        
-
                       />
                       <label
                         htmlFor="agree"
@@ -386,7 +387,10 @@ export default function Signup() {
                     )}
                   </div>
 
-                  <button type="submit" className="btn btn-primary w-100 text-white">
+                  <button
+                    type="submit"
+                    className="btn btn-primary w-100 text-white"
+                  >
                     送出
                   </button>
                 </div>

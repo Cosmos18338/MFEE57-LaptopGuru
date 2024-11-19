@@ -46,24 +46,40 @@ const ArticleSection = () => {
       imageLeft: true,
       link: 'https://www.bilibili.com/video/BV1jkxyeVEG5/?spm_id_from=333.788.player.switch&vd_source=1b25005216ba454333811619f6788cea',
     },
+    {
+      id: 6,
+      image: '/images/index/banner_09.jpg',
+      title: '文章開頭',
+      text: '經過上述討論，dbfdf的發生，到底需要如何做到...',
+      imageLeft: false,
+      link: 'https://www.bilibili.com/video/BV1jkxyeVEG5/?spm_id_from=333.788.player.switch&vd_source=1b25005216ba454333811619f6788cea',
+    },
   ]
 
   const handleNext = () => {
-    if (currentIndex < articles.length - articlesPerView - 1) {
-      setCurrentIndex((prev) => prev + 1)
-      if (containerRef.current) {
-        containerRef.current.style.transform = `translateY(-${
-          (currentIndex + 1) * 400
-        }px)`
-      }
-    } else if (currentIndex === articles.length - articlesPerView - 1) {
-      setCurrentIndex((prev) => prev + 1)
-      if (containerRef.current) {
-        containerRef.current.style.transform = `translateY(-${
-          (currentIndex + 1) * 200
-        }px)`
+    const mobileHeight = window.innerWidth <= 768 ? 600 : 400
+    const articleHeight = window.innerWidth <= 480 ? 500 : mobileHeight
+    const maxScroll = 1600 // 設定最大滾動距離
+
+    if (currentIndex < articles.length - articlesPerView) {
+      // 計算下一個滾動位置
+      const nextScrollPosition = (currentIndex + 1) * articleHeight
+
+      if (nextScrollPosition > maxScroll) {
+        // 如果超過最大滾動距離，回到頂部
+        setCurrentIndex(0)
+        if (containerRef.current) {
+          containerRef.current.style.transform = 'translateY(0)'
+        }
+      } else {
+        // 否則繼續往下滾動
+        setCurrentIndex((prev) => prev + 1)
+        if (containerRef.current) {
+          containerRef.current.style.transform = `translateY(-${nextScrollPosition}px)`
+        }
       }
     } else {
+      // 到達最後一篇文章時回到頂部
       setCurrentIndex(0)
       if (containerRef.current) {
         containerRef.current.style.transform = 'translateY(0)'
