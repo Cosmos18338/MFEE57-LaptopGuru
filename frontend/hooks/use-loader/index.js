@@ -46,6 +46,8 @@ export const LoaderProvider = ({
     const handleChangeEnd = () => {
       // 2. auto close
       if (close && global) {
+        console.log('Starting close timer:', close * 1000, 'ms');
+
         timeout(close * 1000).then(() => setShow(false))
       }
     }

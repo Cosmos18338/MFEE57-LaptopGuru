@@ -11,8 +11,7 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
 import { useLoader } from '@/hooks/use-loader'
-import Head from 'next/head'
-// 這裡是我原本陽春的登入功能
+
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
@@ -43,7 +42,7 @@ export default function LogIn(props) {
         }),
       })
       const result = await response.json()
-
+  
       if (result.status === 'success') {
         console.log('登入前端接上後端成功')
         router.push('/dashboard')
@@ -68,17 +67,13 @@ export default function LogIn(props) {
 
   return (
     <>
-      <Head>
-        <title>登入</title>
-      </Head>
-
       <Header />
       <div className={`${styles['gradient-bg']} ${styles['login-bg']}`}>
         <Image
           src="/bgi/signup_bgi.png"
           alt="background"
           layout="fill"
-          objectFit="cover"
+          // objectFit="cover"
           quality={100}
         />
         <div className="container">
@@ -111,9 +106,10 @@ export default function LogIn(props) {
                 </Link>
               </div>
               <form
-                className="mt-5 position-relative d-flex justify-content-center align-items-center"
+                className="mt-5 position-relative align-items-center"
                 onSubmit={handleSubmit}
               >
+                 <div className={styles['inputs-group']}>
                 <div className="inputs position-relative">
                   <div className="position-relative">
                     <label htmlFor="email" className={`form-label text-white`}>
@@ -206,7 +202,8 @@ export default function LogIn(props) {
                     )}
                   </div>
                   <div className="d-flex justify-content-center">
-                    <Link href="./forget-password">忘記密碼</Link>
+                  <Link href="./forget-password">
+                  忘記密碼</Link>
                   </div>
 
                   <button
@@ -223,6 +220,7 @@ export default function LogIn(props) {
                       style={{ marginLeft: '8px' }}
                     />
                   </button>
+                </div>
                 </div>
               </form>
               .

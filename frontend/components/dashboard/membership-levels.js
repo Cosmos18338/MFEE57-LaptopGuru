@@ -167,7 +167,7 @@ export default function MembershipLevels() {
           </h2>
           <div className="d-flex justify-content-center">
             <h3 className="text-white">
-              目前是{getMembershipLevel(level_chinese)}
+              {getMembershipLevel(level_chinese)}
             </h3>
           </div>
         </div>
