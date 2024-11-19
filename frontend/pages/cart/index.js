@@ -510,7 +510,7 @@ export default function CartIndex() {
               <div className="row border-bottom border-primary mb-2 pb-2">
                 {payment_method == 0 ? (
                   <>
-                    <div className="text-center mb-2">
+                    <div className="mb-2">
                       <CouponBtn
                         price={total}
                         setCouponValue={setCouponDetails}
