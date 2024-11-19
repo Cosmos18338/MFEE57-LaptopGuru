@@ -8,6 +8,8 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -17,15 +19,7 @@ export default function Blogcreated(props) {
   const { isAuth, userData } = auth // 一起解構
   const user_id = userData.user_id
   console.log(user_id)
-  // -------------------使用者-------------------
 
-  // 2. 用戶驗證，如果沒有登入就導向首頁或登入頁
-  // useEffect(() => {
-  //   if (!isAuth) {
-  //     router.push('http://localhost:3000/member/login')
-  //   }
-  // }, [isAuth, router])
-  // -------------------使用者-------------------
 
   const brands = [
     ['ROG', 'DELL', 'Acer', 'Raser'],
@@ -85,27 +79,27 @@ export default function Blogcreated(props) {
 
       const result = await response.json()
 
-      if (response.success) {
-        alert('部落格新增成功')
+      if (result.success && result.message === '新增成功') {
+        alert('部落格新增成功')  // 先跳 alert
         if (result.blog_id) {
-          // 導航到新建立的文章頁面
-          router.push(`/blog/blog-user-detail/${result.blog_id}`)
+          toast.success('部落格新增成功')  // 再跳 toast
+          router.push(`/blog`)
         }
       } else {
         alert(`發生錯誤: ${result.message}`)
+        toast.error(`發生錯誤: ${result.message}`)
       }
     } catch (error) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
+      toast.error('發生錯誤，請稍後再試')
     }
-  }
-  if (!isAuth) {
-    return null // 或是返回一個 loading 元件
   }
 
   return (
     <>
       <Header />
+      <ToastContainer />  {/* 加在這裡 */}
       <BlogDetailMainArea />
       <div className="container mt-5">
         <NextBreadCrumb
