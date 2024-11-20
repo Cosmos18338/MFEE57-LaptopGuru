@@ -8,6 +8,9 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import Link from 'next/link'
 import { IoArrowBackCircleOutline } from 'react-icons/io5'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 export default function BlogUserEdit() {
   const router = useRouter()
@@ -139,7 +142,12 @@ export default function BlogUserEdit() {
       )
 
       if (response.ok) {
-        window.alert('編輯成功！') // 加入這行
+        // window.alert('編輯成功！') // 加入這行
+        MySwal.fire({
+          title: '編輯成功！',
+          icon: 'success',
+          confirmButtonText: '確定',
+        })
         router.push('/blog/blog-edit-success') // 改用這個路徑
       }
     } catch (error) {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Container } from 'react-bootstrap'
 import { useRouter } from 'next/router'
 import ChatRoom from '@/components/chatroom/ChatRoom'
@@ -83,6 +83,11 @@ export default function Chat() {
     })
   }
 
+  const handleLeaveRoom = useCallback(async () => {
+    setCurrentRoom(null)
+    await fetchInitialData(currentUser)
+  }, [currentUser])
+
   const handleSendMessage = (e) => {
     e.preventDefault()
     if (!message.trim() || !currentRoom) return
@@ -127,7 +132,11 @@ export default function Chat() {
         />
 
         <div className={styles.chatContent}>
-          <ChatRoom currentUser={currentUser} currentRoom={currentRoom} />
+          <ChatRoom
+            currentUser={currentUser}
+            currentRoom={currentRoom}
+            onLeaveRoom={handleLeaveRoom}
+          />
         </div>
       </div>
 

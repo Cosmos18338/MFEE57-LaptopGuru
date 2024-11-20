@@ -8,8 +8,14 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
+<<<<<<< HEAD
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+=======
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
+>>>>>>> origin/dev
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -79,13 +85,24 @@ export default function Blogcreated(props) {
 
       const result = await response.json()
 
+<<<<<<< HEAD
       if (result.success && result.message === '新增成功') {
         alert('部落格新增成功')  // 先跳 alert
+=======
+      if (response.ok) {
+        MySwal.fire({
+          icon: 'success',
+          title: '部落格新增成功',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+>>>>>>> origin/dev
         if (result.blog_id) {
           toast.success('部落格新增成功')  // 再跳 toast
           router.push(`/blog`)
         }
       } else {
+<<<<<<< HEAD
         alert(`發生錯誤: ${result.message}`)
         toast.error(`發生錯誤: ${result.message}`)
       }
@@ -93,6 +110,24 @@ export default function Blogcreated(props) {
       console.error('錯誤:', error)
       alert('發生錯誤，請稍後再試')
       toast.error('發生錯誤，請稍後再試')
+=======
+        MySwal.fire({
+          icon: 'error',
+          title: '部落格新增失敗',
+          showConfirmButton: false,
+          timer: 1500,
+        })
+      }
+    } catch (error) {
+      console.error('錯誤:', error)
+
+      MySwal.fire({
+        icon: 'error',
+        title: '部落格新增失敗',
+        showConfirmButton: false,
+        timer: 1500,
+      })
+>>>>>>> origin/dev
     }
   }
 
