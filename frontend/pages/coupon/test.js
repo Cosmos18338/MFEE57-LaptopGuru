@@ -5,6 +5,7 @@ import CouponBtn from '@/components/coupon/coupon-btn'
 // import { useRouter } from 'next/router'
 import Coupon2 from '@/components/coupon/index2'
 import CouponList from '@/components/coupon/coupon-list-components'
+import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation'
 
 const MySwal = withReactContent(Swal)
 
@@ -84,6 +85,7 @@ export default function Checkout() {
         price={selectedProduct.list_price}
         setCouponValue={setCoupon}
       />
+      <LoadingAnimation/>
     </div>
   )
 }

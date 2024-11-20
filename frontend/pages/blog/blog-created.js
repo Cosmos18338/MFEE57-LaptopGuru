@@ -8,6 +8,9 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -86,17 +89,33 @@ export default function Blogcreated(props) {
       const result = await response.json()
 
       if (response.ok) {
-        alert('部落格新增成功')
+        MySwal.fire({
+          icon: 'success',
+          title: '部落格新增成功',
+          showConfirmButton: false,
+          timer: 1500,
+        })
         if (result.blog_id) {
           // 導航到新建立的文章頁面
           router.push(`/blog/blog-user-detail/${result.blog_id}`)
         }
       } else {
-        alert(`發生錯誤: ${result.message}`)
+        MySwal.fire({
+          icon: 'error',
+          title: '部落格新增失敗',
+          showConfirmButton: false,
+          timer: 1500,
+        })
       }
     } catch (error) {
       console.error('錯誤:', error)
-      alert('發生錯誤，請稍後再試')
+
+      MySwal.fire({
+        icon: 'error',
+        title: '部落格新增失敗',
+        showConfirmButton: false,
+        timer: 1500,
+      })
     }
   }
   if (!isAuth) {
