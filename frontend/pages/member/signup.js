@@ -191,7 +191,8 @@ export default function Signup() {
           src="/bgi/signup_bgi.png"
           alt="background"
           layout="fill"
-          objectFit="cover"
+          // style={{objectFit:'cover'}}
+          // objectFit="cover"
           quality={100}
         />
         <div className="container">
@@ -337,6 +338,7 @@ export default function Signup() {
                     <label htmlFor="birthdate" className={styles.white}>
                       生日
                     </label>
+                    <div className="">
                     <input
                       type="date"
                       id="birthdate"
@@ -345,6 +347,8 @@ export default function Signup() {
                       value={user.birthdate}
                       onChange={handleFieldChange}
                     />
+                    </div>
+                    
                   </div>
 
                   <div className="mb-3">

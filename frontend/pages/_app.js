@@ -33,7 +33,7 @@ import { LoaderProvider } from '@/hooks/use-loader'
 
 import DefaultLayout from '@/components/layout/default-layout'
 // 自訂用載入動畫元件
-import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
+// import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
 import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // event的scss
 import '../styles/event.scss'
@@ -61,7 +61,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+      <LoaderProvider close={0.5} CustomLoader={LoadingSpinner}>
         <GroupAuthProvider>
           <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
         </GroupAuthProvider>
