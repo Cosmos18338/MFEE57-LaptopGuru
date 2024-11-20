@@ -16,6 +16,40 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
     messageListRef.current.scrollTop = messageListRef.current.scrollHeight
   }, [])
 
+  const handleLeaveRoom = async () => {
+    if (window.confirm('確定要離開此聊天室嗎？')) {
+      try {
+        const response = await fetch(
+          `http://localhost:3005/api/chat/rooms/${currentRoom}/leave`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            credentials: 'include',
+          }
+        )
+
+        if (!response.ok) {
+          throw new Error('離開聊天室失敗')
+        }
+
+        websocketService.send({
+          type: 'leaveRoom',
+          roomID: currentRoom,
+          fromID: currentUser,
+          message: '已離開聊天室',
+        })
+
+        setMessages([])
+        onLeaveRoom && onLeaveRoom()
+      } catch (error) {
+        console.error('離開聊天室失敗:', error)
+        alert('離開聊天室失敗，請稍後再試')
+      }
+    }
+  }
+
   const handleNewMessage = useCallback(
     (data) => {
       if (data.room_id === currentRoom || data.roomId === currentRoom) {
@@ -138,23 +172,6 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
     [currentRoom, scrollToBottom]
   )
 
-  const handleLeaveRoom = () => {
-    if (window.confirm('確定要離開此聊天室嗎？')) {
-      websocketService.send({
-        type: 'leaveRoom',
-        roomID: currentRoom,
-        fromID: currentUser,
-        message: '已離開聊天室',
-      })
-
-      // 清空訊息和當前房間狀態
-      setMessages([])
-      if (typeof onLeaveRoom === 'function') {
-        onLeaveRoom()
-      }
-    }
-  }
-
   useEffect(() => {
     if (currentUser) {
       websocketService.connect(currentUser)
@@ -176,14 +193,6 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
     websocketService.on('memberLeft', handleMemberUpdate)
 
     return () => {
-      if (currentRoom) {
-        websocketService.send({
-          type: 'leaveRoom',
-          roomID: currentRoom,
-          fromID: currentUser,
-        })
-      }
-
       websocketService.off('message', handleNewMessage)
       websocketService.off('system', handleSystemMessage)
       websocketService.off('roomJoined', handleRoomJoined)
@@ -272,7 +281,7 @@ export default function ChatRoom({ currentUser, currentRoom, onLeaveRoom }) {
         <div className={styles.chatHeader}>
           <button onClick={handleLeaveRoom} className={styles.leaveButton}>
             <LogOut size={20} />
-            <span className={styles.leaveButtonText}></span>
+            <span className={styles.leaveButtonText}>離開聊天室</span>
           </button>
         </div>
       )}
