@@ -85,10 +85,6 @@ export default function Blogcreated(props) {
 
       const result = await response.json()
 
-<<<<<<< HEAD
-      if (result.success && result.message === '新增成功') {
-        alert('部落格新增成功')  // 先跳 alert
-=======
       if (response.ok) {
         MySwal.fire({
           icon: 'success',
@@ -96,21 +92,11 @@ export default function Blogcreated(props) {
           showConfirmButton: false,
           timer: 1500,
         })
->>>>>>> origin/dev
         if (result.blog_id) {
           toast.success('部落格新增成功')  // 再跳 toast
           router.push(`/blog`)
         }
       } else {
-<<<<<<< HEAD
-        alert(`發生錯誤: ${result.message}`)
-        toast.error(`發生錯誤: ${result.message}`)
-      }
-    } catch (error) {
-      console.error('錯誤:', error)
-      alert('發生錯誤，請稍後再試')
-      toast.error('發生錯誤，請稍後再試')
-=======
         MySwal.fire({
           icon: 'error',
           title: '部落格新增失敗',
@@ -127,7 +113,6 @@ export default function Blogcreated(props) {
         showConfirmButton: false,
         timer: 1500,
       })
->>>>>>> origin/dev
     }
   }
 
