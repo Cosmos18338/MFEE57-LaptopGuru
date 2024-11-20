@@ -10,7 +10,7 @@ const HotProducts = () => {
   const products = [
     {
       id: 1,
-      image: '/images/index/banner_05.jpg',
+      image: '/images/index/banner_05.png',
       title: 'Product 1',
       link: 'https://www.bilibili.com/video/BV1jkxyeVEG5/?spm_id_from=333.788.player.switch&vd_source=1b25005216ba454333811619f6788cea',
     },
