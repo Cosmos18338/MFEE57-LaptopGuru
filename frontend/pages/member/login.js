@@ -109,7 +109,7 @@ export default function LogIn(props) {
               >
                 <div className={styles['inputs-group']}>
                   <div className="inputs position-relative">
-                    <div className="position-relative">
+                    <div className="position-relative mt-5">
                       <label
                         htmlFor="email"
                         className={`form-label text-white`}
@@ -133,7 +133,7 @@ export default function LogIn(props) {
                       />
                     </div>
 
-                    <div className="position-relative">
+                    <div className="position-relative mt-5">
                       <label
                         htmlFor="password"
                         className={`form-label text-white`}
