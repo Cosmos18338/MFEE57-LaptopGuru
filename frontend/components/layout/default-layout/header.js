@@ -1,11 +1,14 @@
 import Link from 'next/link'
-import React, { useState, useEffect, use } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/hooks/use-auth'
 import Swal from 'sweetalert2'
 import { useRouter } from 'next/router'
-export default function Header(props) {
-  const { auth, logout } = useAuth() // 獲取 auth 對象
-  const { isAuth, userData } = auth // 獲取 isAuth
+import { MessageCircle } from 'lucide-react'
+import { ShoppingCart } from 'lucide-react'
+
+export default function Header() {
+  const { auth, logout } = useAuth()
+  const { isAuth, userData } = auth
   const [user_id, setUserId] = useState('')
   const router = useRouter()
   const [image_path, setImagePath] = useState('/Vector.svg')
@@ -22,18 +25,11 @@ export default function Header(props) {
         confirmButtonText: '確定登出',
         cancelButtonText: '取消',
       })
-      console.log(result)
-      //所以按下cancelButtonText:'取消' 因為swal 他就會自動跑去找到取消的部分了嗎
-      // 檢查用戶是否點擊確認
-      if (!result.isConfirmed) {
-        // 這邊會是false
-        return
-      }
 
-      // 執行登出
+      if (!result.isConfirmed) return
+
       await logout()
 
-      // 登出成功提示
       await Swal.fire({
         title: '登出成功',
         text: '您已成功登出',
@@ -42,10 +38,8 @@ export default function Header(props) {
         confirmButtonColor: '#805AF5',
       })
 
-      // 可選：重導向到首頁或登入頁
       setTimeout(() => {
         router.push('/member/login')
-        // 導向登入頁
       }, 1000)
     } catch (error) {
       console.error('登出失敗:', error)
@@ -72,8 +66,20 @@ export default function Header(props) {
       })
         .then((res) => res.json())
         .then((data) => {
-          setImagePath(data?.image_path || '/Vector.svg')
+          const defaultImage =
+            data?.gender === 'male'
+              ? 'signup_login/undraw_profile_2.svg'
+              : data?.gender === 'female'
+              ? 'signup_login/undraw_profile_1.svg'
+              : '/Vector.svg'
+
+          setImagePath(data?.image_path || defaultImage)
         })
+    }
+
+    document.body.style.paddingTop = '75px'
+    return () => {
+      document.body.style.paddingTop = '0px'
     }
   }, [user_id])
 
@@ -83,92 +89,350 @@ export default function Header(props) {
     } else {
       setUserId(null)
     }
+    // 動態設置 body 的 padding-top
+    document.body.style.paddingTop = '75px'
+    return () => {
+      // 清除設置
+      document.body.style.paddingTop = '0px'
+    }
   }, [userData])
 
+  const navItems = [
+    { name: '首頁', path: '/' },
+    { name: '產品', path: '/product' },
+    { name: '比較', path: '/product/compare' },
+    { name: '活動', path: '/event' },
+    { name: '揪團', path: '/group' },
+    { name: '部落格', path: '/blog' },
+  ]
+
   return (
-    <>
-      <header>
-        <div className="container d-flex p-3 align-items-center">
-          <Link className="logo me-auto" href="/">
-            <img src="/logo.svg" />
+    <header className="tech-nav">
+      <div className="nav-container">
+        <div className="nav-left">
+          <Link href="/" className="logo-link">
+            <img src="/logo.svg" alt="Logo" className="logo" />
           </Link>
-          <div className="me-3 nav-list">
-            <Link className={`text-light me-3`} href="/">
-              首頁
+        </div>
+
+        <div className="nav-center">
+          {navItems.map((item) => (
+            <Link
+              key={item.path}
+              href={item.path}
+              className={`nav-item ${
+                router.pathname === item.path ? 'active' : ''
+              }`}
+              style={{ textDecoration: 'none' }}
+            >
+              <span>{item.name}</span>
+              {router.pathname === item.path && (
+                <div className="active-indicator" />
+              )}
             </Link>
-            <Link className={`text-light me-3`} href="/product">
-              產品
-            </Link>
-            <Link className={`text-light me-3`} href="/product/compare">
-              比較
-            </Link>
-            <Link className={`text-light me-3`} href="/event">
-              活動
-            </Link>
-            <Link className={`text-light me-3`} href="/group">
-              揪團
-            </Link>
-            <Link className={`text-light me-3`} href="/blog">
-              部落格
-            </Link>
-          </div>
-          {isAuth == true ? (
-            <>
+          ))}
+        </div>
+
+        <div className="nav-right">
+          {isAuth ? (
+            <div className="auth-section">
               <Link href="/dashboard">
-                <div className="user-avater me-3">
-                  <img src={image_path} />
+                <div className="user-avatar">
+                  <img src={image_path} alt="User" />
                 </div>
               </Link>
-              <Link href="/cart">
-                <div className="cart me-3">
-                  <img src="/cart.svg" />
-                </div>
+              <Link href="/chatroom" className="icon-wrapper">
+                <MessageCircle className="icon" size={24} />
               </Link>
-              <button
-                className="btn btn-primary text-white border-0"
-                onClick={handleLogout}
-              >
+              <Link href="/cart" className="icon-wrapper">
+                <ShoppingCart className="icon" size={24} />
+              </Link>
+              <button className="logout-btn" onClick={handleLogout}>
                 登出
               </button>
-            </>
+            </div>
           ) : (
-            <>
+            <div className="auth-buttons">
               <Link href="/member/login">
-                <button className="btn btn-primary text-white me-3 border-0">
-                  登入
-                </button>
+                <button className="auth-btn login">登入</button>
               </Link>
               <Link href="/member/signup">
-                <button className="btn btn-primary text-white border-0">
-                  註冊
-                </button>
+                <button className="auth-btn signup">註冊</button>
               </Link>
-            </>
+            </div>
           )}
         </div>
-      </header>
+      </div>
 
-      <style jsx>
-        {`
-          .header-hover {
-            cursor: pointer;
-            color: red;
+      <style jsx>{`
+        body {
+          padding-top: 75px;
+        }
+        .tech-nav {
+          background: linear-gradient(
+            90deg,
+            rgba(15, 5, 30, 0.95) 0%,
+            rgba(20, 10, 40, 0.95) 50%,
+            rgba(15, 5, 30, 0.95) 100%
+          );
+          backdrop-filter: blur(12px);
+          border-bottom: 1px solid rgba(128, 90, 245, 0.15);
+          padding: 0.5rem 4rem;
+          position: fixed;
+          width: 100%;
+          top: 0;
+          height: 75px;
+          box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+          z-index: 99999999999999999999;
+        }
+
+        .nav-container {
+          max-width: 1800px;
+          margin: 0 auto;
+          display: grid;
+          grid-template-columns: 1fr auto 1fr;
+          align-items: center;
+          gap: 3rem;
+          height: 100%;
+        }
+
+        .nav-left {
+          justify-self: start;
+        }
+
+        .logo {
+          height: 45px;
+          filter: drop-shadow(0 0 8px rgba(128, 90, 245, 0.3));
+          transition: all 0.3s ease;
+        }
+
+        .logo:hover {
+          filter: drop-shadow(0 0 15px rgba(128, 90, 245, 0.6));
+          transform: scale(1.05);
+        }
+
+        .nav-center {
+          display: flex;
+          justify-content: center;
+          gap: 3rem;
+        }
+
+        .nav-item {
+          position: relative;
+          padding: 0.5rem 0;
+          transition: all 0.3s ease;
+        }
+
+        .nav-item span {
+          color: rgba(255, 255, 255, 0.85);
+          font-size: 1rem;
+          font-weight: 500;
+          letter-spacing: 0.8px;
+          transition: all 0.3s ease;
+        }
+
+        .nav-item:hover span {
+          color: #805af5;
+          text-shadow: 0 0 15px rgba(128, 90, 245, 0.5);
+        }
+
+        .nav-item.active span {
+          color: #805af5;
+          text-shadow: 0 0 20px rgba(128, 90, 245, 0.6);
+        }
+
+        .active-indicator {
+          position: absolute;
+          bottom: -5px;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            #805af5,
+            #9d7af5,
+            #805af5,
+            transparent
+          );
+          background-size: 200% auto;
+          animation: gradient 3s linear infinite;
+          box-shadow: 0 0 10px rgba(128, 90, 245, 0.5),
+            0 0 20px rgba(128, 90, 245, 0.3);
+           {
           }
-          .user-avater {
-            width: 40px; /* 調整尺寸 */
-            height: 40px;
-            border-radius: 50%; /* 圓形 */
-            overflow: hidden; /* 隱藏超出的部分 */
-            display: inline-block; /* 讓外層成為包覆容器 */
+        }
+
+        @keyframes gradient {
+          0% {
+            background-position: 200% center;
+          }
+          100% {
+            background-position: -200% center;
+          }
+        }
+
+        .nav-right {
+          justify-self: end;
+          display: flex;
+          align-items: center;
+          gap: 1.8rem;
+        }
+
+        .auth-section {
+          display: flex;
+          align-items: center;
+          gap: 1.8rem;
+        }
+
+        .user-avatar {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          overflow: hidden;
+          border: 2px solid rgba(128, 90, 245, 0.5);
+          transition: all 0.3s ease;
+          filter: drop-shadow(0 0 8px rgba(128, 90, 245, 0.3));
+        }
+
+        .user-avatar:hover {
+          transform: scale(1.05);
+          border-color: #805af5;
+          filter: drop-shadow(0 0 15px rgba(128, 90, 245, 0.6));
+        }
+
+        .user-avatar img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .icon-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          transition: all 0.3s ease;
+          filter: drop-shadow(0 0 8px rgba(128, 90, 245, 0.3));
+        }
+
+        .icon-wrapper:hover {
+          filter: drop-shadow(0 0 15px rgba(128, 90, 245, 0.6));
+          transform: scale(1.05);
+        }
+
+        .icon {
+          color: rgba(255, 255, 255, 0.85);
+          height: 24px;
+          width: 24px;
+        }
+
+        .auth-btn,
+        .logout-btn {
+          padding: 0.5rem 1.5rem;
+          border-radius: 8px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          font-size: 0.95rem;
+          letter-spacing: 0.5px;
+        }
+
+        .login {
+          background: transparent;
+          color: #fff;
+          border: 1px solid rgba(128, 90, 245, 0.5);
+          margin-right: 1rem;
+          filter: drop-shadow(0 0 8px rgba(128, 90, 245, 0.3));
+        }
+
+        .signup,
+        .logout-btn {
+          background: linear-gradient(135deg, #805af5, #6a48d1);
+          color: #fff;
+          border: none;
+          filter: drop-shadow(0 0 8px rgba(128, 90, 245, 0.3));
+        }
+
+        .auth-btn:hover,
+        .logout-btn:hover {
+          transform: translateY(-2px);
+          filter: drop-shadow(0 0 15px rgba(128, 90, 245, 0.6));
+          background: linear-gradient(135deg, #9d7af5, #805af5);
+        }
+        @media (max-width: 1280px) {
+          .tech-nav {
+            padding: 0.5rem 2rem;
           }
 
-          .user-avater img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* 確保圖像填滿容器並裁剪 */
+          .nav-center {
+            gap: 2rem;
           }
-        `}
-      </style>
-    </>
+        }
+
+        @media (max-width: 1024px) {
+          .tech-nav {
+            height: auto;
+            padding: 0.5rem 1rem;
+          }
+
+          .nav-container {
+            grid-template-columns: auto auto;
+          }
+
+          .nav-center {
+            grid-column: 1 / -1;
+            grid-row: 2;
+            overflow-x: auto;
+            justify-content: start;
+            padding: 0.5rem 0;
+            gap: 1.5rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .nav-container {
+            grid-template-columns: 1fr;
+            justify-items: center;
+            gap: 1rem;
+          }
+
+          .nav-left {
+            justify-self: center;
+          }
+
+          .nav-right {
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+          }
+
+          .auth-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+          }
+
+          .nav-center {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+          }
+
+          .auth-buttons {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+          }
+
+          .login {
+            margin-right: 0;
+          }
+        }
+      `}</style>
+    </header>
   )
 }

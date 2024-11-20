@@ -79,9 +79,9 @@ export default function FrontPage(props) {
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Acer.png" alt="Acer" />
-            </Link>
-            <Link
-              href="/product/list?page=1&category=product_brand&category_value=ASUS&search=&price="
+            </a>
+            <a
+              href="https://www.asus.com/tw/"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -132,8 +132,8 @@ export default function FrontPage(props) {
           </div>
 
           <div className="home-icon home-marquee-content3">
-            <Link
-              href="/product/list?page=1&category=product_brand&category_value=ACER&search=&price="
+            <a
+              href="https://www.acer.com/tw-zh"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -305,7 +305,7 @@ export default function FrontPage(props) {
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/rog.png" alt="ROG" />
-            </Link>
+            </a>
           </div>
         </div>
 
