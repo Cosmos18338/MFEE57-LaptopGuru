@@ -383,17 +383,27 @@
   justify-content: flex-end;
   align-items: center;
   flex-shrink: 0;
+  position: relative; /* 添加 */
+  margin-top: 0px; /* 加入上方間距 */
+  position: relative;
+  width: 40px; /* 設定固定寬度 */
+  height: 200px; /* 調整高度 */
 }
 
 .home-item2 span {
-  height: 22px;
-  transform: rotate(90deg);
-  flex-shrink: 0;
-  align-self: stretch;
+  position: absolute; /* 添加 */
+  white-space: nowrap;
+  width: max-content;
   color: #fff;
   font-size: var(--h8-font-size);
   font-weight: 400;
   letter-spacing: 4px;
+
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(90deg);
+  transform-origin: center;
+  white-space: nowrap;
 }
 
 /* 背景圖片*/
@@ -496,7 +506,13 @@
     height: 30px;
   }
 
+  .home-item2 {
+    width: 100px;
+    height: auto;
+  }
+
   .home-item2 span {
+    transform: translate(-50%, -50%);
     font-size: 14px;
     letter-spacing: 2px;
   }
