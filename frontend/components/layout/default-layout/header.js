@@ -72,11 +72,17 @@ export default function Header(props) {
       })
         .then((res) => res.json())
         .then((data) => {
-          setImagePath(data?.image_path || '/Vector.svg')
+          const defaultImage = data?.gender === 'male' 
+          ? 'signup_login/undraw_profile_2.svg'
+          : data?.gender === 'female'
+          ? 'signup_login/undraw_profile_1.svg'
+          : '/Vector.svg';
+          
+        setImagePath(data?.image_path || defaultImage)
         })
     }
   }, [user_id])
-
+//為了避免登出報錯登入或登出的時候userData就會變動
   useEffect(() => {
     if (userData && userData.user_id) {
       setUserId(userData.user_id)
