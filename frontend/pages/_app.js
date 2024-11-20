@@ -33,7 +33,7 @@ import { LoaderProvider } from '@/hooks/use-loader'
 
 import DefaultLayout from '@/components/layout/default-layout'
 // 自訂用載入動畫元件
-import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
+// import { CatLoader, NoLoader } from '@/hooks/use-loader/components'
 import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // event的scss
 import '../styles/event.scss'

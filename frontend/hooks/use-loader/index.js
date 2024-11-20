@@ -137,10 +137,7 @@ export const LoaderProvider = ({
 
     const handleChangeEnd = () => {
       if (close && global) {
-        timeout(close * 1000).then(() => {
-          setShow(false)
-          hideNewLoading() // 同時關閉新的 loading
-        })
+        timeout(close * 1000).then(() => setShow(false))
       }
     }
 

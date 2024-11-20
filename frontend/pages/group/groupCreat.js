@@ -124,8 +124,8 @@ export default function GroupCreat() {
       }
 
       // 驗證群組名稱長度
-      if (formData.group_name.trim().length > 20) {
-        setError('群組名稱不能超過20字')
+      if (formData.group_name.trim().length > 50) {
+        setError('群組名稱不能超過50字')
         return
       }
 

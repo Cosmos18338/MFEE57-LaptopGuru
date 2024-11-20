@@ -691,7 +691,10 @@ export default function UserProfile() {
                           src={profilePic}
                           alt="Profile"
                           className="rounded-circle img-fluid mb-3"
-                          style={{ width: '220px', height: '220px' }}
+                          style={{ width: '220px', height: '220px', 
+                            // margin:'0 auto',
+                            //  position:'relative', 
+                            }}
                         />
                         <div className="mb-3">
                           <label
