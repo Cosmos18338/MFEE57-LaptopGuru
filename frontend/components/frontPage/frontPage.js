@@ -7,6 +7,7 @@ import BackToTop from '../BackToTop/BackToTop'
 import NewProducts from './NewProducts'
 import HotProducts from './HotProducts'
 import ArticleSlider from './ArticleSlider'
+import Link from 'next/link'
 
 export default function FrontPage(props) {
   return (
@@ -72,6 +73,65 @@ export default function FrontPage(props) {
 
         <div className="home-section2">
           <div className="home-icon home-marquee-content3">
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ACER&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Acer.png" alt="Acer" />
+            </Link>
+            <a
+              href="https://www.asus.com/tw/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
+            </a>
+            <a
+              href="https://www.dell.com/zh-tw"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Dell.png" alt="Dell" />
+            </a>
+            <a
+              href="https://www.gigabyte.com/tw"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
+            </a>
+            <a
+              href="https://www.hp.com/tw-zh/home.html"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/HP.png" alt="HP" />
+            </a>
+            <a
+              href="https://tw.msi.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/msi_w.png" alt="MSI" />
+            </a>
+            <a
+              href="https://www.razer.com/tw-zh"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Razer.png" alt="Razer" />
+            </a>
+            <a
+              href="https://rog.asus.com/tw/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/rog.png" alt="ROG" />
+            </a>
+          </div>
+
+          {/* <div className="home-icon home-marquee-content3">
             <a
               href="https://www.acer.com/tw-zh"
               target="_blank"
@@ -246,66 +306,7 @@ export default function FrontPage(props) {
             >
               <img src="/images/index/icon/rog.png" alt="ROG" />
             </a>
-          </div>
-
-          <div className="home-icon home-marquee-content3">
-            <a
-              href="https://www.acer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Acer.png" alt="Acer" />
-            </a>
-            <a
-              href="https://www.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
-            </a>
-            <a
-              href="https://www.dell.com/zh-tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Dell.png" alt="Dell" />
-            </a>
-            <a
-              href="https://www.gigabyte.com/tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
-            </a>
-            <a
-              href="https://www.hp.com/tw-zh/home.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/HP.png" alt="HP" />
-            </a>
-            <a
-              href="https://tw.msi.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/msi_w.png" alt="MSI" />
-            </a>
-            <a
-              href="https://www.razer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Razer.png" alt="Razer" />
-            </a>
-            <a
-              href="https://rog.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/rog.png" alt="ROG" />
-            </a>
-          </div>
+          </div> */}
         </div>
 
         <div className="home-container-body">
