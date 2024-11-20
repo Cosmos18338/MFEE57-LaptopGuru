@@ -16,11 +16,11 @@ export default function FrontPage(props) {
         <Header />
       </div>
 
-      {/* <div className="blob-outer-container">
+      <div className="blob-outer-container">
         <div className="blob-inner-container">
           <div className="blob"></div>
         </div>
-      </div> */}
+      </div>
 
       <div className="main-body ">
         {/* <div className="home-section1">
@@ -79,115 +79,56 @@ export default function FrontPage(props) {
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Acer.png" alt="Acer" />
+            </a>
+            <a
+              href="https://www.asus.com/tw/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
             </Link>
-            <a
-              href="https://www.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
-            </a>
-            <a
-              href="https://www.dell.com/zh-tw"
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=DELL&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Dell.png" alt="Dell" />
-            </a>
-            <a
-              href="https://www.gigabyte.com/tw"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=%E6%8A%80%E5%98%89&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
-            </a>
-            <a
-              href="https://www.hp.com/tw-zh/home.html"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=HP&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/HP.png" alt="HP" />
-            </a>
-            <a
-              href="https://tw.msi.com/"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=MSI&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/msi_w.png" alt="MSI" />
-            </a>
-            <a
-              href="https://www.razer.com/tw-zh"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=RAZER&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Razer.png" alt="Razer" />
-            </a>
-            <a
-              href="https://rog.asus.com/tw/"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ROG&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/rog.png" alt="ROG" />
-            </a>
-          </div>
-
-          {/* <div className="home-icon home-marquee-content3">
-            <a
-              href="https://www.acer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Acer.png" alt="Acer" />
-            </a>
-            <a
-              href="https://www.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
-            </a>
-            <a
-              href="https://www.dell.com/zh-tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Dell.png" alt="Dell" />
-            </a>
-            <a
-              href="https://www.gigabyte.com/tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
-            </a>
-            <a
-              href="https://www.hp.com/tw-zh/home.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/HP.png" alt="HP" />
-            </a>
-            <a
-              href="https://tw.msi.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/msi_w.png" alt="MSI" />
-            </a>
-            <a
-              href="https://www.razer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Razer.png" alt="Razer" />
-            </a>
-            <a
-              href="https://rog.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/rog.png" alt="ROG" />
-            </a>
+            </Link>
           </div>
 
           <div className="home-icon home-marquee-content3">
@@ -197,116 +138,175 @@ export default function FrontPage(props) {
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Acer.png" alt="Acer" />
-            </a>
-            <a
-              href="https://www.asus.com/tw/"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ASUS&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Asus-w.png" alt="Asus" />
-            </a>
-            <a
-              href="https://www.dell.com/zh-tw"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=DELL&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Dell.png" alt="Dell" />
-            </a>
-            <a
-              href="https://www.gigabyte.com/tw"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=%E6%8A%80%E5%98%89&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
-            </a>
-            <a
-              href="https://www.hp.com/tw-zh/home.html"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=HP&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/HP.png" alt="HP" />
-            </a>
-            <a
-              href="https://tw.msi.com/"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=MSI&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/msi_w.png" alt="MSI" />
-            </a>
-            <a
-              href="https://www.razer.com/tw-zh"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=RAZER&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/Razer.png" alt="Razer" />
-            </a>
-            <a
-              href="https://rog.asus.com/tw/"
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ROG&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/rog.png" alt="ROG" />
+            </Link>
+          </div>
+
+          <div className="home-icon home-marquee-content3">
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ACER&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Acer.png" alt="Acer" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ASUS&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=DELL&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Dell.png" alt="Dell" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=%E6%8A%80%E5%98%89&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=HP&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/HP.png" alt="HP" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=MSI&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/msi_w.png" alt="MSI" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=RAZER&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Razer.png" alt="Razer" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ROG&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/rog.png" alt="ROG" />
+            </Link>
+          </div>
+
+          <div className="home-icon home-marquee-content3">
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ACER&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Acer.png" alt="Acer" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ASUS&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=DELL&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Dell.png" alt="Dell" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=%E6%8A%80%E5%98%89&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=HP&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/HP.png" alt="HP" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=MSI&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/msi_w.png" alt="MSI" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=RAZER&search=&price="
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <img src="/images/index/icon/Razer.png" alt="Razer" />
+            </Link>
+            <Link
+              href="/product/list?page=1&category=product_brand&category_value=ROG&search=&price="
               target="_blank"
               rel="noopener noreferrer"
             >
               <img src="/images/index/icon/rog.png" alt="ROG" />
             </a>
           </div>
-
-          <div className="home-icon home-marquee-content3">
-            <a
-              href="https://www.acer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Acer.png" alt="Acer" />
-            </a>
-            <a
-              href="https://www.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Asus-w.png" alt="Asus" />
-            </a>
-            <a
-              href="https://www.dell.com/zh-tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Dell.png" alt="Dell" />
-            </a>
-            <a
-              href="https://www.gigabyte.com/tw"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/gigabyte_白.png" alt="Gigabyte" />
-            </a>
-            <a
-              href="https://www.hp.com/tw-zh/home.html"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/HP.png" alt="HP" />
-            </a>
-            <a
-              href="https://tw.msi.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/msi_w.png" alt="MSI" />
-            </a>
-            <a
-              href="https://www.razer.com/tw-zh"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/Razer.png" alt="Razer" />
-            </a>
-            <a
-              href="https://rog.asus.com/tw/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <img src="/images/index/icon/rog.png" alt="ROG" />
-            </a>
-          </div> */}
         </div>
 
         <div className="home-container-body">
