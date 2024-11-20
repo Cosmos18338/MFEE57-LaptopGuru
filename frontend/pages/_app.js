@@ -48,24 +48,51 @@ import '../styles/groupCreat.scss'
 
 import { GroupAuthProvider } from '@/context/GroupAuthContext'
 
-export default function MyApp({ Component, pageProps }) {
+//  新增加
+import { LoadingProviderAnimation } from '@/context/LoadingContext'
+import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation'
+
+// export default function MyApp({ Component, pageProps }) {
   // 導入bootstrap的JS函式庫
+  // useEffect(() => {
+  //   import('bootstrap/dist/js/bootstrap')
+  // }, [])
+
+  // 使用預設排版檔案，對應`components/layout/default-layout/index.js`
+  // 或`components/layout/default-layout.js`
+  // const getLayout =
+  //   Component.getLayout || ((page) => <DefaultLayout>{page}</DefaultLayout>)
+
+//   return (
+//     <AuthProvider>
+//       <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+//         <GroupAuthProvider>
+//           <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
+//         </GroupAuthProvider>
+//       </LoaderProvider>
+//     </AuthProvider>
+//   )
+// }
+
+export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap')
   }, [])
 
-  // 使用預設排版檔案，對應`components/layout/default-layout/index.js`
-  // 或`components/layout/default-layout.js`
   const getLayout =
     Component.getLayout || ((page) => <DefaultLayout>{page}</DefaultLayout>)
 
   return (
     <AuthProvider>
-      <LoaderProvider close={0.5} CustomLoader={LoadingSpinner}>
-        <GroupAuthProvider>
-          <CartProvider>{getLayout(<Component {...pageProps} />)}</CartProvider>
-        </GroupAuthProvider>
-      </LoaderProvider>
+      <LoadingProviderAnimation close={3} CustomLoader={LoadingAnimation}>
+        <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+          <GroupAuthProvider>
+            <CartProvider>
+              {getLayout(<Component {...pageProps} />)}
+            </CartProvider>
+          </GroupAuthProvider>
+        </LoaderProvider>
+      </LoadingProviderAnimation>
     </AuthProvider>
   )
 }
