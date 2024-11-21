@@ -16,9 +16,9 @@ export default function BlogSearchPage() {
 
   // -------------------使用者-------------------
   const { auth } = useAuth()
-  // 使用可選鏈運算子來安全地存取 user_id
-  const user_id = auth?.userData?.user_id
-  console.log('current user_id:', user_id)
+  const { userData } = auth
+  const user_id = userData?.user_id
+  console.log(user_id)
   // -------------------使用者-------------------
 
   // 統一的過濾狀態

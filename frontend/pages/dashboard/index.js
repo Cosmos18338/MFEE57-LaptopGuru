@@ -181,7 +181,7 @@ export default function DashboardIndex() {
               </Nav>
 
               {/* 內容區域 */}
-              <Tab.Content className="mb-3">
+              <Tab.Content className="mb-5">
                 <Tab.Pane eventKey="home">
                   <div className="row justify-content-end">
                     {renderHome(subActiveKey)}
