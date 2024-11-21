@@ -99,13 +99,6 @@ export default function BlogSearchPage() {
       <Header />
 
       <BlogDetailMainArea />
-      <div className="container mt-5">
-        <NextBreadCrumb
-          bgClass="bg-transparent"
-          isChevron={true}
-          isHomeIcon={true}
-        />
-      </div>
 
       {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
 
@@ -126,223 +119,236 @@ export default function BlogSearchPage() {
           </div>
         </div>
       </div>
-      {/* 分類選擇 */}
-      <div className="container BlogTypeSearch bg-transparent">
-        <div className="d-flex justify-content-around gap-3 flex-wrap">
-          {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((type, i) => (
-            <div key={type} className="BlogTypeCheckbox text-nowrap col-2">
-              <input
-                type="checkbox"
-                id={`typeCheck${i}`}
-                value={type}
-                checked={filters.types.includes(type)}
-                onChange={handleTypeChange}
-              />
-              <label
-                htmlFor={`typeCheck${i}`}
-                className="BlogTypeCheckboxLabel"
-              >
-                &nbsp;&nbsp;{type}
-              </label>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* 紫線 */}
-      <div className="PurpleLine" />
-      {/* 紫線 */}
 
-      {/* 品牌選擇 */}
-      <div className="container ArticleBrandSearch bg-transparent">
-        <form>
-          <div className="row justify-content-between gap-3">
-            {['Acer', 'Asus', 'Gigabyte', 'HP', 'MSI', 'Raser'].map(
-              (brand, i) => (
-                <div key={brand} className="ArticleCheckbox text-nowrap col-2">
-                  <input
-                    type="checkbox"
-                    id={`brandCheck${i}`}
-                    value={brand}
-                    checked={filters.brands.includes(brand)}
-                    onChange={handleBrandChange}
-                  />
-                  <label
-                    htmlFor={`brandCheck${i}`}
-                    className="ArticleCheckboxLabel"
-                  >
-                    &nbsp;&nbsp;{brand}
-                  </label>
-                </div>
-              )
-            )}
-          </div>
-        </form>
-      </div>
-      {/* 搜尋列 */}
-      {/* 新增按鈕 */}
-      {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-      {/* 修改登入判斷邏輯 */}
-      <div className="container d-flex flex-row-reverse mb-5">
-        {user_id ? (
-          <Link href="/blog/blog-created">
-            <button
-              type="button"
-              className="btn text-white BlogIndexCreatedButton"
-            >
-              新增發文！
-            </button>
-          </Link>
-        ) : (
-          <Link href="http://localhost:3000/member/login">
-            <button
-              type="button"
-              className="btn text-white BlogIndexCreatedButton"
-            >
-              登入後發文
-            </button>
-          </Link>
-        )}
-      </div>
-      {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-      {/* 文章列表區塊 */}
-      <div className="container position-relative">
-        <div className="d-flex flex-column align-items-center justify-content-center gap-3">
-          <div className="row">
-            {blogs.map((blog) => (
-              <div className="col-md-12 col-lg-6 mb-5" key={blog.blog_id}>
-                <Link href={`/blog/blog-detail/${blog.blog_id}`} passHref>
-                  <div className="card d-flex flex-row BlogCard shadow">
-                    <img
-                      src={
-                        blog.blog_image
-                          ? `http://localhost:3005${blog.blog_image}`
-                          : 'http://localhost:3005/blog-images/nolaptopupload.jpeg'
-                      }
-                      className="card-img-top w-50 h-100 BlogCardImg"
-                      alt={blog.blog_title}
-                    />
-                    <div className="card-body w-50 h-100">
-                      <div className="BlogCardBodyContent">
-                        <div className="row">
-                          <p className="BlogCardTitle">{blog.blog_title}</p>
-                          <h7 className="card-text mb-4 BlogCardContent">
-                            {blog.blog_content}
-                          </h7>
-                        </div>
-                        <div className="d-flex justify-content-between">
-                          <p className="card-text BlogCardType">
-                            版主：{blog.user_id || 'Unknown'}
-                          </p>
-                          <p>{blog.blog_brand}</p>
-                        </div>
-                        <div className="d-flex justify-content-between">
-                          <p>{blog.blog_type}</p>
-                          <p>
-                            {new Date(
-                              blog.blog_created_date
-                            ).toLocaleDateString()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
+      <div className="container">
+        <div className="mt-5">
+          <NextBreadCrumb
+            bgClass="bg-transparent"
+            isChevron={true}
+            isHomeIcon={true}
+          />
+        </div>
+
+        {/* 分類選擇 */}
+        <div className="BlogTypeSearch bg-transparent mt-5">
+          <div className="d-flex justify-content-around gap-3 flex-wrap">
+            {['購買心得', '開箱文', '疑難雜症', '活動心得'].map((type, i) => (
+              <div key={type} className="BlogTypeCheckbox text-nowrap col-2">
+                <input
+                  type="checkbox"
+                  id={`typeCheck${i}`}
+                  value={type}
+                  checked={filters.types.includes(type)}
+                  onChange={handleTypeChange}
+                />
+                <label
+                  htmlFor={`typeCheck${i}`}
+                  className="BlogTypeCheckboxLabel"
+                >
+                  &nbsp;&nbsp;{type}
+                </label>
               </div>
             ))}
           </div>
         </div>
-      </div>
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 小卡片製作 */}
-      {/* 頁數 nav */}
-      {/* 頁數 nav */}
-      {/* 頁數 nav */}
-      {/* 頁數 nav */}
-      {/* 頁數 nav */}
-      {/* 更新分頁導航 */}
-      {totalPages > 1 && (
-        <div className="container d-flex justify-content-center my-4">
-          <nav aria-label="Page navigation">
-            <ul className="pagination">
-              <li
-                className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                >
-                  «
-                </button>
-              </li>
+        {/* 紫線 */}
+        <div className="PurpleLine m-auto w-75" />
+        {/* 紫線 */}
 
-              {/* 頁碼按鈕 */}
-              {[...Array(totalPages)].map((_, index) => {
-                const pageNumber = index + 1
-                // 只顯示當前頁面附近的頁碼
-                if (
-                  pageNumber === 1 ||
-                  pageNumber === totalPages ||
-                  (pageNumber >= currentPage - 1 &&
-                    pageNumber <= currentPage + 1)
-                ) {
-                  return (
-                    <li
-                      key={pageNumber}
-                      className={`page-item ${
-                        currentPage === pageNumber ? 'active' : ''
-                      }`}
+        {/* 品牌選擇 */}
+        <div className="ArticleBrandSearch bg-transparent mt-5 mb-3">
+          <form>
+            <div className="row justify-content-between gap-3">
+              {['Acer', 'Asus', 'Gigabyte', 'HP', 'MSI', 'Raser'].map(
+                (brand, i) => (
+                  <div
+                    key={brand}
+                    className="ArticleCheckbox text-nowrap col-2"
+                  >
+                    <input
+                      type="checkbox"
+                      id={`brandCheck${i}`}
+                      value={brand}
+                      checked={filters.brands.includes(brand)}
+                      onChange={handleBrandChange}
+                    />
+                    <label
+                      htmlFor={`brandCheck${i}`}
+                      className="ArticleCheckboxLabel"
                     >
-                      <button
-                        className="page-link"
-                        onClick={() => handlePageChange(pageNumber)}
-                      >
-                        {pageNumber}
-                      </button>
-                    </li>
-                  )
-                }
-                // 顯示省略號
-                if (
-                  (pageNumber === currentPage - 2 && currentPage > 3) ||
-                  (pageNumber === currentPage + 2 &&
-                    currentPage < totalPages - 2)
-                ) {
-                  return (
-                    <li
-                      key={`ellipsis-${pageNumber}`}
-                      className="page-item disabled"
-                    >
-                      <span className="page-link">...</span>
-                    </li>
-                  )
-                }
-                return null
-              })}
-
-              <li
-                className={`page-item ${
-                  currentPage === totalPages ? 'disabled' : ''
-                }`}
-              >
-                <button
-                  className="page-link"
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                >
-                  »
-                </button>
-              </li>
-            </ul>
-          </nav>
+                      &nbsp;&nbsp;{brand}
+                    </label>
+                  </div>
+                )
+              )}
+            </div>
+          </form>
         </div>
-      )}
+        {/* 搜尋列 */}
+        {/* 新增按鈕 */}
+        {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
+        {/* 修改登入判斷邏輯 */}
+        <div className="d-flex flex-row-reverse mb-5">
+          {user_id ? (
+            <Link href="/blog/blog-created">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                新增發文！
+              </button>
+            </Link>
+          ) : (
+            <Link href="http://localhost:3000/member/login">
+              <button
+                type="button"
+                className="btn text-white BlogIndexCreatedButton"
+              >
+                登入後發文
+              </button>
+            </Link>
+          )}
+        </div>
+        {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
+        {/* 文章列表區塊 */}
+        <div className="position-relative">
+          <div className="d-flex flex-column align-items-center justify-content-center gap-3">
+            <div className="row">
+              {blogs.map((blog) => (
+                <div className="col-md-12 col-lg-6 mb-5" key={blog.blog_id}>
+                  <Link href={`/blog/blog-detail/${blog.blog_id}`} passHref>
+                    <div className="card d-flex flex-row BlogCard shadow w-100">
+                      <img
+                        src={
+                          blog.blog_image
+                            ? `http://localhost:3005${blog.blog_image}`
+                            : 'http://localhost:3005/blog-images/nolaptopupload.jpeg'
+                        }
+                        className="card-img-top w-50 h-100 BlogCardImg"
+                        alt={blog.blog_title}
+                      />
+                      <div className="card-body w-50 h-100">
+                        <div className="BlogCardBodyContent">
+                          <div className="row">
+                            <p className="BlogCardTitle">{blog.blog_title}</p>
+                            <h7 className="card-text mb-md-4 BlogCardContent">
+                              {blog.blog_content}
+                            </h7>
+                          </div>
+                          <div className="d-flex justify-content-between">
+                            <p className="card-text BlogCardType">
+                              版主：{blog.user_id || 'Unknown'}
+                            </p>
+                            <p>{blog.blog_brand}</p>
+                          </div>
+                          <div className="d-flex justify-content-between">
+                            <p>{blog.blog_type}</p>
+                            <p>
+                              {new Date(
+                                blog.blog_created_date
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 小卡片製作 */}
+        {/* 頁數 nav */}
+        {/* 頁數 nav */}
+        {/* 頁數 nav */}
+        {/* 頁數 nav */}
+        {/* 頁數 nav */}
+        {/* 更新分頁導航 */}
+        {totalPages > 1 && (
+          <div className="d-flex justify-content-center my-4">
+            <nav aria-label="Page navigation">
+              <ul className="pagination">
+                <li
+                  className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    «
+                  </button>
+                </li>
 
+                {/* 頁碼按鈕 */}
+                {[...Array(totalPages)].map((_, index) => {
+                  const pageNumber = index + 1
+                  // 只顯示當前頁面附近的頁碼
+                  if (
+                    pageNumber === 1 ||
+                    pageNumber === totalPages ||
+                    (pageNumber >= currentPage - 1 &&
+                      pageNumber <= currentPage + 1)
+                  ) {
+                    return (
+                      <li
+                        key={pageNumber}
+                        className={`page-item ${
+                          currentPage === pageNumber ? 'active' : ''
+                        }`}
+                      >
+                        <button
+                          className="page-link"
+                          onClick={() => handlePageChange(pageNumber)}
+                        >
+                          {pageNumber}
+                        </button>
+                      </li>
+                    )
+                  }
+                  // 顯示省略號
+                  if (
+                    (pageNumber === currentPage - 2 && currentPage > 3) ||
+                    (pageNumber === currentPage + 2 &&
+                      currentPage < totalPages - 2)
+                  ) {
+                    return (
+                      <li
+                        key={`ellipsis-${pageNumber}`}
+                        className="page-item disabled"
+                      >
+                        <span className="page-link">...</span>
+                      </li>
+                    )
+                  }
+                  return null
+                })}
+
+                <li
+                  className={`page-item ${
+                    currentPage === totalPages ? 'disabled' : ''
+                  }`}
+                >
+                  <button
+                    className="page-link"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    »
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
+      </div>
       <MyFooter />
     </>
   )
