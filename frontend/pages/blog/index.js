@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/use-auth'
 import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
+import Head from 'next/head'
 
 export default function BlogSearchPage() {
   const [blogs, setBlogs] = useState([])
@@ -92,7 +93,11 @@ export default function BlogSearchPage() {
 
   return (
     <>
+      <Head>
+        <title>部落格</title>
+      </Head>
       <Header />
+
       <BlogDetailMainArea />
       <div className="container mt-5">
         <NextBreadCrumb
@@ -100,12 +105,11 @@ export default function BlogSearchPage() {
           isChevron={true}
           isHomeIcon={true}
         />
-      </div>
 
-      {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
-      <div>
+        {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
+
         {/* 搜尋列 */}
-        <main className="container-fluid BlogMain">
+        <main className="BlogMain">
           <div className="BlogSearchBox">
             <div className="d-flex justify-content-center">
               <input
