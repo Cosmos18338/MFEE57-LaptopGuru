@@ -17,7 +17,7 @@ export default function BlogSearchPage() {
   // -------------------使用者-------------------
   const { auth } = useAuth()
   const { userData } = auth
-  const user_id = userData.user_id
+  const user_id = userData?.user_id
   console.log(user_id)
   // -------------------使用者-------------------
 
