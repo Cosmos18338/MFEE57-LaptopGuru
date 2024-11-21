@@ -85,7 +85,6 @@ export default function Checkout() {
         price={selectedProduct.list_price}
         setCouponValue={setCoupon}
       />
-      <LoadingAnimation/>
     </div>
   )
 }

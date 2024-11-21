@@ -66,7 +66,6 @@ export default function DashboardIndex() {
     }
   }
 
-
   const renderHome = (key) => {
     switch (key) {
       case 'profile':
@@ -182,7 +181,7 @@ export default function DashboardIndex() {
               </Nav>
 
               {/* 內容區域 */}
-              <Tab.Content>
+              <Tab.Content className="mb-3">
                 <Tab.Pane eventKey="home">
                   <div className="row justify-content-end">
                     {renderHome(subActiveKey)}
