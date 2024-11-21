@@ -11,6 +11,7 @@ import NextBreadCrumb from '@/components/common/next-breadcrumb'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+import Head from 'next/head'
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -124,6 +125,9 @@ export default function Blogcreated(props) {
 
   return (
     <>
+      <Head>
+        <title>新增部落格</title>
+      </Head>
       <Header />
       <BlogDetailMainArea />
       <div className="container mt-5">
