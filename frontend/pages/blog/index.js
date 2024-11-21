@@ -109,7 +109,7 @@ export default function BlogSearchPage() {
         {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
 
         {/* 搜尋列 */}
-        <main className="BlogMain">
+        <div className="BlogMain container-fluid">
           <div className="BlogSearchBox">
             <div className="d-flex justify-content-center">
               <input
@@ -124,7 +124,7 @@ export default function BlogSearchPage() {
               </button>
             </div>
           </div>
-        </main>
+        </div>
         {/* 分類選擇 */}
         <div className="container BlogTypeSearch bg-transparent">
           <div className="d-flex justify-content-around gap-3 flex-wrap">
@@ -183,8 +183,9 @@ export default function BlogSearchPage() {
         {/* 搜尋列 */}
         {/* 新增按鈕 */}
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
-        {userData?.user_id ? (
-          <div className="container d-flex flex-row-reverse mb-5">
+        {/* 修改登入判斷邏輯 */}
+        <div className="container d-flex flex-row-reverse mb-5">
+          {user_id ? (
             <Link href="/blog/blog-created">
               <button
                 type="button"
@@ -193,9 +194,7 @@ export default function BlogSearchPage() {
                 新增發文！
               </button>
             </Link>
-          </div>
-        ) : (
-          <div className="container d-flex flex-row-reverse mb-5">
+          ) : (
             <Link href="http://localhost:3000/member/login">
               <button
                 type="button"
@@ -204,8 +203,8 @@ export default function BlogSearchPage() {
                 登入後發文
               </button>
             </Link>
-          </div>
-        )}
+          )}
+        </div>
         {/* 有人好像新增 btn-primary 的全域樣式，改成紫色的 */}
         {/* 文章列表區塊 */}
         <div className="container position-relative">
