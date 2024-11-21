@@ -74,6 +74,29 @@ import LoadingAnimation from '@/components/LoadingAnimation/LoadingAnimation'
 //   )
 // }
 
+// export default function MyApp({ Component, pageProps }) {
+//   useEffect(() => {
+//     import('bootstrap/dist/js/bootstrap')
+//   }, [])
+
+//   const getLayout =
+//     Component.getLayout || ((page) => <DefaultLayout>{page}</DefaultLayout>)
+
+//   return (
+//     <AuthProvider>
+//       <LoadingProviderAnimation close={3} CustomLoader={LoadingAnimation}>
+//         <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+//           <GroupAuthProvider>
+//             <CartProvider>
+//               {getLayout(<Component {...pageProps} />)}
+//             </CartProvider>
+//           </GroupAuthProvider>
+//         </LoaderProvider>
+//       </LoadingProviderAnimation>
+//     </AuthProvider>
+//   )
+// }
+
 export default function MyApp({ Component, pageProps }) {
   useEffect(() => {
     import('bootstrap/dist/js/bootstrap')
@@ -84,8 +107,12 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <LoadingProviderAnimation close={3} CustomLoader={LoadingAnimation}>
-        <LoaderProvider close={3} CustomLoader={LoadingSpinner}>
+      <LoadingProviderAnimation close={1} CustomLoader={LoadingAnimation}>
+        <LoaderProvider
+          close={1}
+          CustomLoader={LoadingSpinner}
+          excludePaths={['/', '/product']}
+        >
           <GroupAuthProvider>
             <CartProvider>
               {getLayout(<Component {...pageProps} />)}

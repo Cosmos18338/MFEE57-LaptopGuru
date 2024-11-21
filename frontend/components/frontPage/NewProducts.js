@@ -42,13 +42,6 @@ const NewProducts = () => {
       description: '產品描述內容 4',
       link: 'https://www.bilibili.com/video/BV1jkxyeVEG5/?spm_id_from=333.788.player.switch&vd_source=1b25005216ba454333811619f6788cea',
     },
-    {
-      id: 6,
-      image: '/images/index/banner_04.jpg',
-      title: '產品標題 4',
-      description: '產品描述內容 4',
-      link: 'https://www.bilibili.com/video/BV1jkxyeVEG5/?spm_id_from=333.788.player.switch&vd_source=1b25005216ba454333811619f6788cea',
-    },
   ]
 
   return (
@@ -56,7 +49,7 @@ const NewProducts = () => {
       <div className="home-pic-body">
         <div className="title-body">
           <div className="home-title-diamond">◇</div>
-          <title className="home-title">新品介紹</title>
+          <title className="home-title">最新消息</title>
         </div>
         <Swiper
           onSwiper={setSwiperRef}
