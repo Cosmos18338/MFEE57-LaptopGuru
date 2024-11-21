@@ -17,12 +17,11 @@ import Head from 'next/head'
 // import { LoadingSpinner } from '@/components/dashboard/loading-spinner'
 // import MarioGame from '@/components/dashboard/MarioGame'
 
-export default function Test1() {
+export default function DashboardIndex() {
   const { auth } = useAuth()
   const [activeKey, setActiveKey] = useState('home')
   const [couponActiveKey, setCouponActiveKey] = useState('available')
   // 需要加入這個state
-  const [isLoading, setIsLoading] = useState(true)
   const [subActiveKey, setSubActiveKey] = useState('')
   // 狀態用一樣的就好，因為畫面上一次只會呈現一個就不用多組狀態控制
 
@@ -66,15 +65,7 @@ export default function Test1() {
       setCouponActiveKey(key)
     }
   }
-  useEffect(() => {
-    console.log('Dashboard mounted')
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-      console.log('Loading complete')
-    }, 2000)
 
-    return () => clearTimeout(timer)
-  }, [])
 
   const renderHome = (key) => {
     switch (key) {
@@ -114,7 +105,11 @@ export default function Test1() {
                 <img
                   src={
                     auth?.userData?.image_path ||
-                    'signup_login/undraw_profile_1.svg'
+                    (auth?.userData?.gender === 'male'
+                      ? 'signup_login/undraw_profile_2.svg'
+                      : auth?.userData?.gender === 'female'
+                      ? 'signup_login/undraw_profile_1.svg'
+                      : '/Vector.svg')
                   }
                   alt="Profile"
                   className="rounded-circle img-fluid mb-3"

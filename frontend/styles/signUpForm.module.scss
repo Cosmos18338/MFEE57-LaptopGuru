@@ -79,8 +79,7 @@
   background: rgba(30, 25, 55, 0.30); 
   border-radius: 10px; 
   overflow: hidden; 
-  justify-content: flex-start; 
-  align-items: center; gap: 10px; display: inline-flex
+  align-items: center; gap: 10px; 
 }
 .inputs::placeholder {
   font-size: 10px; /* 設置文字大小 */
@@ -104,12 +103,12 @@
 }
 
 .button{
-  background: -webkit-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246d8e 100%);
-  background: -o-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
-  background: -moz-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
-  background: linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
+  // background: -webkit-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246d8e 100%);
+  // background: -o-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
+  // background: -moz-linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
+  // background: linear-gradient(360deg, #A793E9 0%, #5346B6 50%, #34246D 100%);
   width: 90%;
-  border-radius: 20px;
+  // border-radius: 20px;
   margin: 25px;
 }
 .welcome{
