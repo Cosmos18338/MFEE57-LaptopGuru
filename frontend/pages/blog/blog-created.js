@@ -8,14 +8,9 @@ import Header from '@/components/layout/default-layout/header'
 import MyFooter from '@/components/layout/default-layout/my-footer'
 import BlogDetailMainArea from '@/components/blog/bloghomepage/articlehomepage-mainarea'
 import NextBreadCrumb from '@/components/common/next-breadcrumb'
-<<<<<<< HEAD
-import { ToastContainer, toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-=======
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
->>>>>>> origin/dev
 
 export default function Blogcreated(props) {
   const router = useRouter() // 加入 router
@@ -25,7 +20,6 @@ export default function Blogcreated(props) {
   const { isAuth, userData } = auth // 一起解構
   const user_id = userData.user_id
   console.log(user_id)
-
 
   const brands = [
     ['ROG', 'DELL', 'Acer', 'Raser'],
@@ -93,7 +87,7 @@ export default function Blogcreated(props) {
           timer: 1500,
         })
         if (result.blog_id) {
-          toast.success('部落格新增成功')  // 再跳 toast
+          // toast.success('部落格新增成功')
           router.push(`/blog`)
         }
       } else {
@@ -119,7 +113,7 @@ export default function Blogcreated(props) {
   return (
     <>
       <Header />
-      <ToastContainer />  {/* 加在這裡 */}
+      {/* <ToastContainer /> */}
       <BlogDetailMainArea />
       <div className="container mt-5">
         <NextBreadCrumb
@@ -128,7 +122,6 @@ export default function Blogcreated(props) {
           isHomeIcon={true}
         />
       </div>
-
       <div className="container-lg container-fluid d-flex h-auto flex-column gap-5 mt-5 col-lg-5 col-md-8 col-12">
         {/* 圖片上傳區塊 */}
         <div className="">
