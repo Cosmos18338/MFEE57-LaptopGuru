@@ -109,7 +109,7 @@ export default function BlogSearchPage() {
         {/* <p>目前沒有部落格喔！來新增部落格吧！</p> */}
 
         {/* 搜尋列 */}
-        <main className="BlogMain">
+        <div className="BlogMain container-fluid">
           <div className="BlogSearchBox">
             <div className="d-flex justify-content-center">
               <input
@@ -124,7 +124,7 @@ export default function BlogSearchPage() {
               </button>
             </div>
           </div>
-        </main>
+        </div>
         {/* 分類選擇 */}
         <div className="container BlogTypeSearch bg-transparent">
           <div className="d-flex justify-content-around gap-3 flex-wrap">
