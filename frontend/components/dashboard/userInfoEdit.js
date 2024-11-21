@@ -26,7 +26,12 @@ export default function UserProfile() {
   })
 
   const [profilePic, setProfilePic] = useState(
-    editableUser.image_path || 'signup_login/undraw_profile_1.svg'
+    editableUser.image_path || 
+  (editableUser.gender === 'male' 
+    ? 'signup_login/undraw_profile_2.svg'
+    : editableUser.gender === 'female'
+    ? 'signup_login/undraw_profile_1.svg'
+    : '/Vector.svg')
   )
   const [uploadStatus, setUploadStatus] = useState('')
   // 沒有寫就是false
