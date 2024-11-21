@@ -81,7 +81,7 @@ export default function Header(props) {
         setImagePath(data?.image_path || defaultImage)
         })
     }
-  }, [user_id])
+  }, [user_id, auth?.userData?.image_path])
 //為了避免登出報錯登入或登出的時候userData就會變動
   useEffect(() => {
     if (userData && userData.user_id) {
