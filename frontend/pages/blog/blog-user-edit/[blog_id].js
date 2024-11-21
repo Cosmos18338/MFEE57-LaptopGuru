@@ -11,6 +11,7 @@ import { IoArrowBackCircleOutline } from 'react-icons/io5'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
+import Head from 'next/head'
 
 export default function BlogUserEdit() {
   const router = useRouter()
@@ -157,6 +158,9 @@ export default function BlogUserEdit() {
 
   return (
     <>
+      <Head>
+        <title>編輯部落格</title>
+      </Head>
       <Header />
       <BlogDetailMainArea />
       <div className="container">
