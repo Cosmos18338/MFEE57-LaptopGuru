@@ -171,9 +171,9 @@ export default function Header() {
         .tech-nav {
           background: linear-gradient(
             90deg,
-            rgba(15, 5, 30, 0.95) 0%,
-            rgba(20, 10, 40, 0.95) 50%,
-            rgba(15, 5, 30, 0.95) 100%
+            rgba(15, 5, 30, 0.92) 0%,
+            rgba(20, 10, 40, 0.92) 50%,
+            rgba(15, 5, 30, 0.92) 100%
           );
           backdrop-filter: blur(12px);
           border-bottom: 1px solid rgba(128, 90, 245, 0.15);
