@@ -12,10 +12,12 @@ import MyFooter from '@/components/layout/default-layout/my-footer'
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai' // 記得引入
 import { useLoader } from '@/hooks/use-loader'
 import Head from 'next/head'
+import GlitchText from '@/components/dashboard/glitch-text/glitch-text'
+import GlowingText from '@/components/dashboard/glowing-text/glowing-text';
 
 export default function LogIn(props) {
   const [showpassword, setShowpassword] = useState(false)
-  const { renderJumpingText } = useJumpingLetters()
+  const { renderJumpingText } = useJumpingLetters(true, 2000)
   const router = useRouter()
   const { login } = useAuth()
   const [email, setEmail] = useState('')
@@ -82,16 +84,20 @@ export default function LogIn(props) {
           <div
             className={`row ${styles['content-row']} d-flex justify-content-center align-items-center `}
           >
-            <div className={`${styles.left} col d-flex flex-column justify-content-start  `}>
-              <h4 className={`text-white text-md-start`}>
+            <div className={`${styles.left} col d-flex flex-column justify-content-start col-sm-12 col-md-11 col-lg-6  `}>
+              {/* <h4 className={`text-white text-md-start`}>
                 {renderJumpingText('Welcome to', 'welcome-text')}
-              </h4>
-              <br />
-              <h3 className={`text-white ${styles['guru-laptop']} text-start! text-md-start`}>
-                {renderJumpingText('LaptopGuru', 'company-name')}
-              </h3>
-            </div>
-            <div className={`${styles.right} col`}>
+                {renderJumpingText('Log in', 'welcome-text')}
+              </h4> */}
+      
+              {/* <h3 className={`text-white ${styles['guru-laptop']} text-start! text-md-start`}> */}
+                {/* {renderJumpingText('to LaptopGuru', 'company-name')} */}
+              {/* </h3> */}
+              {/* <GlitchText>Log in</GlitchText> */}
+              <i><GlowingText text="Log in to"className={`text-white text-md-start text-lg-start`} /></i>
+              <i><GlowingText text="GuruLaptop" className={`text-white text-center text-lg-start text-md-start ${styles.glowingText}`}/></i>
+              </div>
+            <div className={`${styles.right} col-sm-12 col-md-11 col-lg-5 `}>
               <div className={`${styles.tabs} d-flex justify-content-between`}>
                 <Link
                   className={` ${styles.hover} text-decoration-none text-white`}
@@ -156,7 +162,7 @@ export default function LogIn(props) {
                       {/* 這個button是 眼睛*/}
                       <button
                         type="button"
-                        className="btn position-absolute end-0 top-50 vertical-adjustment border-0 ${styles[eye-icon]}"
+                        className="btn btn-primary position-absolute end-0 top-50  border-0 ${styles[eye-icon]}"
                         onClick={() => setShowpassword(!showpassword)}
                         style={{
                           background: 'none', 
