@@ -2,10 +2,31 @@
 
 - git clone 後，將 backend 中`.env.template`改為`.env`檔案，之後進行其中相關設定
 - `.env`中`DB_XXX`相關設定，需改為你的資料庫、帳號、密碼才能開始使用
+- 前端使用 **Next.js**、**Bootstrap**
+- 後端為 **Express.js**、**SQL2 Library**
+- 資料庫使用**MySQL**
+
+## 安裝與執行
+
+按照以下步驟配置並啟動專案：
+
+1. 克隆此專案：
+   ```sh
+   git clone https://github.com/Cosmos18338/MFEE57-laptopGuru.git
+   cd MFEE57-laptopGuru
+   ```
+2. 安裝所需依賴(前後端皆須)：
+   ```sh
+    npm i
+   ```
+3. 啟動伺服器(前後端皆須)：
+   ```sh
+   npm run dev
+   ```
 
 ## 指令
 
-express 執行:
+專案 執行:
 
 ```sh
 npm run dev
