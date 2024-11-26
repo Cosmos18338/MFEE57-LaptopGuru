@@ -7,7 +7,6 @@
   position: relative;
 }
 .product_container {
-  height: auto;
   box-sizing: border-box;
   padding: 0px;
   background: linear-gradient(
@@ -20,6 +19,7 @@
     #d0bcff 98.34%
   );
 }
+
 .product_text_container {
   position: absolute;
   height: 16.406vw;
@@ -28,11 +28,13 @@
   width: 75vw;
 }
 .product_banner_title {
+  text-shadow: 0px 10px 8px rgba(0, 0, 0, 0.5);
   font-size: 3.90625vw;
   letter-spacing: 2.135vw;
   color: white;
 }
 .product_banner_content {
+  text-shadow: 0px 10px 8px rgba(0, 0, 0, 0.5);
   font-size: 1.667vw;
   letter-spacing: 1.042vw;
   color: white;
@@ -86,12 +88,12 @@
 .product_aside {
   background-color: transparent;
   border: 1px solid;
-  border-color: white;
+  border-color: #b4b4b4;
   border-radius: 20px;
   height: auto;
   overflow: hidden;
   min-width: 320px;
-  margin: 0px 0px 0px 10.417vw;
+  margin: 0px 0px 0px 13.5vw;
 }
 .product_aside_content {
   display: flex;
@@ -155,13 +157,15 @@
   appearance: none;
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 20px solid #805af5;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 12px solid #805af5;
   position: relative;
-  top: 10px;
-  pointer-events: auto; /* 啟用互動 */
+  top: 15px;
+  pointer-events: auto; 
   z-index: 2;
+  background-color: #805af5;
+  transform: rotate(45deg); 
 }
 
 .product_slider::-moz-range-thumb {
@@ -247,7 +251,7 @@
 
 /* 當 checkbox 被選取時顯示選單 */
 .menu_toggle:checked + .menu_toggle_wrapper + .menu_content {
-  max-height: 400px; /* 設定展開的最大高度 */
+  max-height: 600px; /* 設定展開的最大高度 */
 }
 
 .menu_content a {
@@ -259,11 +263,18 @@
   list-style: none; /* 去除列表標記 */
   margin-top: 40px; /* 每項之間的間距 */
 }
+.product_not_found {
+  color: white;
+  font-size: 16px;
 
+  margin-top: 40px;
+  margin-left: 40px;
+}
 .product_pagination {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
+  margin-bottom: 40px;
+  margin-left: 8vw;
   align-items: center;
   padding: 10px;
   border-radius: 8px;
@@ -283,6 +294,10 @@
   padding: 0.5rem 0.75rem;
   border-radius: 4px;
   transition: color 0.3s;
+  // 移除預設樣式
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
 }
 
 .product_page_item.active .product_page_link {
@@ -292,10 +307,9 @@
 .product_page_item.disabled .product_page_link {
   pointer-events: none; /* 禁用點擊 */
 }
-
-.product_page_link[aria-label='Previous'],
-.product_page_link[aria-label='Next'] {
-  color: #805af5; /* 箭頭的紫色 */
+.product_list {
+  display: flex;
+  flex-wrap: wrap;
 }
 
 @media (max-width: 1140px) {
@@ -321,7 +335,6 @@
     z-index: 1000;
   }
   .product_banner {
-    background-image: url('/images/product/mobile-banner.jpg');
     width: 100%;
     padding-top: 32.5%;
   }
@@ -334,8 +347,22 @@
     letter-spacing: 1.042vw;
     margin-top: 5.208vw;
   }
+  .product_list {
+    justify-content: center;
+  }
+  .product_pagination {
+    margin-left: 0;
+  }
 }
-.product_list {
-  display: flex;
-  flex-wrap: wrap;
+
+@media (max-width: 400px) {
+  .product_banner_title {
+    font-size: 30px;
+    letter-spacing: 1.042vw;
+  }
+  .product_banner_content {
+    font-size: 12px;
+    letter-spacing: 1.042vw;
+    margin-top: 5.208vw;
+  }
 }
